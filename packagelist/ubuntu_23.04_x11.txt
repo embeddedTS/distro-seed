@@ -10,6 +10,7 @@ udev # needed to set up serial console
 # Text editors
 nano
 vim
+ed
 
 # Network configuration
 iproute2 # "ip" and other related tools
@@ -30,14 +31,18 @@ bluez-hcidump
 
 # Base utils
 apt-utils
+bsdmainutils
 dbus
+fdisk
+file
 less
 locales
 lsb-release
+man-db
+parted
 psmisc
 sensible-utils
 watchdog
-file
 
 # Network utilities
 bridge-utils
@@ -56,12 +61,13 @@ can-utils
 gpiod
 i2c-tools
 libiio-utils
+lshw
 memtool
 mmc-utils
+pciutils
 picocom
 setserial
 usbutils
-pciutils
 
 # Debug utilities
 strace
@@ -71,13 +77,22 @@ autoconf
 automake
 build-essential
 command-not-found
+dialog
 gdb
 git
-libiio-dev
 libubootenv-tool
 lsof
 meson
 nfs-common
+sqlite3
+xxd
+
+# Development tools - Python
+python3-bluez
+python3-can
+python3-libgpiod
+python3-libiio
+python3-pip
 
 # DRM packages
 libdrm-etnaviv1
