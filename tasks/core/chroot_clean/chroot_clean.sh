@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # This command runs from the docker environment to clean up anything left from
 # the prep command

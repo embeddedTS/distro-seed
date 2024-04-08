@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/components/wilc3000-external/"
 GITURL="https://github.com/embeddedTS/wilc3000-external-module.git"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/components/tssupervisorupdate/"
 GITURL="https://github.com/embeddedTS/tssupervisorupdate.git"

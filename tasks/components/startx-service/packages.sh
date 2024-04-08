@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # If the default "xterm" was left in place, lets make sure that is installed
 if [ "$CONFIG_DS_XORG_STARTX_SERVICE_TARGET" = "xterm" ]; then

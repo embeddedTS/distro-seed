@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Currently the sudo package is always sudo on any ubuntu/debian release
 if [ "$CONFIG_DS_USER_SUDO" = "y" ]; then

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if [ "${CONFIG_DS_COMPONENT_UDEV_RULES_4900_8390_TOUCH}" == "y" ]; then
 	install -d "${DS_OVERLAY}/etc/udev/rules.d/"

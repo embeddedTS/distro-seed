@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # Set up a temporary resolv.conf.
 if [ -L "/etc/resolv.conf" ]; then

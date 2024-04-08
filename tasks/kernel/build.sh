@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/kernel/linux/"
 KBUILD_OUTPUT="$DS_WORK/kernel/linux-kbuild/"

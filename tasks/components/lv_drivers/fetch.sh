@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/components/lv_drivers"
 GITURL="https://github.com/lvgl/lv_drivers.git"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/components/ts7100z-lvgl-ui-demo"
 GITURL="https://github.com/embeddedts/ts7100z-lvgl-ui-demo"

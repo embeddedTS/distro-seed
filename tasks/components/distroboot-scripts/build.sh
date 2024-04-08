@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 install -d "$DS_OVERLAY/boot/"
 mkimage -A arm -T script -C none -n 'boot' \
