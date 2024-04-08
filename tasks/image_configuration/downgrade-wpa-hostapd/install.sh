@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
-ROOT_DST="/tmp/"
-
+ROOT_DST="/tmp/downgrade-wpa-hostapd/"
 
 if [ "${DS_DISTRO}" == "debian" ]; then
 	LIBSSL_DEB="libssl1.1_1.1.1w-0+deb11u1_armhf.deb"
@@ -45,6 +44,6 @@ if [ "${RES}" -eq 0 ] ; then
 	apt-mark hold libssl1.1
 	apt-mark hold wpasupplicant
 	apt-mark hold hostapd
-
-	rm -r "${ROOT_DST}"
 fi
+
+rm -r "${ROOT_DST}"

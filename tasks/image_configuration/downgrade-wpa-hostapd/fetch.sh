@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-ROOT_DST="${DS_OVERLAY}/tmp/"
+ROOT_DST="${DS_OVERLAY}/tmp/downgrade-wpa-hostapd"
 
 # Debian distros shipping wpasupplicant 2.10 are:
 # Debian 12 (Bookworm)
