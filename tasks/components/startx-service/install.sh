@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 if [ "$CONFIG_DS_XORG_STARTX_SERVICE_NO_DECORATIONS" = "y" ]; then
     WINDOW_MANAGER_COMMAND="matchbox-window-manager -use_cursor no -use_titlebar no &"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 ROOTFS="$DS_WORK/rootfs/"
 INSTALL="$DS_WORK/overlays/"

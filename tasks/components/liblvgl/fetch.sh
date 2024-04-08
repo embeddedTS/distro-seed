@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 SOURCE="$DS_WORK/components/lvgl"
 GITURL="https://github.com/lvgl/lvgl.git"

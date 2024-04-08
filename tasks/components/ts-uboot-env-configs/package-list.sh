@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/bash -e
 
 echo "u-boot-tools"

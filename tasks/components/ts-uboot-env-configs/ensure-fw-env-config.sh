@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #
 # ensure-fw-env-config.sh - auto-create a service to run generate_fw_env_config at boot
 #

@@ -1,8 +1,14 @@
-#!/bin/bash
+#!/bin/bash -e
 
 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true
 export LC_ALL=C LANGUAGE=C LANG=C
-dpkg --configure -a
+(
+    # This configure is expected to have a few commands that fail configuring. These
+    # will be fixed by apt-get install -f
+    set +e
+    dpkg --configure -a
+    true
+)
 
 if [ "$DS_DISTRO" == "ubuntu" ] && [ "$DS_RELEASE" == "lunar" ]; then
     # Workaround for:
