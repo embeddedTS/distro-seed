@@ -1,0 +1,6 @@
+config DS_COMPONENT_GPSD_PPS
+	bool "Install gpsd and pps-related packages and an embeddedTS platform-specific gpsd.config file"
+	help
+	  Installs gpsd and pps-related packages that enable location
+          as well as embeddedTS's configuration files for GPS-based
+          timekeeping.

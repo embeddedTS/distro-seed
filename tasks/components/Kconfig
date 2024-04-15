@@ -26,6 +26,7 @@ source "tasks/components/tssupervisorupdate/Kconfig"
 source "tasks/components/ts-uboot-env-configs/Kconfig"
 source "tasks/components/ts-touchscreen-calibration/Kconfig"
 source "tasks/components/udev-rules/Kconfig"
+source "tasks/components/gps+pps/Kconfig"
 endmenu
 
 menu "NXP"
