@@ -1,0 +1,8 @@
+config: DS_COMPONENT_TS7180_UTILS
+tasks:
+- cmd: build.sh
+  cmd_type: docker
+  description: Building ts7180-utils
+- cmd: fetch.sh
+  cmd_type: host
+  description: Downloading ts7180-utils

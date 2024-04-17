@@ -1,0 +1,5 @@
+config DS_COMPONENT_TS7180_UTILS
+	bool "ts7180-utils"
+	help
+	  This set of utils is for the TS-7180 includes tools for checking
+	  board versions, etc.
