@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/ts4900-utils/"
 GITURL="https://github.com/embeddedTS/ts4900-utils.git"
-GITVERSION="v1.0.3"
+GITVERSION="v1.0.4"
 
 install -d "$SOURCE"
 
