@@ -20,6 +20,7 @@ choice
 	source "tasks/components/ts7400v2-utils/Kconfig"
 	source "tasks/components/ts7553v2-utils/Kconfig"
 	source "tasks/components/ts7670-utils/Kconfig"
+	source "tasks/components/ts7680-utils/Kconfig"
 endchoice
 source "tasks/components/ts4900-fpga/Kconfig"
 source "tasks/components/tssupervisorupdate/Kconfig"
