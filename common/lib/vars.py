@@ -31,6 +31,9 @@ def kconfig_export_vars(kconf):
     elif kconf.eval_string('DS_DISTRO_UBUNTU_23_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='lunar'
+    elif kconf.eval_string('DS_DISTRO_UBUNTU_24_04') != 0:
+        DS_DISTRO='ubuntu'
+        DS_RELEASE='noble'
     else:
         print("Unsupported Distro!")
         sys.exit(1)
