@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+INSTALL_DTBS_PATH="$DS_WORK/kernel/linux-dtbs"
 SOURCE="$DS_WORK/kernel/linux/"
 KBUILD_OUTPUT="$DS_WORK/kernel/linux-kbuild/"
 KERNEL_CACHE_KEY="$(cat $DS_WORK/kernel/linux-cache-key)"
@@ -52,8 +53,9 @@ if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
                 cp "$KBUILD_OUTPUT/arch/arm/boot/uImage" "${INSTALL}/boot/uImage"
             fi
             
+            INSTALL_DTBS_PATH=$INSTALL_DTBS_PATH make dtbs_install
             for dtb in $CONFIG_DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM; do
-                cp "$KBUILD_OUTPUT/arch/arm/boot/dts/${dtb}.dtb" "${INSTALL}/boot/"
+                cp "$INSTALL_DTBS_PATH/${dtb}.dtb" "${INSTALL}/boot/"
             done
         else
             echo Unsupported arch
