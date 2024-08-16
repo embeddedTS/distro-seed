@@ -1,0 +1,11 @@
+config: DS_DISTRO_UBUNTU_24_04
+tasks:
+- cmd: ../../build.sh
+  cmd_type: docker
+  dependencies:
+    - DS_CORE_MULTISTRAP_CONF
+  provides: DS_DISTRO
+  description: Fetching Ubuntu 24.04 distribution
+- cmd: sourceslist.sh
+  cmd_type: host
+  description: Adding sources.list

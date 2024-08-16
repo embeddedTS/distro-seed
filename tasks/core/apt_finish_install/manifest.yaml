@@ -1,5 +1,11 @@
 config: DS_APT_CONFIGURED
 tasks:
+- cmd: fixup.sh
+  cmd_type: docker
+  dependencies:
+    - DS_CHROOT_EARLY
+  auto_create_rdepends: true
+  description: Finishing apt install fixups
 - cmd: apt_finish_install.sh
   cmd_type: target
   dependencies:
