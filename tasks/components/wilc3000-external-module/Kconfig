@@ -2,3 +2,8 @@ config DS_MODULE_WILC3000
 	bool "wilc3000-module"
 	help
 	  This module provides the drivers from Microchip's linux4microchip git
+
+config DS_MODULE_WILC3000_GIT_VERSION
+	string "wilc3000-module GIT srcrev"
+	help
+	  Specify tag or branch to checkout before building.
