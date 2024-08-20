@@ -13,4 +13,9 @@ if [ "$DS_DISTRO" == "ubuntu" ] && [ "$DS_RELEASE" == "noble" ]; then
     ln -sfn "usr/sbin" "${ROOTFS}/sbin"
     ln -sfn "usr/bin" "${ROOTFS}/bin"
     ln -sfn "usr/lib" "${ROOTFS}/lib"
+
+    # Workaround for:
+    #     dpkg: error: parsing file '/var/lib/dpkg/status' near line 8060 package 'wpasupplicant':
+    #     value for 'Conffiles' field has malformed line 'remove-on-upgrade /etc/dbus-1/system.d/wpa_supplicant.conf '
+    sed -i '/remove-on-upgrade \/etc\/dbus-1\/system.d\/wpa_supplicant.conf/d' ${ROOTFS}/var/lib/dpkg/status
 fi
