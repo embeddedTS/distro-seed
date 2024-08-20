@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
-if [ "$DS_DISTRO" == "ubuntu" ] && [ "$DS_RELEASE" == "lunar" ]; then
-        apt-get update
+# Some releases require running update-command-not-found, newer
+# releases do this when you run apt-get update.
+
+if command -v update-command-not-found &> /dev/null; then
+    update-command-not-found
 else
-        update-command-not-found
+    apt-get update
 fi
