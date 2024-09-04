@@ -1,5 +1,6 @@
 config DS_COMPONENT_TS4100_UTILS
 	bool "ts4100-utils"
+	select DS_COMPONENT_ZPU_ARMHF
 	help
 	  Utilities tools for TS-4100 SoM
 
