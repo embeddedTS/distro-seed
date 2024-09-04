@@ -2,8 +2,13 @@ config: DS_COMPONENT_TS4100_UTILS
 tasks:
 - cmd: fetch.sh
   cmd_type: host
+  provides: DS_ZPU_SRC
   description: Downloading ts4100-utils
 
 - cmd: build.sh
   cmd_type: docker
+  dependencies:
+    - DS_DOCKER_READY
+    - DS_ZPU_COMPILER
+    - DS_ZPU_SRC
   description: Building ts4100-utils
