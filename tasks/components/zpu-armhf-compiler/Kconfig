@@ -1,0 +1,4 @@
+config DS_COMPONENT_ZPU_ARMHF
+	bool
+	help
+	  Used for the ZPU on the TS-4100

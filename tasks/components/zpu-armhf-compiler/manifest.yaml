@@ -1,0 +1,6 @@
+config: DS_COMPONENT_ZPU_ARMHF
+tasks:
+- cmd: fetch.sh
+  cmd_type: host
+  description: Downloading ZPU armhf compiler
+  provides: DS_ZPU_COMPILER
