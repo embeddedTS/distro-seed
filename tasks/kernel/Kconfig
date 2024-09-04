@@ -45,7 +45,7 @@ config DS_KERNEL_INSTALL_IMAGE_FILESYSTEM
 	bool "Install Image to the target filesystem in /boot/Image"
 
 config DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM
-	depends on DS_ARCH_ARMHF || DS_ARCH_ARMEL
+	depends on DS_ARCH_AARCH64 || DS_ARCH_ARMHF || DS_ARCH_ARMEL
 	bool "Install zImage to the target filesystem in /boot/"
 
 config DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM
