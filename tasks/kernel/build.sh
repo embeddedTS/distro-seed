@@ -25,7 +25,6 @@ INSTALL_OBJECT_KEY="linux-kernel-install-${KERNEL_CACHE_KEY}"
 if ! common/host/fetch_cache_obj.sh "$BUILD_OBJECT_KEY" "$KBUILD_OUTPUT"; then
     export KBUILD_OUTPUT INSTALL
     (
-        set +e
         cd "$SOURCE"
         # CROSS_COMPILE and ARCH are set from the dockerfile
 
@@ -34,12 +33,12 @@ if ! common/host/fetch_cache_obj.sh "$BUILD_OBJECT_KEY" "$KBUILD_OUTPUT"; then
         fi
 
         if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
-            [ "${ARCH_DIR}" != "arm64" ] && TARGETS="$TARGETS zImage"
+            TARGETS="$TARGETS zImage"
         fi
 
         if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
             export LOADADDR="$CONFIG_DS_KERNEL_INSTALL_UIMAGE_LOADADDR"
-            [ "${ARCH_DIR}" != "arm64" ] && TARGETS="$TARGETS uImage"
+            TARGETS="$TARGETS uImage"
         fi
 
         make "$CONFIG_DS_KERNEL_DEFCONFIG"
@@ -51,7 +50,6 @@ fi
 if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
     export KBUILD_OUTPUT INSTALL
     (
-        set +e
         cd "$SOURCE"
 
         install -d "${INSTALL}/boot"
