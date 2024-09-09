@@ -1,4 +1,8 @@
-#!/bin/bash -e
+#!/bin/bash
+
+# Comment out if you don't want this script to exit immediately when
+# any of its commands return an error:
+set -e
 
 INSTALL_DTBS_PATH="$DS_WORK/kernel/linux-dtbs"
 SOURCE="$DS_WORK/kernel/linux/"
