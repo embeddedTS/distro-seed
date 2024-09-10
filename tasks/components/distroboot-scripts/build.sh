@@ -28,6 +28,7 @@ load \${devtype} \${devnum}:\${distro_bootpart} \${kernel_addr_r} \${prefix}${KE
 && ${BOOT_CMD} \${kernel_addr_r} - \${fdt_addr_r}
 EOF
 
+[ ! -d "${DS_OVERLAY}/boot" ] && mkdir -p "${DS_OVERLAY}/boot"
 mkimage -A arm -T script -C none -n 'boot' \
         -d "${TMP_BOOT_SOURCE}" "${DS_OVERLAY}/boot/boot.scr"
 
