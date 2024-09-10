@@ -9,8 +9,8 @@ else
     KERNEL_FILE=zImage
     BOOT_CMD=bootz
 fi
-#TMP_BOOT_SOURCE="${DS_WORK}/boot/boot.source"
-TMP_BOOT_SOURCE="boot.source"
+TMP_BOOT_SOURCE="${DS_TASK_PATH}/boot/boot.source"
+[ ! -d "$(dirname ${TMP_BOOT_SOURCE})" ] && mkdir -p "$(dirname ${TMP_BOOT_SOURCE})"
 
 cat > "${TMP_BOOT_SOURCE}" <<EOF
 # mkimage -A arm -T script -C none -n 'boot' -d boot.source boot.scr
