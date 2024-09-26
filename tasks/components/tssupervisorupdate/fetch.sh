@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/tssupervisorupdate/"
 GITURL="https://github.com/embeddedTS/tssupervisorupdate.git"
-GITVERSION="v1.0.1"
+GITVERSION="${CONFIG_DS_COMPONENT_TSSSUPERVISORUPDATE_GIT_VERSION:-v1.0.1}"
 
 install -d "$SOURCE"
 

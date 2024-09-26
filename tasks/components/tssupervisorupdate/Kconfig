@@ -4,3 +4,9 @@ config DS_COMPONENT_TSSUPERVISORUPDATE
 	  This project is used to update the supervisory microcontroller on
 	  embeddedTS products. This supports the TS-7250-V3, TS-7970, and more
 	  in the future.
+
+config DS_COMPONENT_TSSSUPERVISORUPDATE_GIT_VERSION
+	string "tsssupervisorupdate HEAD/tag on github"
+	help
+	  Specify tag or branch to checkout before building.
+	  This is only needed when the present default is not OK for a platform.
