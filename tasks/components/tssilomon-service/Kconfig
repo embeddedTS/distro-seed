@@ -1,0 +1,10 @@
+config DS_TSSILOMON_SERVICE
+	bool "Install tssilomon systemd startup script"
+	help
+          The TS products that offer TS-SILO supercapacitor support
+          will have a monitor daemon as part of their utilities
+          repository.
+
+          By default, the script is installed but does not have a
+          startup process. Enabling this will add a systemd style
+          script to start and stop the daemon.

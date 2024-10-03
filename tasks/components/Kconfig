@@ -24,8 +24,9 @@ choice
 endchoice
 source "tasks/components/ts4900-fpga/Kconfig"
 source "tasks/components/tssupervisorupdate/Kconfig"
-source "tasks/components/ts-uboot-env-configs/Kconfig"
 source "tasks/components/ts-touchscreen-calibration/Kconfig"
+source "tasks/components/tssilomon-service/Kconfig"
+source "tasks/components/ts-uboot-env-configs/Kconfig"
 source "tasks/components/udev-rules/Kconfig"
 source "tasks/components/zpu-armhf-compiler/Kconfig"
 endmenu
