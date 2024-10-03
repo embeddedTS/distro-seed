@@ -1,0 +1,5 @@
+config: DS_TSSILOMON_SERVICE
+tasks:
+- cmd: install.sh
+  cmd_type: target
+  description: Installing and Enabling tssilomon.service
