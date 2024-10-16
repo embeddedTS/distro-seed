@@ -9,13 +9,13 @@ if [ "${DS_DISTRO}" == "debian" ] ; then
 	LIBSSL_SITE="http://ftp.us.debian.org/debian/pool/main/o/openssl/${LIBSSL_DEB}"
 	LIBSSL_SHA256="42130c140f972d938d4b4a5ab9638675e6d1223fcff3042bbcc1829e3646eb00"
 
-	WPA_DEB="wpasupplicant_2.9.0-21_armhf.deb"
+	WPA_DEB="wpasupplicant_2.9.0-21+deb11u2_armhf.deb"
 	WPA_SITE="http://ftp.us.debian.org/debian/pool/main/w/wpa/${WPA_DEB}"
-	WPA_SHA256="7bb05cb4f6e3fa3a12d10ea900a4bc7d7d606cacc254115ac28583903b55a2a0"
+	WPA_SHA256="dce8b75e6b4d6e8a59c98b2172d553de332026bc2f8705b63e12a1e980150a5b"
 
-	HOSTAPD_DEB="hostapd_2.9.0-21_armhf.deb"
+	HOSTAPD_DEB="hostapd_2.9.0-21+deb11u2_armhf.deb"
 	HOSTAPD_SITE="http://ftp.us.debian.org/debian/pool/main/w/wpa/${HOSTAPD_DEB}"
-	HOSTAPD_SHA256="e9bd2195d497e420dfda9a77726c5bc9f79315faee5633517912e06154fe59c2"
+	HOSTAPD_SHA256="67e82fc8753f7b6379bbeaad529170ec03ec3bba414c807a67512229a7cacdae"
 # Ubuntu distros shipping wpasupplicant 2.10 are:
 # 22.04 (Jammy)
 # 23.04 (Focal)
@@ -24,13 +24,13 @@ elif [ "${DS_DISTRO}" == "ubuntu" ] ; then
 	LIBSSL_SITE="http://ports.ubuntu.com/pool/main/o/openssl/${LIBSSL_DEB}"
 	LIBSSL_SHA256="fde1628edbebc3b4aba18f2568b703a4c2003e4903c4e01f899b489f4e426d3f"
 
-	WPA_DEB="wpasupplicant_2.9-1ubuntu4.3_armhf.deb"
+	WPA_DEB="wpasupplicant_2.9-1ubuntu4.4_armhf.deb"
 	WPA_SITE="http://ports.ubuntu.com/pool/main/w/wpa/${WPA_DEB}"
-	WPA_SHA256="6d89d49615e903445f0321ddeec6e1d30cbc9fae6fe02cb6aa6f524ae0be969f"
+	WPA_SHA256="21108b6f429cf60644ee164c699f9dad60dbceb4f70e041583e8a390289f8db6"
 
-	HOSTAPD_DEB="hostapd_2.9-1ubuntu4_armhf.deb"
+	HOSTAPD_DEB="hostapd_2.9-1ubuntu4.4_armhf.deb"
 	HOSTAPD_SITE="http://ports.ubuntu.com/pool/universe/w/wpa/${HOSTAPD_DEB}"
-	HOSTAPD_SHA256="b377567609908ec84a573e9c6bb52935ea15874603644cc068904728f19664f1"
+	HOSTAPD_SHA256="d1754ffae2ca6f804ba67e43f9c1296a153f3d4152f250e048ff784ecb1f7771"
 else
 	exit 1
 fi

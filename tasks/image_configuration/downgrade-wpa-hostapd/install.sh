@@ -1,15 +1,15 @@
 #!/bin/bash -e
 
-ROOT_DST="/tmp/downgrade-wpa-hostapd/"
+ROOT_DST="/tmp/downgrade-wpa-hostapd"
 
 if [ "${DS_DISTRO}" == "debian" ]; then
 	LIBSSL_DEB="libssl1.1_1.1.1w-0+deb11u1_armhf.deb"
-	WPA_DEB="wpasupplicant_2.9.0-21_armhf.deb"
-	HOSTAPD_DEB="hostapd_2.9.0-21_armhf.deb"
+	WPA_DEB="wpasupplicant_2.9.0-21+deb11u2_armhf.deb"
+	HOSTAPD_DEB="hostapd_2.9.0-21+deb11u2_armhf.deb"
 elif [ "${DS_DISTRO}" == "ubuntu" ] ; then
 	LIBSSL_DEB="libssl1.1_1.1.1f-1ubuntu2_armhf.deb"
-	WPA_DEB="wpasupplicant_2.9-1ubuntu4.3_armhf.deb"
-	HOSTAPD_DEB="hostapd_2.9-1ubuntu4_armhf.deb"
+	WPA_DEB="wpasupplicant_2.9-1ubuntu4.4_armhf.deb"
+	HOSTAPD_DEB="hostapd_2.9-1ubuntu4.4_armhf.deb"
 else
 	exit 1
 fi
