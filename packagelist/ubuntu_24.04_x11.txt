@@ -57,6 +57,7 @@ wget
 openssh-server
 
 # Hardware utilities
+alsa-utils
 can-utils
 gpiod
 i2c-tools
