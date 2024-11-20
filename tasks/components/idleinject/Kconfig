@@ -1,0 +1,5 @@
+config DS_COMPONENT_IDLEINJECT
+	bool "idleinject"
+	help
+          This tool is used to inject idle from userspace to cool systems that do not
+          support kernel based idle injection or throttling.
