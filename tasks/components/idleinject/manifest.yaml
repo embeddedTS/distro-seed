@@ -1,0 +1,11 @@
+config: DS_COMPONENT_IDLEINJECT
+tasks:
+- cmd: fetch.sh
+  cmd_type: host
+  description: Downloading idleinject
+- cmd: build.sh
+  cmd_type: docker
+  description: Building idleinject
+- cmd: install.sh
+  cmd_type: target
+  description: Installing and Enabling idleinject.service
