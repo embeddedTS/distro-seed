@@ -22,18 +22,23 @@ def kconfig_export_vars(kconf):
     if kconf.eval_string('DS_DISTRO_DEBIAN_11') != 0:
         DS_DISTRO='debian'
         DS_RELEASE='bullseye'
+        DS_RELEASE_NUM='11'
     elif kconf.eval_string('DS_DISTRO_DEBIAN_12') != 0:
         DS_DISTRO='debian'
         DS_RELEASE='bookworm'
+        DS_RELEASE_NUM='12'
     elif kconf.eval_string('DS_DISTRO_UBUNTU_22_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='jammy'
+        DS_RELEASE_NUM='22.04'
     elif kconf.eval_string('DS_DISTRO_UBUNTU_23_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='lunar'
+        DS_RELEASE_NUM='23.04'
     elif kconf.eval_string('DS_DISTRO_UBUNTU_24_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='noble'
+        DS_RELEASE_NUM='24.04'
     else:
         print("Unsupported Distro!")
         sys.exit(1)
@@ -52,6 +57,7 @@ def kconfig_export_vars(kconf):
     os.environ["DS_HOST_ROOT_PATH"] = DS_HOST_ROOT_PATH
     os.environ["DS_DISTRO"] = DS_DISTRO
     os.environ["DS_RELEASE"] = DS_RELEASE
+    os.environ["DS_RELEASE_NUM"] = DS_RELEASE_NUM
     os.environ["DS_TARGET_ARCH"] = DS_TARGET_ARCH
     os.environ["DS_QEMU_STATIC"] = DS_QEMU_STATIC
     # DS_OVERLAY is set in tasks.py at runtime

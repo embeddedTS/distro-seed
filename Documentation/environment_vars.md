@@ -7,6 +7,7 @@ Every script run by distro-seed has access to these core set of environment vari
 | DS_WORK           | X | X |   | Path to distro-seed/work directory |
 | DS_DISTRO         | X | X | X | Distro name, eg "ubuntu" or "debian" |
 | DS_RELEASE        | X | X | X | Release name, eg "bullseye", or "jammy" |
+| DS_RELEASE_NUM    | X | X | X | Release number, eg "12", or "23.04" |
 | DS_TARGET_ARCH    | X | X | X | Architecture name, eg "armhf" or "armel" |
 | DS_OVERLAY        | X | X |   | Path to the overlay this project should use. Must create the directory manually |
 | DS_TASK_PATH      | X | X |   | Path to the manifest being executed |

@@ -34,6 +34,7 @@ DS_DL = os.environ['DS_DL']
 DS_WORK = os.environ['DS_WORK']
 DS_DISTRO = os.environ['DS_DISTRO']
 DS_RELEASE = os.environ['DS_RELEASE']
+DS_RELEASE_NUM = os.environ['DS_RELEASE_NUM']
 DS_TARGET_ARCH = os.environ['DS_TARGET_ARCH']
 DS_QEMU_STATIC = os.environ['DS_QEMU_STATIC']
 
