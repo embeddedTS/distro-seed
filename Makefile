@@ -5,7 +5,7 @@ dry-run:
 	@common/build.py --dry-run
 
 %_defconfig:
-	@common/lib/kconfiglib/defconfig.py --kconfig Kconfig configs/$@
+	@common/lib/kconfiglib/defconfig.py --kconfig Kconfig $(shell pwd)/configs/$@
 
 menuconfig:
 	@common/lib/kconfiglib/menuconfig.py
