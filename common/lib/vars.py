@@ -31,10 +31,6 @@ def kconfig_export_vars(kconf):
         DS_DISTRO='ubuntu'
         DS_RELEASE='jammy'
         DS_RELEASE_NUM='22.04'
-    elif kconf.eval_string('DS_DISTRO_UBUNTU_23_04') != 0:
-        DS_DISTRO='ubuntu'
-        DS_RELEASE='lunar'
-        DS_RELEASE_NUM='23.04'
     elif kconf.eval_string('DS_DISTRO_UBUNTU_24_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='noble'
