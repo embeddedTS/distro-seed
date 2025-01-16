@@ -42,6 +42,13 @@ def main():
 
     kconf = kconfiglib.Kconfig(args.kconfig, suppress_traceback=True)
     print(kconf.load_config())
+    if args.out == "defconfig":
+        args.out = kconf.syms["DS_DEFCONFIG"].str_value
+
+    if args.out == "":
+        args.out = "defconfig"
+
+    kconf.syms["DS_DEFCONFIG"].unset_value()
     print(kconf.write_min_config(args.out))
 
 

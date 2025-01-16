@@ -1,1 +1,7 @@
+menu "Build Options"
+config DS_DEFCONFIG
+	string "Location to save defconfig"
+	default ""
+endmenu
+
 source "tasks/Kconfig"

@@ -37,11 +37,6 @@ config DS_DISTRO_UBUNTU_22_04
 	help
 	  Use Ubuntu 22.04 as the base distribution
 
-config DS_DISTRO_UBUNTU_23_04
-	bool "Ubuntu 23.04 Lunar Lobster"
-	help
-	  Use Ubuntu 23.04 as the base distribution
-
 config DS_DISTRO_UBUNTU_24_04
 	bool "Ubuntu 24.04 Noble Numbat"
 	help
@@ -78,7 +73,6 @@ config DS_PACKAGELIST
 	default "debian-11-minimal.txt" if DS_DISTRO_DEBIAN_11 
 	default "debian-12-minimal.txt" if DS_DISTRO_DEBIAN_12
 	default "ubuntu_22_04-minimal.txt" if DS_DISTRO_UBUNTU_22_04
-	default "ubuntu_23_04-minimal.txt" if DS_DISTRO_UBUNTU_23_04
 	default "ubuntu_24_04-minimal.txt" if DS_DISTRO_UBUNTU_24_04
 
 config DS_DISTRO_PACKAGELIST_APPEND

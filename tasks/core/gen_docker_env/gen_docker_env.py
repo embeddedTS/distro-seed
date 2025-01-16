@@ -30,6 +30,7 @@ with open(envfile, 'w') as f:
     f.write(f"DS_DISTRO={os.environ['DS_DISTRO']}\n")
     f.write(f"DS_CACHE={ds_cache}\n")
     f.write(f"DS_RELEASE={os.environ['DS_RELEASE']}\n")
+    f.write(f"DS_RELEASE_NUM={os.environ['DS_RELEASE_NUM']}\n")
     f.write(f"DS_TARGET_ARCH={os.environ['DS_TARGET_ARCH']}\n")
     f.write(f"DS_QEMU_STATIC={os.environ['DS_QEMU_STATIC']}\n")
 
