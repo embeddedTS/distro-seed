@@ -23,3 +23,11 @@ environment has been saved yet), the first one tried will be chosen.
 The `technologic-*.config` files contain the most common currently
 shipping layouts and some recent past layouts. For convenience, you
 can symlink one as your `${BOARD}.config`.
+
+For example, if in the same directory as the config files:
+
+	ln -s ts9370-0.config ts${MODEL}.config
+
+Or, to patch up a running system:
+
+	ln -s /usr/share/uboot-env-configs/ts${MODEL}.config /run/fw_env.config
