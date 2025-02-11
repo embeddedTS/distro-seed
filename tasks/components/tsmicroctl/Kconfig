@@ -1,0 +1,5 @@
+config DS_COMPONENT_TSMICROCTL
+	bool "tsmicroctl"
+	help
+	  This utility is for the TS-7100, TS-7180, TS-7800-V2 for controlling
+          the onboard microcontroller.
