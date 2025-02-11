@@ -20,12 +20,25 @@ RUN apt-get update && apt-get install -y gcc-aarch64-linux-gnu libc6-dev:arm64 l
 ENV CROSS_COMPILE=aarch64-linux-gnu-
 ENV ARCH=arm64
 ENV AUTOTOOLS_HOST=aarch64-linux-gnu
+ENV PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig
+ENV PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR=/
 ENV MESON_CROSS="/meson.cross"
 RUN echo '[binaries]' > /meson.cross \
     && echo "c = 'aarch64-linux-gnu-gcc'" >> /meson.cross \
     && echo "cpp = 'aarch64-linux-gnu-g++'" >> /meson.cross \
     && echo "ar = 'aarch64-linux-gnu-ar'" >> /meson.cross \
     && echo "strip = 'aarch64-linux-gnu-strip'" >> /meson.cross
+    && echo "pkgconfig = 'aarch64-linux-gnu-pkg-config'" >> /meson.cross
+
+ENV CMAKE_CROSS="/cross.cmake"
+RUN echo "set(CMAKE_SYSTEM_NAME Linux)" > /cross.cmake \
+    && echo "set(CMAKE_C_COMPILER 'aarch64-linux-gnu-gcc)" >> /cross.cmake \
+    && echo "set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)" >> /cross.cmake \
+    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> /cross.cmake \
+    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> /cross.cmake \
+    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> /cross.cmake \
+    && echo "set(PKG_CONFIG_EXECUTABLE aarch64-linux-gnu-pkg-config)" >> /cross.cmake
 
 # Set PS1 to include docker name:
 ENV chrootname arm64_debian_bookworm

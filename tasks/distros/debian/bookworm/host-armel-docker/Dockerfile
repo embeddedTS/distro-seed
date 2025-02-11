@@ -20,19 +20,24 @@ RUN apt-get update && apt-get install -y g++-arm-linux-gnueabi gcc-arm-linux-gnu
 ENV CROSS_COMPILE=arm-linux-gnueabi-
 ENV ARCH=arm
 ENV AUTOTOOLS_HOST=arm-linux-gnueabi
+ENV PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabi/pkgconfig:/usr/share/pkgconfig
+ENV PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabi/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR=/
 ENV MESON_CROSS="/meson.cross"
 RUN echo '[binaries]' > /meson.cross \
     && echo "c = 'arm-linux-gnueabi-gcc'" >> /meson.cross \
     && echo "cpp = 'arm-linux-gnueabi-g++'" >> /meson.cross \
     && echo "ar = 'arm-linux-gnueabi-ar'" >> /meson.cross \
     && echo "strip = 'arm-linux-gnueabi-strip'" >> /meson.cross
+    && echo "pkgconfig = 'arm-linux-gnueabi-pkg-config'" >> /meson.cross
 ENV CMAKE_CROSS="/cross.cmake"
 RUN echo "set(CMAKE_SYSTEM_NAME Linux)" > /cross.cmake \
     && echo "set(CMAKE_C_COMPILER arm-linux-gnueabi-gcc)" >> /cross.cmake \
     && echo "set(CMAKE_CXX_COMPILER arm-linux-gnueabi-g++)" >> /cross.cmake \
     && echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> /cross.cmake \
     && echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> /cross.cmake \
-    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> /cross.cmake
+    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> /cross.cmake \
+    && echo "set(PKG_CONFIG_EXECUTABLE arm-linux-gnueabi-pkg-config)" >> /cross.cmake
 
 # Set PS1 to include docker name:
 ENV chrootname armel_debian_bookworm
