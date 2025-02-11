@@ -22,6 +22,7 @@ choice
 	source "tasks/components/ts7670-utils/Kconfig"
 	source "tasks/components/ts7680-utils/Kconfig"
 endchoice
+source "tasks/components/tsmicroctl/Kconfig"
 source "tasks/components/ts4900-fpga/Kconfig"
 source "tasks/components/tssupervisorupdate/Kconfig"
 source "tasks/components/ts-touchscreen-calibration/Kconfig"

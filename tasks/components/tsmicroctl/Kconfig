@@ -1,0 +1,12 @@
+comment "tsmicroctl is not compatible with the selected platform utilities"
+	depends on (DS_COMPONENT_TS4100_UTILS || DS_COMPONENT_TS4900_UTILS || \
+			    DS_COMPONENT_TS7400V2_UTILS || DS_COMPONENT_TS7553V2_UTILS || \
+			    DS_COMPONENT_TS7670_UTILS || DS_COMPONENT_TS7680_UTILS)
+config DS_COMPONENT_TSMICROCTL
+	bool "tsmicroctl"
+	depends on !(DS_COMPONENT_TS4100_UTILS || DS_COMPONENT_TS4900_UTILS || \
+				 DS_COMPONENT_TS7400V2_UTILS || DS_COMPONENT_TS7553V2_UTILS || \
+				 DS_COMPONENT_TS7670_UTILS || DS_COMPONENT_TS7680_UTILS)
+	help
+	  This utility is for the TS-7100, TS-7180, TS-7800-V2 for controlling
+          the onboard microcontroller.
