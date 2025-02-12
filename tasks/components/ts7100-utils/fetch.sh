@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/ts7100-utils/"
 GITURL="https://github.com/embeddedTS/ts7100-utils.git"
-GITVERSION="v1.0.3"
+GITVERSION="v1.0.4"
 
 install -d "$SOURCE"
 
