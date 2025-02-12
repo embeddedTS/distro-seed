@@ -1,0 +1,11 @@
+config: DS_COMPONENT_TSMICROCTL
+tasks:
+- cmd: build.sh
+  cmd_type: docker
+  description: Building tsmicroctl
+- cmd: fetch.sh
+  cmd_type: host
+  description: Downloading tsmicroctl
+- cmd: install.sh
+  cmd_type: target
+  description: Installing and Enabling tsmicroctl.service

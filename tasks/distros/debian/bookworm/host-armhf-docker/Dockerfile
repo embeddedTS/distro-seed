@@ -20,19 +20,25 @@ RUN apt-get update && apt-get install -y g++-arm-linux-gnueabihf gcc-arm-linux-g
 ENV CROSS_COMPILE=arm-linux-gnueabihf-
 ENV ARCH=arm
 ENV AUTOTOOLS_HOST=arm-linux-gnueabihf
+ENV PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig
+ENV PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabihf/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR=/
 ENV MESON_CROSS="/meson.cross"
 RUN echo '[binaries]' > /meson.cross \
     && echo "c = 'arm-linux-gnueabihf-gcc'" >> /meson.cross \
     && echo "cpp = 'arm-linux-gnueabihf-g++'" >> /meson.cross \
     && echo "ar = 'arm-linux-gnueabihf-ar'" >> /meson.cross \
-    && echo "strip = 'arm-linux-gnueabihf-strip'" >> /meson.cross
+    && echo "strip = 'arm-linux-gnueabihf-strip'" >> /meson.cross \
+    && echo "pkgconfig = 'arm-linux-gnueabihf-pkg-config'" >> /meson.cross
+
 ENV CMAKE_CROSS="/cross.cmake"
 RUN echo "set(CMAKE_SYSTEM_NAME Linux)" > /cross.cmake \
     && echo "set(CMAKE_C_COMPILER arm-linux-gnueabihf-gcc)" >> /cross.cmake \
     && echo "set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)" >> /cross.cmake \
     && echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> /cross.cmake \
     && echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> /cross.cmake \
-    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> /cross.cmake
+    && echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> /cross.cmake \
+    && echo "set(PKG_CONFIG_EXECUTABLE arm-linux-gnueabihf-pkg-config)" >> /cross.cmake
 
 # Set PS1 to include docker name:
 ENV chrootname armhf_debian_bookworm
