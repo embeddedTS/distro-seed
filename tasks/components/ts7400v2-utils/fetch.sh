@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/ts7400v2-utils/"
 GITURL="https://github.com/embeddedTS/ts7400v2-utils-linux4.x.git"
-GITVERSION="v1.0.0"
+GITVERSION="v1.0.1"
 
 install -d "$SOURCE"
 
