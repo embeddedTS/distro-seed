@@ -8,3 +8,20 @@ config DS_GENIMAGE_PATH
     depends on DS_GENIMAGE
     help
       Path relative to distro-seed to the genimage config file
+
+if  DS_GENIMAGE
+choice
+        prompt "Disk image compression format"
+        default DS_GENIMAGE_XZ
+
+config DS_GENIMAGE_NONE
+        bool "No compression"
+
+config DS_GENIMAGE_XZ
+        bool "xz compression"
+
+config DS_GENIMAGE_BZIP2
+        bool "bz2 compression"
+
+endchoice
+endif
