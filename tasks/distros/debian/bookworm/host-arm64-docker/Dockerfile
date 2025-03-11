@@ -28,7 +28,7 @@ RUN echo '[binaries]' > /meson.cross \
     && echo "c = 'aarch64-linux-gnu-gcc'" >> /meson.cross \
     && echo "cpp = 'aarch64-linux-gnu-g++'" >> /meson.cross \
     && echo "ar = 'aarch64-linux-gnu-ar'" >> /meson.cross \
-    && echo "strip = 'aarch64-linux-gnu-strip'" >> /meson.cross
+    && echo "strip = 'aarch64-linux-gnu-strip'" >> /meson.cross \
     && echo "pkgconfig = 'aarch64-linux-gnu-pkg-config'" >> /meson.cross
 
 ENV CMAKE_CROSS="/cross.cmake"
