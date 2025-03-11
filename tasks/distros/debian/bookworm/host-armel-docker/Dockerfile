@@ -28,7 +28,7 @@ RUN echo '[binaries]' > /meson.cross \
     && echo "c = 'arm-linux-gnueabi-gcc'" >> /meson.cross \
     && echo "cpp = 'arm-linux-gnueabi-g++'" >> /meson.cross \
     && echo "ar = 'arm-linux-gnueabi-ar'" >> /meson.cross \
-    && echo "strip = 'arm-linux-gnueabi-strip'" >> /meson.cross
+    && echo "strip = 'arm-linux-gnueabi-strip'" >> /meson.cross \
     && echo "pkgconfig = 'arm-linux-gnueabi-pkg-config'" >> /meson.cross
 ENV CMAKE_CROSS="/cross.cmake"
 RUN echo "set(CMAKE_SYSTEM_NAME Linux)" > /cross.cmake \
