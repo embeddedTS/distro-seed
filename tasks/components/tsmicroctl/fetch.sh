@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/tsmicroctl/"
 GITURL="https://github.com/embeddedTS/tsmicroctl.git"
-GITVERSION="v1.0.1"
+GITVERSION="v1.0.3"
 
 install -d "$SOURCE"
 
