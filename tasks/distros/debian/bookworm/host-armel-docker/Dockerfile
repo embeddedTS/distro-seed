@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y g++-arm-linux-gnueabi gcc-arm-linux-gnu
 ENV CROSS_COMPILE=arm-linux-gnueabi-
 ENV ARCH=arm
 ENV AUTOTOOLS_HOST=arm-linux-gnueabi
-ENV PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabi/pkgconfig:/usr/share/pkgconfig
+ENV PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabi/pkgconfig:/usr/share/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig
 ENV PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabi/pkgconfig
 ENV PKG_CONFIG_SYSROOT_DIR=/
 ENV MESON_CROSS="/meson.cross"
