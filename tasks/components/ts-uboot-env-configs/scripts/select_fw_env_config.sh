@@ -52,13 +52,19 @@ if ! ${found} ; then
 # No matching fw_env.config found in ${env_config_dir} to match"
 # this device's COMPATIBLE string (=${COMPATIBLE}).
 #
-# To fix: Place a correct u-boot environment config file named ${COMPATIBLE}.config
-# into ${env_config_dir}"
+# To fix: Place into ${env_config_dir} (or link to one already there)
+# a correct U-Boot environment config file named:
+# 	${COMPATIBLE}.config
+#
+# Then, retry:
+# 	systemctl start fw_env.service
+# "
 EOF
         exit 1
     fi
 fi
 echo "Selected fw_env.config for COMPATIBLE=${COMPATIBLE}: $(basename ${config_path})"
+rm -f /run/fw_env.config
 ln -s ${config_path} /run/fw_env.config
 
 exit 0
