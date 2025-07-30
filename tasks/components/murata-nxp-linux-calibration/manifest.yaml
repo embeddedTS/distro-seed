@@ -1,0 +1,8 @@
+config: DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+tasks:
+- cmd: fetch.sh
+  cmd_type: host
+  description: Installing Murata nxp-linux-calibration firmware
+- cmd: install.sh
+  cmd_type: target
+  description: Installing and Enabling Murata nxp-linux-calibration firmware
