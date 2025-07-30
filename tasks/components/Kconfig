@@ -43,6 +43,10 @@ source "tasks/components/wilc-firmware/Kconfig"
 source "tasks/components/wilc3000-external-module/Kconfig"
 endmenu
 
+menu "Murata"
+source "tasks/components/murata-nxp-linux-calibration/Kconfig"
+endmenu
+
 menu "TI"
 source "tasks/components/wl12xx-firmware/Kconfig"
 endmenu

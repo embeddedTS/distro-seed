@@ -1,0 +1,52 @@
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+	bool "Murata NXP WIFI Calibration firmware"
+	help
+	  Installs Murata NXP Calibration Firmware
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_GIT_VERSION
+	depends on DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+	string "Murata NXP WIFI Calibration firmware GIT srcrev"
+	help
+	  Specify tag or branch to checkout before building.
+
+choice
+	depends on DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+	prompt "Select Murata module"
+	help
+	  Choose one of the supported firmware variants for the IW612 module.
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL
+	depends on DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+	bool "Type 2DL Firmware"
+	help
+	  Installs calibration for type 2DL module
+
+endchoice
+
+choice
+	depends on DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION
+	prompt "Select country code for firmware"
+	help
+	  Choose one of the supported firmware variants for the IW612 module.
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL_US
+	bool "US"
+	help
+	  Installs US calibration values
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL_EU
+	bool "EU"
+	help
+	  Installs US calibration values
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL_JP
+	bool "JP"
+	help
+	  Installs US calibration values
+
+config DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL_CA
+	bool "CA"
+	help
+	  Installs US calibration values
+
+endchoice
