@@ -1,0 +1,5 @@
+config: DS_COMPONENT_IMX_FIRMWARE
+tasks:
+- cmd: fetch.sh
+  cmd_type: host
+  description: Installing IMX firmware

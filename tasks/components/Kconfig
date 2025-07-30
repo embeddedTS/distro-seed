@@ -35,6 +35,7 @@ endmenu
 menu "NXP"
 source "tasks/components/xorg-etnaviv/Kconfig"
 source "tasks/components/mwifiex-external-module/Kconfig"
+source "tasks/components/imx-firmware/Kconfig"
 endmenu
 
 menu "Microchip"

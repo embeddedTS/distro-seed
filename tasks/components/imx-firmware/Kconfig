@@ -1,0 +1,25 @@
+config DS_COMPONENT_IMX_FIRMWARE
+	bool "imx-firmware for wifi modules"
+	help
+	  Installs NXP IMX Firmware
+
+config DS_COMPONENT_IMX_FIRMWARE_GIT_VERSION
+	depends on DS_COMPONENT_IMX_FIRMWARE
+	string "imx-firmware GIT srcrev"
+	help
+	  Specify tag or branch to checkout before installing
+
+# The way the driver expects firmare at this time, it is mutually exclusive
+# and only one can be populated at /lib/firmare/nxp/ at a time
+choice
+	depends on DS_COMPONENT_IMX_FIRMWARE
+	prompt "Select WIFI firmware from imx-firmware"
+	help
+	  Choose one of the supported firmware variants for the IW612 module.
+
+config DS_COMPONENT_IMX_FIRMWARE_IW612_SD
+	bool "IW612_SD Firmware"
+	help
+	  Installs firmware for IW612_SD wifi/bt module
+
+endchoice
