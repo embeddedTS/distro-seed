@@ -1,0 +1,10 @@
+config DS_MODULE_MWIFIEX
+	bool "mwifiex-module"
+	help
+	  This module provides the drivers from NXP's mwifiex, for iw6xx support
+
+config DS_MODULE_MWIFIEX_GIT_VERSION
+	depends on DS_MODULE_MWIFIEX
+	string "mwifiex-module GIT srcrev"
+	help
+	  Specify tag or branch to checkout before building.

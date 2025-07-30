@@ -1,0 +1,10 @@
+config: DS_MODULE_MWIFIEX
+tasks:
+- cmd: fetch.sh
+  cmd_type: host
+  description: Fetching mwifiex-external-module
+- cmd: build.sh
+  cmd_type: docker
+  dependencies:
+    - DS_KERNEL
+  description: Building mwifiex-external-module
