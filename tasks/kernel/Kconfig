@@ -33,11 +33,20 @@ config DS_KERNEL_DEFCONFIG
 	  Specify kernel defconfig to use
 
 config DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM
-	string "Names of device tree targets to install on the target"
+	string "Stems of device tree file paths to install in /boot"
 	help   
 	  Device tree names to install on the target, eg:
-	  foo
-	  would build foo.dtb and install it to /boot/foo.dtb
+	  foo/bar
+	  would take foo/bar.dtb (built under kernel target linux-dtbs)
+          and install it to /boot/bar.dtb
+
+config DS_KERNEL_INSTALL_DTBOS_FILESYSTEM
+	string "Stems of device tree overlay file paths to install in /boot"
+	help
+	  Device tree overlay names to install on the target, eg:
+	  foo/bar
+	  would take foo/bar.dtbo (built under kernel target linux-dtbs)
+          and install it to /boot/bar.dtbo
 
 config DS_KERNEL_INSTALL_IMAGE_FILESYSTEM
 	depends on DS_ARCH_AARCH64
