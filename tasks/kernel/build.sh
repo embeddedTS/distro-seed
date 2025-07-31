@@ -72,6 +72,9 @@ if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
         for dtb in $CONFIG_DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM; do
             cp "$INSTALL_DTBS_PATH/${dtb}.dtb" "${INSTALL}/boot/"
         done
+        for dtbo in $CONFIG_DS_KERNEL_INSTALL_DTBOS_FILESYSTEM; do
+            cp "$INSTALL_DTBS_PATH/${dtbo}.dtbo" "${INSTALL}/boot/"
+        done
 
     )
     common/host/store_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"
