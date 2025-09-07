@@ -1,0 +1,8 @@
+config: DS_CHROOT_LATE
+tasks:
+- cmd: apt_update.sh
+  cmd_type: target
+  dependencies:
+    - DS_CHROOT_READY
+  auto_create_rdepends: true
+  description: Chroot Late tasks

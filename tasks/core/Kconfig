@@ -23,6 +23,9 @@ config DS_APT_CONFIGURED
 config DS_CORE_CHROOT_CLEAN
     bool
     default "y"
+config DS_CHROOT_LATE
+    bool
+    default "y"
 config DS_ROOTFS_IDENTIFIABLE
     bool
     default "y"
@@ -48,6 +51,9 @@ config DS_CORE_PACKAGELIST_PREP
     bool
     default "y"
 config DS_DISTRO_PACKAGELIST_EXTRA
+    bool
+    default "y"
+config DS_INSTALL_LATE_PACKAGES_INSTALL
     bool
     default "y"
 
