@@ -10,7 +10,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # Set up common docker packages
-RUN apt-get update && apt-get install -y aptitude autogen automake bash bc bison build-essential bzip2 ca-certificates cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson multistrap ncurses-dev pkg-config qemu-user-static rsync runit u-boot-tools vim wget xz-utils
+RUN apt-get update && apt-get install -y aptitude autogen automake bash bc bison build-essential bzip2 ca-certificates cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson mmdebstrap ncurses-dev pkg-config qemu-user-static rsync runit u-boot-tools vim wget xz-utils
 
 # Set default ubuntu sources to i386/amd64:
 RUN sed -i '/Components: .*/a \Architectures: amd64 i386' /etc/apt/sources.list.d/ubuntu.sources

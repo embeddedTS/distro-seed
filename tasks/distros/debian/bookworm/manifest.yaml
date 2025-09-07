@@ -3,7 +3,7 @@ tasks:
 - cmd: ../../build.sh
   cmd_type: docker
   dependencies:
-    - DS_CORE_MULTISTRAP_CONF
+    - DS_CORE_PACKAGELIST
   provides: DS_DISTRO
   description: Fetching Debian 12 distribution
 - cmd: sourceslist.sh

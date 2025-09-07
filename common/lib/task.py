@@ -72,6 +72,7 @@ class Task:
             # remove the script
             command = [ 'docker', 'run', '--rm', '-it',
                         '--volume', f'{ds_host_root_path}:/work/',
+                        '--privileged',
                         '--workdir', '/work/', 
                         tag,
                         'cp', full_cmd, '/work/work/rootfs/run_in_chroot' ]
@@ -81,6 +82,7 @@ class Task:
                 'docker', 'run', '--rm', '-it',
                 '--volume', f'{ds_host_root_path}:/work/',
                 '--workdir', '/work/',
+                '--privileged',
                 '--mount', 'type=bind,src=/proc/,target=/work/work/rootfs/proc',
                 '--env-file', dockerenv,
                 tag, 'chroot', '/work/work/rootfs',
@@ -92,6 +94,7 @@ class Task:
             command = [ 'docker', 'run', '--rm', '-it',
                         '--volume', f'{ds_host_root_path}:/work/',
                         '--workdir', '/work/',
+                        '--privileged',
                         tag,
                         'rm', '/work/work/rootfs/run_in_chroot' ]
             subprocess.run(command, check=True)
@@ -100,6 +103,7 @@ class Task:
 
             command = [ 'docker', 'run', '--rm', '-it',
                         '--volume', f'{ds_host_root_path}:/work/',
+                        '--privileged',
                         '--workdir', '/work/', ]
 
             # For the very first run we might not have a docker env file
