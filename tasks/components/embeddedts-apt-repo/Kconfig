@@ -1,0 +1,4 @@
+config DS_COMPONENT_EMBEDDEDTS_APT_REPO
+	bool "embeddedTS APT repository"
+	help
+	  Enable access to embeddedTS's apt repistory and packages
