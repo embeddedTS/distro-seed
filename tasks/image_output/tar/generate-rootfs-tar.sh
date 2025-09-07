@@ -18,7 +18,7 @@ FILENAME="${PLATFORM}-${DS_DISTRO}-${DS_RELEASE_NUM}-${DS_RELEASE}-${PKGVARIANT}
 # Create base tarball
 (
 cd "${ROOTFS}"
-tar cf "${OUTPUT}/${FILENAME}" .
+tar --xattrs --acls --numeric-owner cf "${OUTPUT}/${FILENAME}" .
 )
 
 (
