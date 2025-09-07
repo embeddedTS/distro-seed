@@ -5,5 +5,5 @@ INSTALL="$DS_WORK/overlays/"
 
 for dir in $INSTALL/*/
 do
-    cp -a "$dir"/. "$ROOTFS"
+    rsync -aKHAX --numeric-ids "$dir" "$ROOTFS"/
 done

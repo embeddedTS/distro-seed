@@ -35,6 +35,7 @@ command = [
     '--volume', f'{host_root_path}:/work/',
     '--mount', 'type=bind,src=/proc/,target=/work/work/rootfs/proc',
     '--workdir', '/work/',
+    '--privileged',
     '--env-file', f'{dockerenv}',
     tag, 'chroot', '/work/work/rootfs', '/bin/bash'
 ]

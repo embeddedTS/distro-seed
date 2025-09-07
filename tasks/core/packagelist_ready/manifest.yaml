@@ -1,0 +1,7 @@
+config: DS_CORE_PACKAGELIST
+tasks:
+- cmd_type: dummy
+  description: Packagelist is Ready
+  auto_create_rdepends: true
+  dependencies:
+    - DS_CORE_PACKAGELIST_PREP

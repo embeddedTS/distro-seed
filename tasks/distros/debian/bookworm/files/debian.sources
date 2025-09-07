@@ -1,7 +1,5 @@
 Types: deb
-# http://snapshot.debian.org/archive/debian/20230703T000000Z
 URIs: http://deb.debian.org/debian
 Suites: bookworm bookworm-updates
 Components: main
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
-
