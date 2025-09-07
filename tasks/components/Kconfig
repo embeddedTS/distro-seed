@@ -4,6 +4,7 @@ menu "Components"
 menu "Hardware Specific Components"
 
 menu "embeddedTS"
+source "tasks/components/embeddedts-apt-repo/Kconfig"
 menu "Bootloader Binaries"
 source "tasks/components/ts7400v2-uboot/Kconfig"
 source "tasks/components/ts7670-uboot/Kconfig"
