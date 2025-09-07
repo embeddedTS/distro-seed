@@ -6,3 +6,6 @@ tasks:
 - cmd: install.sh
   cmd_type: target
   description: Installing and Enabling Murata nxp-linux-calibration firmware
+- cmd: packagelist.sh
+  cmd_type: packagelist
+  description: Installing iw
