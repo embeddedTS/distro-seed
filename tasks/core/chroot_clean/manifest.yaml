@@ -3,7 +3,7 @@ tasks:
 - cmd: chroot_clean.sh
   cmd_type: docker
   dependencies:
-    - DS_CHROOT_READY
+    - DS_CHROOT_LATE
   provides: DS_ROOTFS_CLEANUP
   auto_create_rdepends: true
   description: Cleaning chroot environment

@@ -79,4 +79,11 @@ config DS_DISTRO_PACKAGELIST_APPEND
 	string "extra packages"
 	help
 	  List space separated packages to be added to the image
+
+config DS_INSTALL_LATE_PACKAGES
+	string "extra third-party packages"
+	help
+	  Install third party Debian packages. These install late after the image
+	  is otherwise ready and configured.
+
 endmenu

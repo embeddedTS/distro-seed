@@ -1,0 +1,7 @@
+config: DS_INSTALL_LATE_PACKAGES_INSTALL
+tasks:
+- cmd: install.sh
+  cmd_type: target
+  dependencies:
+    - DS_CHROOT_LATE
+  description: Installing late Debian packages
