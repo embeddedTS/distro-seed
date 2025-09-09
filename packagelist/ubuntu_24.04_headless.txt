@@ -11,6 +11,8 @@ udev # needed to set up serial console
 nano
 vim
 ed
+# Needed for most terminal based editors:
+ncurses-term
 
 # Network configuration
 iproute2 # "ip" and other related tools
