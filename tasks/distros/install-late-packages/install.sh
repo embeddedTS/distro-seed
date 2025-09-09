@@ -1,3 +1,4 @@
 #!/bin/bash -e
 
-apt-get install -y "$CONFIG_DS_INSTALL_LATE_PACKAGES"
+# shellcheck disable=2086
+apt-get install -y $CONFIG_DS_INSTALL_LATE_PACKAGES
