@@ -9,6 +9,19 @@ Distro seed provides:
 * Debian packagelists (and further customization from the .config)
 * Object and download caching
 
+## Requirements
+* docker
+* qemu-system-arm
+* sha256sum
+* python3
+* python3-colorama
+* python3-path
+* python3-yaml
+* python3-matplotlib
+* python3-networkx
+
+⚠️ distro-seed currently must be run with --privileged to run mmdebstrap within a container.  This also prevents compatibility with podman.
+
 ## Installing:
 This will run from any Linux distribution that supports Docker, python3, and has a filesystem with unix permissions.
 

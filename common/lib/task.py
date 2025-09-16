@@ -81,7 +81,9 @@ class Task:
                 'docker', 'run', '--rm', '-it',
                 '--volume', f'{ds_host_root_path}:/work/',
                 '--workdir', '/work/',
-                '--privileged',
+                '--cap-add=ALL',
+                '--security-opt', 'seccomp=unconfined',
+                        '--device-cgroup-rule', 'c 5:* rmw',
                 '--mount', 'type=bind,src=/proc/,target=/work/work/rootfs/proc',
                 '--env-file', dockerenv,
                 tag, 'chroot', '/work/work/rootfs',
@@ -101,7 +103,9 @@ class Task:
 
             command = [ 'docker', 'run', '--rm', '-it',
                         '--volume', f'{ds_host_root_path}:/work/',
-                        '--privileged',
+                        '--cap-add=ALL',
+                        '--security-opt', 'seccomp=unconfined',
+                        '--device-cgroup-rule', 'c 5:* rmw',
                         '--workdir', '/work/', ]
 
             # For the very first run we might not have a docker env file
