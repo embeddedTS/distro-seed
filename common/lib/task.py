@@ -81,9 +81,7 @@ class Task:
                 'docker', 'run', '--rm', '-it',
                 '--volume', f'{ds_host_root_path}:/work/',
                 '--workdir', '/work/',
-                '--cap-add=ALL',
-                '--security-opt', 'seccomp=unconfined',
-                        '--device-cgroup-rule', 'c 5:* rmw',
+                '--privileged',
                 '--mount', 'type=bind,src=/proc/,target=/work/work/rootfs/proc',
                 '--env-file', dockerenv,
                 tag, 'chroot', '/work/work/rootfs',
@@ -103,8 +101,7 @@ class Task:
 
             command = [ 'docker', 'run', '--rm', '-it',
                         '--volume', f'{ds_host_root_path}:/work/',
-                        '--cap-add=ALL',
-                        '--security-opt', 'seccomp=unconfined',
+                        '--privileged',
                         '--device-cgroup-rule', 'c 5:* rmw',
                         '--workdir', '/work/', ]
 
