@@ -14,7 +14,7 @@ install -m 644 "${SOURCE}/murata/switch_regions.sh" "$DS_OVERLAY/lib/firmware/nx
 install -m 644 "${SOURCE}/murata/files/bt_power_config_1.sh" "$DS_OVERLAY/lib/firmware/nxp/murata/files/"
 install -m 644 "${SOURCE}/murata/files/wifi_mod_para_murata.conf" "$DS_OVERLAY/lib/firmware/nxp/murata/files/"
 
-if [ "${DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL}" == "y" ]; then
+if [ "${CONFIG_DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_2DL}" == "y" ]; then
     install -d "$DS_OVERLAY/lib/firmware/nxp/murata/files/2DL"
     install -m 644 "${SOURCE}/murata/files/2DL/"* "$DS_OVERLAY/lib/firmware/nxp/murata/files/2DL/"
 fi
