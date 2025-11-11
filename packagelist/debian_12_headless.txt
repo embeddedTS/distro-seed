@@ -96,10 +96,3 @@ python3-can
 python3-libgpiod
 python3-libiio
 python3-pip
-
-# Development tools - Python
-python3-bluez
-python3-can
-python3-libgpiod
-python3-libiio
-python3-pip
