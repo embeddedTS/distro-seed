@@ -1,0 +1,11 @@
+config: DS_DISTRO_DEBIAN_13
+tasks:
+- cmd: ../../build.sh
+  cmd_type: docker
+  dependencies:
+    - DS_CORE_PACKAGELIST
+  provides: DS_DISTRO
+  description: Fetching Debian 13 distribution
+- cmd: sourceslist.sh
+  cmd_type: host
+  description: Adding sources.list

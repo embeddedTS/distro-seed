@@ -32,6 +32,11 @@ config DS_DISTRO_DEBIAN_12
 	help
 	  Use Debian 12 Bookworm as the base distribution
 
+config DS_DISTRO_DEBIAN_13
+	bool "Debian 13 Trixie"
+	help
+	  Use Debian 13 Trixie as the base distribution
+
 config DS_DISTRO_UBUNTU_22_04
 	bool "Ubuntu 22.04 Jammy Jellyfish"
 	help
@@ -72,6 +77,7 @@ config DS_PACKAGELIST
 
 	default "debian-11-minimal.txt" if DS_DISTRO_DEBIAN_11 
 	default "debian-12-minimal.txt" if DS_DISTRO_DEBIAN_12
+	default "debian-13-minimal.txt" if DS_DISTRO_DEBIAN_13
 	default "ubuntu_22_04-minimal.txt" if DS_DISTRO_UBUNTU_22_04
 	default "ubuntu_24_04-minimal.txt" if DS_DISTRO_UBUNTU_24_04
 
