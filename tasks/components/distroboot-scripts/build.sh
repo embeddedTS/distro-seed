@@ -20,7 +20,8 @@ cat > "${TMP_BOOT_SOURCE}" <<EOF
 # mkimage -A arm -T script -C none -n 'boot' -d boot.source boot.scr
 
 setenv bootargs "console=\${console} rootwait init=/sbin/init loglevel=4"
-setenv extension_overlay_cmd 'load \${devtype} \${devnum}:\${distro_bootpart} \${fdt_addr_r} \${prefix}\${extension_overlay_name}'
+setenv extension_overlay_cmd 'load \${devtype} \${devnum}:\${distro_bootpart} \${extension_overlay_addr} \${prefix}\${extension_overlay_name}'
+setenv extension_overlay_addr \${fdtoverlay_addr_r}
 
 part uuid \${devtype} \${devnum}:\${distro_bootpart} bootuuid
 if test -n "\${bootuuid}"; then
@@ -30,7 +31,7 @@ fi
 load \${devtype} \${devnum}:\${distro_bootpart} \${kernel_addr_r} \${prefix}${KERNEL_FILE}
 load \${devtype} \${devnum}:\${distro_bootpart} \${fdt_addr_r} \${prefix}\${fdtfile}
 extension scan
-extension apply
+extension apply all
 echo "Booting \$DISTRO \$RELEASE from \${devtype} \${devnum}:\${distro_bootpart}..."
 ${BOOT_CMD} \${kernel_addr_r} - \${fdt_addr_r}
 EOF
