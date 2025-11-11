@@ -27,6 +27,10 @@ def kconfig_export_vars(kconf):
         DS_DISTRO='debian'
         DS_RELEASE='bookworm'
         DS_RELEASE_NUM='12'
+    elif kconf.eval_string('DS_DISTRO_DEBIAN_13') != 0:
+        DS_DISTRO='debian'
+        DS_RELEASE='trixie'
+        DS_RELEASE_NUM='13'
     elif kconf.eval_string('DS_DISTRO_UBUNTU_22_04') != 0:
         DS_DISTRO='ubuntu'
         DS_RELEASE='jammy'
