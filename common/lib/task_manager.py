@@ -4,7 +4,6 @@ from pprint import pprint
 
 import yaml
 import networkx as nx
-import matplotlib.pyplot as plt
 
 from lib.task_manifest import TaskManifest
 from lib.task import Task
@@ -193,42 +192,45 @@ def detect_cycles(graph):
                 print(f"    {current_task.config}")
         raise ValueError ('Invalid dependencies')
 
-def print_deps(tasks):
+def _escape_mermaid(s: str) -> str:
+    # Minimal escaping for Mermaid strings
+    return s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
+
+def _task_label(task) -> str:
+    label = f"{task.id}:{task.config}"
+    if len(task.provides) > 0:
+        label += f"/{task.provides}"
+    if len(task.cmd) > 0:
+        label += f" ({task.cmd})"
+    if task.auto_create_rdepends is True:
+        label += " (rdeps)"
+    return label
+
+def write_tasks_mmd(tasks):
     """
-    Creates a matplotlib drawing of the tasks list
+    Builds a Mermaid flowchart (flowchart TB) describing the task graph.
+    Auto-added edges are dotted.
     """
     graph = create_task_graph(tasks)
     detect_cycles(graph)
-    normal_edges = [(u, v) for (u, v, d) in graph.edges(data=True)
-                    if d['label'] == '']
-    flush_dep_edges = [(u, v) for (u, v, d) in graph.edges(data=True)
-                        if d['label'] == 'auto_added_dep']
 
-    pos = nx.nx_pydot.pydot_layout(graph)
-    nx.draw_networkx_nodes(graph, pos, node_size=400)
-    nx.draw_networkx_edges(graph, pos, edgelist=normal_edges, width=2)
-    nx.draw_networkx_edges(graph, pos, edgelist=flush_dep_edges, width=2,
-                            alpha=0.5, edge_color="green", style="dashed")
+    lines = []
+    lines.append("flowchart TB")
 
-    node_labels = {}
     for task in tasks:
+        node_id = f"T{task.id}"
+        label = _escape_mermaid(_task_label(task))
+        lines.append(f'    {node_id}["{label}"]')
 
-        node_labels[task.id] = f'{task.id}:{task.config}'
+    # Edges: solid for normal deps, dotted for auto-added
+    for u, v, d in graph.edges(data=True):
+        edge = "-->" if d.get("label", "") == "" else "-.->"
+        lines.append(f"    T{u} {edge} T{v}")
 
-        if len(task.provides) > 0:
-            node_labels[task.id] += f'/{task.provides}'
-        if len(task.cmd) > 0:
-            node_labels[task.id] += f' ({task.cmd})'
-        if task.auto_create_rdepends is True:
-            node_labels[task.id] += '(rdeps)'
-    nx.draw_networkx_labels(graph, pos, font_size=10, font_family="sans-serif",
-                            labels=node_labels)
-    plot_axis = plt.gca()
-    plot_axis.margins(0.00)
-    plt.axis("off")
-    plt.tight_layout()
+    mermaid = "\n".join(lines)
 
-    plt.show()
+    with open("work/tasks.mmd", "w", encoding="utf-8") as f:
+        f.write(mermaid)
 
 def sort(tasks):
     """

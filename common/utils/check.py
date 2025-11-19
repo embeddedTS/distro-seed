@@ -158,13 +158,6 @@ else:
     print("Try \"pip install -r requirements.txt\"")
     ret = 1
 
-if is_module_available('matplotlib'):
-    print("Pass: python 'matplotlib' module is available")
-else:
-    print("Fail: python 'matplotlib' module is not available")
-    print("Try \"pip install -r requirements.txt\"")
-    ret = 1
-
 if is_module_available('networkx'):
     print("Pass: python 'networkx' module is available")
 else:
