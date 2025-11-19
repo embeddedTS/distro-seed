@@ -10,7 +10,43 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # Set up common docker packages
-RUN apt-get update && apt-get install -y aptitude autogen automake bash bc bison build-essential bzip2 ca-certificates cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson mmdebstrap ncurses-dev pkg-config qemu-user-static rsync runit u-boot-tools vim wget xz-utils
+RUN apt-get update && apt-get install -y \
+    aptitude \
+    autogen \
+    automake \
+    bash \
+    bc \
+    bison \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    cmake \
+    curl \
+    fakeroot \
+    file \
+    flex \
+    git \
+    gzip \
+    kmod \
+    libconfuse-dev \
+    libncursesw5-dev \
+    libssl-dev \
+    libtool \
+    lz4 \
+    lzop \
+    make \
+    meson \
+    mmdebstrap \
+    ncurses-dev \
+    pkg-config \
+    qemu-user-static \
+    rsync \
+    runit \
+    strace \
+    u-boot-tools \
+    vim \
+    wget \
+    xz-utils
 
 # Set default ubuntu sources to i386/amd64:
 RUN sed -i '/Components: .*/a \Architectures: amd64 i386' /etc/apt/sources.list.d/ubuntu.sources
@@ -21,8 +57,14 @@ Components: main universe restricted multiverse\n\
 Architectures: armhf\n\
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg" > /etc/apt/sources.list.d/ports.sources
 RUN dpkg --add-architecture armhf
-RUN apt-get update
-RUN apt-get install -y libgpiod-dev:armhf libc6-dev-armhf-cross libstdc++-12-dev-armhf-cross gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libinput-dev:armhf libiio-dev:armhf
+RUN apt-get update && apt-get install -y \
+    g++-arm-linux-gnueabihf \
+    gcc-arm-linux-gnueabihf \
+    libc6-dev-armhf-cross \
+    libgpiod-dev:armhf \
+    libiio-dev:armhf \
+    libinput-dev:armhf \
+    libstdc++-12-dev-armhf-cross
 
 # For linux cross compile
 ENV CROSS_COMPILE=arm-linux-gnueabihf-

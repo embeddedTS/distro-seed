@@ -10,7 +10,43 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # Set up common docker packages
-RUN apt-get update && apt-get install -y aptitude autogen automake bash bc bison build-essential bzip2 ca-certificates cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson mmdebstrap ncurses-dev pkg-config qemu-user-static rsync runit u-boot-tools vim wget xz-utils
+RUN apt-get update && apt-get install -y \
+    aptitude \
+    autogen \
+    automake \
+    bash \
+    bc \
+    bison \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    cmake \
+    curl \
+    fakeroot \
+    file \
+    flex \
+    git \
+    gzip \
+    kmod \
+    libconfuse-dev \
+    libncursesw5-dev \
+    libssl-dev \
+    libtool \
+    lz4 \
+    lzop \
+    make \
+    meson \
+    mmdebstrap \
+    ncurses-dev \
+    pkg-config \
+    qemu-user-static \
+    rsync \
+    runit \
+    strace \
+    u-boot-tools \
+    vim \
+    wget \
+    xz-utils
 
 # Set default ubuntu sources to i386/amd64:
 RUN sed -i '/Components: .*/a \Architectures: amd64 i386' /etc/apt/sources.list.d/ubuntu.sources
@@ -23,8 +59,10 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg" > /etc/apt/sources.li
 
 # Install arch specific packages:
 RUN dpkg --add-architecture arm64
-RUN apt-get update
-RUN apt-get install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross libgpiod-dev:arm64
+RUN apt-get update && apt-get install -y \
+    gcc-aarch64-linux-gnu \
+    libc6-dev-arm64-cross \
+    libgpiod-dev:arm64
 
 # For linux cross compile
 ENV CROSS_COMPILE=aarch64-linux-gnu-

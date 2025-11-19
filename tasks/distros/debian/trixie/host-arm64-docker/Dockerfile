@@ -10,11 +10,49 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # Set up common docker packages
-RUN apt-get update && apt-get install -y strace autogen automake bash bc bison build-essential bzip2 ca-certificates curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson mmdebstrap ncurses-dev pkg-config qemu-user-static rsync runit u-boot-tools vim wget xz-utils
+RUN apt-get update && apt-get install -y \
+    autogen \
+    automake \
+    bash \
+    bc \
+    bison \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    cmake \
+    curl \
+    fakeroot \
+    file \
+    flex \
+    git \
+    gzip \
+    kmod \
+    libconfuse-dev \
+    libncursesw5-dev \
+    libssl-dev \
+    libtool \
+    lz4 \
+    lzop \
+    make \
+    meson \
+    mmdebstrap \
+    ncurses-dev \
+    pkg-config \
+    qemu-user-static \
+    rsync \
+    runit \
+    strace \
+    u-boot-tools \
+    vim \
+    wget \
+    xz-utils
 
 # Install arch specific packages:
 RUN dpkg --add-architecture arm64
-RUN apt-get update && apt-get install -y gcc-aarch64-linux-gnu libc6-dev:arm64 libgpiod-dev:arm64
+RUN apt-get update && apt-get install -y \
+    gcc-aarch64-linux-gnu \
+    libc6-dev:arm64 \
+    libgpiod-dev:arm64
 
 # Cross compile variables:
 ENV CROSS_COMPILE=aarch64-linux-gnu-
