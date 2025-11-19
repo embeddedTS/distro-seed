@@ -45,7 +45,9 @@ RUN apt-get update && apt-get install -y \
     u-boot-tools \
     vim \
     wget \
-    xz-utils
+    xz-utils \
+    zstd \
+    zstd
 
 # Install arch specific packages:
 RUN dpkg --add-architecture arm64

@@ -46,7 +46,8 @@ RUN apt-get update && apt-get install -y \
     u-boot-tools \
     vim \
     wget \
-    xz-utils
+    xz-utils \
+    zstd
 
 # Set default ubuntu sources to i386/amd64:
 RUN sed -i '/Components: .*/a \Architectures: amd64 i386' /etc/apt/sources.list.d/ubuntu.sources
