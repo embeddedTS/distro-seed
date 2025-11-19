@@ -10,11 +10,53 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # Set up common docker packages
-RUN apt-get update && apt-get install -y autogen automake bash bc bison build-essential bzip2 ca-certificates cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lzop lz4 make meson mmdebstrap ncurses-dev pkg-config python qemu-user-static rsync runit u-boot-tools vim wget xz-utils
+RUN apt-get update && apt-get install -y \
+    autogen \
+    automake \
+    bash \
+    bc \
+    bison \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    cmake \
+    curl \
+    fakeroot \
+    file \
+    flex \
+    git \
+    gzip \
+    kmod \
+    libconfuse-dev \
+    libncursesw5-dev \
+    libssl-dev \
+    libtool \
+    lz4 \
+    lzop \
+    make \
+    meson \
+    mmdebstrap \
+    ncurses-dev \
+    pkg-config \
+    python \
+    qemu-user-static \
+    rsync \
+    runit \
+    u-boot-tools \
+    vim \
+    wget \
+    xz-utils
 
 # Install arch specific packages:
 RUN dpkg --add-architecture armhf
-RUN apt-get update && apt-get install -y g++-arm-linux-gnueabihf gcc-arm-linux-gnueabihf libc6-dev:armhf libcairo2-dev:armhf libgpiod-dev:armhf libinput-dev:armhf libiio-dev:armhf
+RUN apt-get update && apt-get install -y \
+    g++-arm-linux-gnueabihf \
+    gcc-arm-linux-gnueabihf \
+    libc6-dev:armhf \
+    libcairo2-dev:armhf \
+    libgpiod-dev:armhf \
+    libiio-dev:armhf \
+    libinput-dev:armhf
 
 # Cross compile variables:
 ENV CROSS_COMPILE=arm-linux-gnueabihf-
