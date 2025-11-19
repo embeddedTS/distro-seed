@@ -56,7 +56,8 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev:armhf \
     libgpiod-dev:armhf \
     libiio-dev:armhf \
-    libinput-dev:armhf
+    libinput-dev:armhf \
+    zstd
 
 # Cross compile variables:
 ENV CROSS_COMPILE=arm-linux-gnueabihf-
