@@ -73,8 +73,10 @@ for task in tasks:
     else:
         raise ValueError(f"Invalid task type '{task.config.cmd_type}' in '{task.config}'")
 
+task_manager.write_tasks_mmd(tasks)
+
 if args.plot_deps:
-    task_manager.print_deps(tasks)
+    print("work/tasks.mmd generated")
     sys.exit(0)
 
 # Sort tasks based on their dependencies
