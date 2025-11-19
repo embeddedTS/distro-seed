@@ -10,3 +10,6 @@ rm "${DS_WORK}/rootfs/${QEMU_STATIC_PATH}"
 rm -rf ${DS_WORK}/rootfs/dev/*
 rm -rf ${DS_WORK}/rootfs/tmp/*
 rm -rf ${DS_WORK}/rootfs/run/*
+
+# Remove leftover apt lists
+rm -rf ${DS_WORK}/rootfs/var/lib/apt/lists/*
