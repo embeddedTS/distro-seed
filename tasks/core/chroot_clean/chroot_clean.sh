@@ -13,3 +13,4 @@ rm -rf ${DS_WORK}/rootfs/run/*
 
 # Remove leftover apt lists
 rm -rf ${DS_WORK}/rootfs/var/lib/apt/lists/*
+rm -rf ${DS_WORK}/rootfs/var/cache/apt/*.bin
