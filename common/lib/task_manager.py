@@ -229,6 +229,7 @@ def write_tasks_mmd(tasks):
 
     mermaid = "\n".join(lines)
 
+    os.makedirs("work", exist_ok=True)
     with open("work/tasks.mmd", "w", encoding="utf-8") as f:
         f.write(mermaid)
 
