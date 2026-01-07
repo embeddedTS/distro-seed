@@ -10,6 +10,9 @@ export LC_ALL=C LANGUAGE=C LANG=C
     true
 )
 
+chmod 755 /
+chmod 1777 /tmp
+
 if [ "$DS_DISTRO" == "ubuntu" ] && [ "$DS_RELEASE" == "lunar" ]; then
     # Workaround for:
     # Setting up sgml-base (1.31) ...
@@ -44,7 +47,6 @@ fi
 
 apt-get install -f
 apt-get clean
-chmod 755 /
 
 # Set up a temporary resolv.conf.
 if [ -L "/etc/resolv.conf" ]; then
