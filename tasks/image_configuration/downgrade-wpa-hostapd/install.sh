@@ -8,8 +8,8 @@ if [ "${DS_DISTRO}" == "debian" ]; then
 	HOSTAPD_DEB="hostapd_2.9.0-21+deb11u2_${DS_TARGET_ARCH}.deb"
 elif [ "${DS_DISTRO}" == "ubuntu" ] ; then
 	LIBSSL_DEB="libssl1.1_1.1.1f-1ubuntu2_${DS_TARGET_ARCH}.deb"
-	WPA_DEB="wpasupplicant_2.9-1ubuntu4.4_${DS_TARGET_ARCH}.deb"
-	HOSTAPD_DEB="hostapd_2.9-1ubuntu4.4_${DS_TARGET_ARCH}.deb"
+	WPA_DEB="wpasupplicant_2.9-1ubuntu4.6_${DS_TARGET_ARCH}.deb"
+	HOSTAPD_DEB="hostapd_2.9-1ubuntu4.6_${DS_TARGET_ARCH}.deb"
 else
 	exit 1
 fi
