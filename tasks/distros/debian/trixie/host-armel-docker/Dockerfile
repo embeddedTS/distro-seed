@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     cmake \
     curl \
+    e2fsprogs \
     fakeroot \
     file \
     flex \
