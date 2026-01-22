@@ -45,6 +45,7 @@ parted
 psmisc
 sensible-utils
 watchdog
+util-linux-extra
 
 # Network utilities
 bridge-utils
