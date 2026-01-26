@@ -33,6 +33,16 @@ load \${devtype} \${devnum}:\${distro_bootpart} \${fdt_addr_r} \${prefix}\${fdtf
 fdt addr \${fdt_addr_r}
 extension scan
 extension apply all
+# Add in any extra user-specified overlays.  Add custom overlays with:
+# fw_setenv extra_fdt_overlays "overlayfile1.dtbo overlayfile2.dtbo"
+if test -n "\${extra_fdt_overlays}"; then
+  fdt resize 4096
+  for extension_overlay_name in "\${extra_fdt_overlays}"; do
+    echo "Applying extra fdt overlay \${extension_overlay_name}"
+    run extension_overlay_cmd
+    fdt apply \${extension_overlay_addr}
+  done
+fi
 echo "Booting \$DISTRO \$RELEASE from \${devtype} \${devnum}:\${distro_bootpart}..."
 ${BOOT_CMD} \${kernel_addr_r} - \${fdt_addr_r}
 EOF
