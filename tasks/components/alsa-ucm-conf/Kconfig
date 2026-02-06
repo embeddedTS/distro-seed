@@ -1,0 +1,5 @@
+config DS_COMPONENT_ALSA_UCM_CONF
+	bool "alsa-ucm-conf for audio configuration"
+	help
+	  Alsa Use Case Manager configuration files for embeddedTS devices.
+

@@ -31,6 +31,7 @@ source "tasks/components/tssilomon-service/Kconfig"
 source "tasks/components/ts-uboot-env-configs/Kconfig"
 source "tasks/components/udev-rules/Kconfig"
 source "tasks/components/zpu-armhf-compiler/Kconfig"
+source "tasks/components/alsa-ucm-conf/Kconfig"
 endmenu
 
 menu "NXP"
