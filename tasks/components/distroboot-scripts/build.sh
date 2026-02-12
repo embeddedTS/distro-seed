@@ -44,7 +44,6 @@ if test -n "\${extra_fdt_overlays}"; then
     fdt apply \${extension_overlay_addr}
   done
 fi
-echo "Booting \$DISTRO \$RELEASE from \${devtype} \${devnum}:\${distro_bootpart}..."
 ${BOOT_CMD} \${kernel_addr_r} - \${fdt_addr_r}
 EOF
 else
@@ -60,7 +59,6 @@ fi
 
 load \${devtype} \${devnum}:\${distro_bootpart} \${kernel_addr_r} \${prefix}${KERNEL_FILE}
 load \${devtype} \${devnum}:\${distro_bootpart} \${fdt_addr_r} \${prefix}\${fdtfile}
-echo "Booting \$DISTRO \$RELEASE from \${devtype} \${devnum}:\${distro_bootpart}..."
 ${BOOT_CMD} \${kernel_addr_r} - \${fdt_addr_r}
 EOF
 fi
