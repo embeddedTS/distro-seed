@@ -37,7 +37,8 @@ extension apply all
 # fw_setenv extra_fdt_overlays "overlayfile1.dtbo overlayfile2.dtbo"
 if test -n "\${extra_fdt_overlays}"; then
   fdt resize 4096
-  for extension_overlay_name in "\${extra_fdt_overlays}"; do
+  for overlay in "\${extra_fdt_overlays}"; do
+    setenv extension_overlay_name \${overlay}
     echo "Applying extra fdt overlay \${extension_overlay_name}"
     run extension_overlay_cmd
     fdt apply \${extension_overlay_addr}
