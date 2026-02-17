@@ -30,16 +30,23 @@ if ! test -L /etc/fw_env.config ; then
     exit 0
 fi
 
-env_config_dir=/usr/share/uboot-env-configs/
+env_config_dir=/usr/share/uboot-env-configs
 
-COMPATIBLE="$(cat /proc/device-tree/compatible | tr '\0' "\n" | head -1 | awk -F, '{print $2}')"
+COMPATIBLE="$(cat /proc/device-tree/compatible | tr '\0' ' ')"
 
 found=false
 config_path=
 default=
-for try_path in $(find ${env_config_dir} | grep '/'${COMPATIBLE}'.*\.config$') ; do
-    [ -z "${default}" ] && default="$(realpath ${try_path})"
-    fw_printenv --config ${try_path} >/dev/null 2>&1 && found=true && config_path="$(realpath ${try_path})" && break
+# Loop through the device tree $compatible node to find a corresponding fw_env.config
+# Should be ordered most specific (ts4300-ts8551) to least specific (imx93)
+for machine in ${COMPATIBLE}; do
+    # Remove the 'technologic,' part
+    machine=$(echo $machine | cut -d, -f2)
+    for try_path in ${env_config_dir}/${machine}*.config; do
+        [ -z "${default}" ] && default=$(realpath "${try_path}")
+        fw_printenv --config "${try_path}" >/dev/null 2>&1 && found=true && config_path=$(realpath "${try_path}") && break
+    done
+    ${found} && break
 done
 
 if ! ${found} ; then
