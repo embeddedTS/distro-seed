@@ -6,7 +6,8 @@ GITVERSION="v2.0.0"
 
 # Older distributions use libgpiod 1.x, we need to use an older release tag
 # of utils for that.
-if [ "${DS_DISTRO}" == "debian" ] && [ "${DS_RELEASE_NUM}" == "12" ]; then
+if [[ ( "${DS_DISTRO}" == "debian" && "${DS_RELEASE_NUM}" == "12" ) || \
+      ( "${DS_DISTRO}" == "ubuntu" && "${DS_RELEASE_NUM}" == "24.04" ) ]]; then
 	GITVERSION="v1.0.3"
 fi
 
