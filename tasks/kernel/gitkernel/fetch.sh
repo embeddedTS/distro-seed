@@ -2,6 +2,7 @@
 
 SOURCE="$DS_WORK/kernel/linux/"
 KERNEL_CACHE_KEY="$DS_WORK/kernel/linux-cache-key"
+SOURCE_TAR="$DS_WORK/kernel/linux-source.tar"
 
 # Create caching key
 install -d "$DS_WORK/kernel"
@@ -31,3 +32,6 @@ else
         install -d "$SOURCE"
         common/host/fetch_git.sh "$CONFIG_DS_KERNEL_PROVIDER_GIT_URL" "$CONFIG_DS_KERNEL_PROVIDER_GIT_VERSION" "$SOURCE"
 fi
+
+rm -f "$SOURCE_TAR"
+tar -C "$SOURCE" -cf "$SOURCE_TAR" .

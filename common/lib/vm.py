@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import base64
-import hashlib
 import os
 import selectors
 import shutil
@@ -132,6 +131,23 @@ def _runtime_image():
     return runtime
 
 
+def _vm_work_image():
+    image = os.path.join(vm_dir(), "vm-work.qcow2")
+    if not os.path.exists(image):
+        subprocess.run(
+            [
+                "qemu-img",
+                "create",
+                "-f",
+                "qcow2",
+                image,
+                "64G",
+            ],
+            check=True,
+        )
+    return image
+
+
 def is_running():
     qemu_pid = _read_pid(os.path.join(vm_dir(), "qemu.pid"))
     if qemu_pid is None or not _pid_alive(qemu_pid):
@@ -147,61 +163,6 @@ def ensure_vm_image():
     if is_running():
         return
     subprocess.run("tasks/core/build_vm/build_vm.sh", check=True)
-
-
-def _runtime_signature():
-    h = hashlib.sha256()
-    for path in ("common/vm/ds-serial-agent",):
-        with open(os.path.join(_env_path("DS_HOST_ROOT_PATH"), path), "rb") as f:
-            h.update(f.read())
-    h.update(b"apt-cacher-ng-after-vm-mounts-v2")
-    return h.hexdigest()
-
-
-def ensure_runtime_config(restart_agent=False):
-    sig = _runtime_signature()
-    restart = "1" if restart_agent else "0"
-    script = f"""
-set -e
-
-set_acng_option() {{
-    key="$1"
-    value="$2"
-    file=/etc/apt-cacher-ng/acng.conf
-
-    if grep -q "^${{key}}:" "$file"; then
-        sed -i "s#^${{key}}:.*#${{key}}: ${{value}}#" "$file"
-    else
-        printf '%s: %s\\n' "$key" "$value" >> "$file"
-    fi
-}}
-
-install -d /usr/local/sbin /var/lib/distro-seed
-install -m 755 /src/common/vm/ds-serial-agent /usr/local/sbin/ds-serial-agent
-set_acng_option CacheDir /dl/debs
-set_acng_option LogDir /work/qemu-host/apt-cacher-ng
-set_acng_option Port 3142
-set_acng_option BindAddress 127.0.0.1
-set_acng_option DlMaxRetries 10
-install -d /dl/debs /work/qemu-host/apt-cacher-ng
-if getent passwd apt-cacher-ng >/dev/null 2>&1; then
-    chown -R apt-cacher-ng:apt-cacher-ng /dl/debs /work/qemu-host/apt-cacher-ng 2>/dev/null || true
-fi
-chmod 755 /dl /dl/debs /work/qemu-host /work/qemu-host/apt-cacher-ng 2>/dev/null || true
-systemctl disable --now apt-cacher-ng.service >/dev/null 2>&1 || true
-systemctl mask apt-cacher-ng.service >/dev/null 2>&1 || true
-printf '%s\\n' "{sig}" > /var/lib/distro-seed/runtime-signature
-if [ "{restart}" = 1 ]; then
-    (sleep 1; systemctl restart ds-serial-agent.service) >/dev/null 2>&1 &
-fi
-"""
-    status, output = _run_agent_script("vm-runtime", script, timeout=60)
-    if status != 0:
-        print(output.decode("utf-8", errors="replace"), end="")
-        raise subprocess.CalledProcessError(status, "vm-runtime")
-    if restart_agent:
-        time.sleep(2)
-        wait_ready(timeout=30)
 
 
 def _host_ram_gb():
@@ -269,7 +230,13 @@ def start_vm():
         "-pidfile",
         qemu_pid_file,
         "-drive",
-        f"if=virtio,file={_runtime_image()},format=qcow2",
+        f"if=none,id=rootdisk,file={_runtime_image()},format=qcow2",
+        "-device",
+        "virtio-blk-pci,drive=rootdisk,serial=ds-root,bootindex=1",
+        "-drive",
+        f"if=none,id=vmwork,file={_vm_work_image()},format=qcow2",
+        "-device",
+        "virtio-blk-pci,drive=vmwork,serial=ds-vm-work,bootindex=2",
         "-netdev",
         "user,id=net0",
         "-device",
@@ -303,7 +270,6 @@ def start_vm():
     ]
     subprocess.run(cmd, check=True)
     wait_ready()
-    ensure_runtime_config(restart_agent=True)
 
 
 def stop_vm():
@@ -416,7 +382,6 @@ def vm_env(extra=None):
 
 def run_script(name, script, env=None, timeout=None):
     start_vm()
-    ensure_runtime_config()
     return _run_script(name, script, env=env, timeout=timeout)
 
 
@@ -464,7 +429,6 @@ def _send_payload(sock, token, encoded, ready_timeout=30):
 
 def _interactive_script(name, script, env=None):
     start_vm()
-    ensure_runtime_config()
     token = f"{name}-{uuid.uuid4().hex[:12]}"
     payload = (_env_exports(vm_env(env)) + "\n" + script).encode("utf-8")
     encoded = base64.b64encode(payload).decode("ascii")

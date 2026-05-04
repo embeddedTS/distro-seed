@@ -111,10 +111,126 @@ set_acng_option Port 3142
 set_acng_option BindAddress 127.0.0.1
 set_acng_option DlMaxRetries 10
 
+cat > /usr/local/sbin/ds-vm-runtime-setup <<'RUNTIMESETUP'
+#!/bin/bash
+set -eu
+
+export PATH=/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+
+mount_fstab() {
+	target="$1"
+
+	mkdir -p "$target"
+	if mountpoint -q "$target"; then
+		return 0
+	fi
+
+	for _ in $(seq 1 60); do
+		mount "$target" 2>/dev/null && return 0
+		sleep 1
+	done
+
+	echo "Failed to mount $target" >&2
+	return 1
+}
+
+setup_network() {
+	iface=""
+	for _ in $(seq 1 60); do
+		iface="$(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf '%f\n' 2>/dev/null | head -n1)"
+		[ -n "$iface" ] && break
+		sleep 1
+	done
+
+	[ -n "$iface" ] || return 0
+	ip link set "$iface" up 2>/dev/null || true
+	if ! ip address show dev "$iface" | grep -q 'inet '; then
+		dhclient "$iface" 2>/dev/null || true
+	fi
+	printf 'nameserver 10.0.2.3\n' > /etc/resolv.conf
+}
+
+setup_vm_work() {
+	for _ in $(seq 1 50); do
+		if [ -b /dev/disk/by-id/virtio-ds-vm-work ]; then
+			break
+		fi
+		sleep 0.1
+	done
+	if [ ! -b /dev/disk/by-id/virtio-ds-vm-work ]; then
+		echo "VM work disk did not appear" >&2
+		return 1
+	fi
+	if ! blkid /dev/disk/by-id/virtio-ds-vm-work >/dev/null 2>&1; then
+		mkfs.ext4 -F -L ds-vm-work /dev/disk/by-id/virtio-ds-vm-work
+	fi
+	if [ "$(e2label /dev/disk/by-id/virtio-ds-vm-work)" != "ds-vm-work" ]; then
+		e2label /dev/disk/by-id/virtio-ds-vm-work ds-vm-work
+	fi
+	mountpoint -q /vm-work || mount /vm-work
+}
+
+setup_apt_cacher() {
+	install -d /dl/debs /work/qemu-host/apt-cacher-ng
+	if getent passwd apt-cacher-ng >/dev/null 2>&1; then
+		chown -R apt-cacher-ng:apt-cacher-ng /dl/debs /work/qemu-host/apt-cacher-ng 2>/dev/null || true
+	fi
+	chmod 755 /dl /dl/debs /work/qemu-host /work/qemu-host/apt-cacher-ng 2>/dev/null || true
+}
+
+ensure_swap() {
+	swap_file=/swapfile
+
+	if grep -q "^${swap_file} " /proc/swaps 2>/dev/null; then
+		return 0
+	fi
+
+	if [ ! -e "$swap_file" ]; then
+		fallocate -l 4G "$swap_file" 2>/dev/null || dd if=/dev/zero of="$swap_file" bs=1M count=4096
+		chmod 600 "$swap_file"
+		mkswap "$swap_file" >/dev/null
+	fi
+
+	swapon "$swap_file" 2>/dev/null || true
+}
+
+mount_fstab /cache
+mount_fstab /dl
+mount_fstab /work
+mount_fstab /src
+setup_network
+setup_vm_work
+setup_apt_cacher
+ensure_swap
+RUNTIMESETUP
+chmod 755 /usr/local/sbin/ds-vm-runtime-setup
+
+cat > /etc/systemd/system/ds-vm-runtime-setup.service <<'RUNTIMESETUPSERVICE'
+[Unit]
+Description=distro-seed VM runtime setup
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ds-vm-runtime-setup
+
+[Install]
+WantedBy=multi-user.target
+RUNTIMESETUPSERVICE
+
+install -d /etc/systemd/system/apt-cacher-ng.service.d
+cat > /etc/systemd/system/apt-cacher-ng.service.d/distro-seed.conf <<'ACNGSERVICE'
+[Unit]
+Requires=ds-vm-runtime-setup.service
+After=ds-vm-runtime-setup.service
+ACNGSERVICE
+
 cat > /etc/systemd/system/ds-serial-agent.service <<'SERVICE'
 [Unit]
 Description=distro-seed serial agent
-After=systemd-modules-load.service
+Requires=ds-vm-runtime-setup.service apt-cacher-ng.service
+After=systemd-modules-load.service ds-vm-runtime-setup.service apt-cacher-ng.service
 
 [Service]
 Type=simple
@@ -170,10 +286,15 @@ exit 1
 AGENTSTART
 chmod 755 /usr/local/sbin/ds-start-serial-agent
 
+systemctl enable ds-vm-runtime-setup.service
+systemctl enable apt-cacher-ng.service
 systemctl enable ds-serial-agent.service
-systemctl disable --now apt-cacher-ng.service || true
-systemctl mask apt-cacher-ng.service || true
-mkdir -p /cache /dl /work /src
+mkdir -p /cache /dl /work /src /vm-work
+grep -q '^cache /cache ' /etc/fstab || printf '%s\n' 'cache /cache 9p trans=virtio,version=9p2000.L,msize=104857600,nofail 0 0' >> /etc/fstab
+grep -q '^dl /dl ' /etc/fstab || printf '%s\n' 'dl /dl 9p trans=virtio,version=9p2000.L,msize=104857600,nofail 0 0' >> /etc/fstab
+grep -q '^work /work ' /etc/fstab || printf '%s\n' 'work /work 9p trans=virtio,version=9p2000.L,msize=104857600,nofail 0 0' >> /etc/fstab
+grep -q '^src /src ' /etc/fstab || printf '%s\n' 'src /src 9p trans=virtio,version=9p2000.L,msize=104857600,ro,nofail 0 0' >> /etc/fstab
+grep -q ' /vm-work ' /etc/fstab || printf '%s\n' 'LABEL=ds-vm-work /vm-work ext4 noatime,nofail 0 2' >> /etc/fstab
 mkdir -p /etc/default/grub.d /var/lib/distro-seed
 cat > /etc/default/grub.d/distro-seed-console.cfg <<'GRUB'
 GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX console=ttyS0,115200n8"
