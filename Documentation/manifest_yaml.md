@@ -44,6 +44,19 @@ The cmdtype can be one of these options:
 * packagelist-cross
   * The packagelist-cross cmd executes on the host, but stdout is used to select packages installed into the cross chroot. Use this when a build task needs extra tools or target development packages.
 
+For `host`, `vm`, and `cross` tasks, target filesystem content should be written
+to `DS_OVERLAY`. If that directory is non-empty when the task exits, distro-seed
+stores it as a tar artifact, builds it into a generated local Debian package,
+and installs that package into the target rootfs later in task order. Optional
+Debian maintainer scripts and a package version can be written under
+`DS_OVERLAY_CONTROL`.
+
+Supported `DS_OVERLAY_CONTROL` files are `preinst`, `postinst`, `prerm`,
+`postrm`, and `version`. Maintainer scripts are installed into the generated
+package as executable files. Host, VM, and cross tasks run with umask `022`.
+Package payload ownership defaults to `root:root`; use maintainer scripts for
+intentional non-root ownership.
+
 ## cmd
 The cmd field is the name of the script to run. In general, this should point to a shell script, or python if it is a task run on the host.
 

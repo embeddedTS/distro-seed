@@ -39,6 +39,12 @@ The entry "cmd:" is the name of the script that should be run.  This path is rel
 
 The cmd_type specifies where that command should be run. This can be set to host, vm, cross, target, dummy, packagelist, or packagelist-cross. These are described more in the yaml documentation, but this script will be run on "target" which is executed in the target image as if it were run on a board.
 
+For host, vm, and cross tasks, install target filesystem content into
+`DS_OVERLAY`. Distro-seed stores that content as a tar artifact, converts it
+into a generated local Debian package, and installs it into the target rootfs. A
+task can also write `preinst`, `postinst`, `prerm`, `postrm`, or `version` under
+`DS_OVERLAY_CONTROL` to customize the generated package.
+
 The description is printed out when a task is being run to show the user the current build step.
 
 Next up, create the hello script tasks/components/hello-world/hello.sh:

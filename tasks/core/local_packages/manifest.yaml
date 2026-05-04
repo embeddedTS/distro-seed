@@ -1,0 +1,17 @@
+config: DS_TARGET_LOCAL_PACKAGES
+tasks:
+- cmd: build-packages.sh
+  cmd_type: vm
+  dependencies:
+    - DS_VM_READY
+    - DS_DISTRO
+  provides: DS_TARGET_LOCAL_PACKAGES_BUILT
+  auto_create_rdepends: true
+  description: Generating local target Debian packages
+- cmd: install-packages.sh
+  cmd_type: vm
+  dependencies:
+    - DS_TARGET_LOCAL_PACKAGES_BUILT
+  provides: DS_TARGET_ROOTFS_COMBINED
+  auto_create_rdepends: true
+  description: Installing local target Debian packages

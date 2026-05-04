@@ -251,9 +251,9 @@ def sort(tasks):
     sorted_ids = [id for id in topological_sort(graph, tasks)]
     sorted_tasks = sorted(tasks, key=lambda task: sorted_ids.index(task.id))
 
-    # Now that we have an authoratative order, we re rewrite the ids with the actual order
-    # this is used for overlays so they get combined in order
-    for i, task in enumerate(tasks, start=1):
+    # Now that we have an authoratative order, we rewrite the ids with the actual order.
+    # Package inputs use this order so generated local packages install predictably.
+    for i, task in enumerate(sorted_tasks, start=1):
         task.id = i
 
     return sorted_tasks
