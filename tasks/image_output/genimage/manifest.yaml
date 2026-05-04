@@ -5,11 +5,11 @@ tasks:
     description: Fetching host genimage
 
   - cmd: build-host-genimage.sh
-    cmd_type: docker
+    cmd_type: vm
     description: Building host genimage
 
   - cmd: generate_image.sh
-    cmd_type: docker
+    cmd_type: vm
     description: Running genimage to generate a disk image
     dependencies:
       - DS_CORE_IMAGES_READY

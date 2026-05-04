@@ -1,0 +1,9 @@
+config: DS_CROSS_READY
+tasks:
+- cmd: ensure_cross.sh
+  cmd_type: vm
+  dependencies:
+    - DS_VM_READY
+    - DS_PACKAGELIST_CROSS_PREP
+  provides: DS_CROSS_READY
+  description: Creating cross chroot

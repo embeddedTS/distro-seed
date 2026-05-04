@@ -3,7 +3,7 @@
 INSTALL="$DS_WORK/rootfs/"
 install -d "$INSTALL"
 
-PACKAGELIST_FILE="packagelist/${CONFIG_DS_PACKAGELIST}"
+PACKAGELIST_FILE="${DS_HOST_ROOT_PATH}/packagelist/${CONFIG_DS_PACKAGELIST}"
 
 if [[ -n "$CONFIG_DS_PACKAGELIST" && ! -e "$PACKAGELIST_FILE" ]]; then
   echo "Specified packagelist \"$PACKAGELIST_FILE\" doesn't exist!" >&2
@@ -56,6 +56,14 @@ PKGS="$(tr ' ' '\n' < "$tmp_combined" | sort -u | paste -sd' ' -)"
 
 rm -f "$tmp_work" "$tmp_combined"
 
+APT_MMDBSTRAP_OPTS=(
+  --aptopt='Acquire::http::Proxy "http://127.0.0.1:3142";'
+  --aptopt='Acquire::Retries "5";'
+  --aptopt='Acquire::Queue-Mode "access";'
+  --aptopt='Acquire::http::Pipeline-Depth "0";'
+  --aptopt='Acquire::Languages "none";'
+)
+
 # mmdebstrap uses the keyring from the host os, which may be a surprise.  This
 # ensures that it is present. Since we run in a matching host container, this should always
 # be the case.
@@ -71,6 +79,7 @@ if [ "$DS_RELEASE" == "bullseye" ]; then
     --variant=custom \
     --components="$DEB_COMPONENTS" \
     --keyring="$KEYRING_PATH" \
+    "${APT_MMDBSTRAP_OPTS[@]}" \
     --include='?essential' \
     --include="apt ${PKGS}" \
     "$DS_RELEASE" "$INSTALL" "$SOURCE_URL"
@@ -80,6 +89,7 @@ else
     --variant=custom \
     --components="$DEB_COMPONENTS" \
     --keyring="$KEYRING_PATH" \
+    "${APT_MMDBSTRAP_OPTS[@]}" \
     --include='?essential' \
     --include='~prequired|~pimportant' \
     --include="apt ${PKGS}" \

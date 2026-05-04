@@ -1,7 +1,7 @@
 config: DS_COMPONENT_TS7180_UTILS
 tasks:
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building ts7180-utils
 - cmd: fetch.sh
   cmd_type: host

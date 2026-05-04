@@ -1,9 +1,9 @@
 config: DS_CORE_COMBINE_OVERLAYS
 tasks:
 - cmd: combine.sh
-  cmd_type: docker
+  cmd_type: vm
   dependencies:
-    - DS_DOCKER_READY
+    - DS_VM_READY
     - DS_DISTRO
   provides: DS_ROOTFS_COMBINED
   auto_create_rdepends: true

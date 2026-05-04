@@ -4,5 +4,5 @@ tasks:
   cmd_type: host
   description: Downloading tssupervisorupdate
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building tssupervisorupdate

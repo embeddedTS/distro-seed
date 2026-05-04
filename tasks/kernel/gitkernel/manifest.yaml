@@ -4,6 +4,6 @@ tasks:
   cmd_type: host
   description: Fetching Linux Kernel from git
 - cmd: ../build.sh
-  cmd_type: docker
+  cmd_type: cross
   provides: DS_KERNEL
   description: Building Linux Kernel

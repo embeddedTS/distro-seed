@@ -7,7 +7,7 @@ class TaskManifest:
     Configuration class for defining a task.
 
     Attributes:
-        cmd_type (str): The type of the command. (host/docker/target)
+        cmd_type (str): The type of the command. (host/vm/cross/target)
         cmd (str): path to the script to run
         dependencies (List[str]): List of task dependencies.
         provides (str): The output provided by the task.

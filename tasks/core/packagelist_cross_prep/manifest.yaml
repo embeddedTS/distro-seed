@@ -1,0 +1,7 @@
+config: DS_CORE_PACKAGELIST_CROSS_PREP
+tasks:
+- cmd_type: dummy
+  dependencies:
+    - DS_WORK_READY
+  provides: DS_PACKAGELIST_CROSS_PREP
+  description: Creating cross packagelists

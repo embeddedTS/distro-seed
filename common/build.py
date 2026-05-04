@@ -4,6 +4,7 @@ import os
 import glob
 import sys
 import argparse
+import atexit
 import colorama
 from pprint import pprint
 from colorama import Fore, Style
@@ -12,6 +13,7 @@ from lib.kconfiglib import kconfiglib
 from lib.task import Task
 from lib import task_manager
 from lib.vars import kconfig_export_vars
+from lib import vm
 
 colorama.init()
 
@@ -28,6 +30,8 @@ except kconfiglib._KconfigIOError as exc:
     print("Did you run make <defconfig>?")
     #sys.exit(2)
 kconfig_export_vars(kconf)
+os.environ["DS_SESSION_PID"] = str(os.getpid())
+atexit.register(vm.stop_vm)
 
 DS_HOST_ROOT_PATH = os.environ['DS_HOST_ROOT_PATH']
 DS_DL = os.environ['DS_DL']
@@ -57,19 +61,22 @@ for task in tasks:
     # Only set dependencies if there are none
     if len(task.dependencies) != 0:
         continue
-    # Every other config will have dependencies except for 
-    # DS_CORE_BUILD_HOST_DOCKER
-    # Which will be sorted first
-    if task.config == 'DS_CORE_BUILD_HOST_DOCKER':
+    # Every other config will have dependencies except for the work cleanup
+    # task, which is sorted first.
+    if task.config == 'DS_CORE_CLEAN_WORK':
         continue
     if task.cmd_type == 'host':
         task.dependencies += [ 'DS_WORK_READY' ]
-    elif task.cmd_type == 'docker':
-        task.dependencies += [ 'DS_DOCKER_READY' ]
+    elif task.cmd_type == 'vm':
+        task.dependencies += [ 'DS_VM_READY' ]
+    elif task.cmd_type == 'cross':
+        task.dependencies += [ 'DS_CROSS_READY' ]
     elif task.cmd_type == 'target':
         task.dependencies += [ 'DS_CHROOT_READY' ]
     elif task.cmd_type == 'packagelist':
         task.dependencies += [ 'DS_CORE_PACKAGELIST_PREP' ]
+    elif task.cmd_type == 'packagelist-cross':
+        task.dependencies += [ 'DS_PACKAGELIST_CROSS_PREP' ]
     else:
         raise ValueError(f"Invalid task type '{task.config.cmd_type}' in '{task.config}'")
 

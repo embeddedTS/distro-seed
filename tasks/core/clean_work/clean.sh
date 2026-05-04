@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-rm -rf /work/work/
+rm -rf "$DS_WORK"
