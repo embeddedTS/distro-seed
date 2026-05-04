@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
 INSTALL="$DS_WORK/rootfs/"
+/src/common/vm/ensure-rootfs-bind.sh
 install -d "$INSTALL"
+find "$INSTALL" -mindepth 1 -xdev -exec rm -rf {} +
 
 PACKAGELIST_FILE="${DS_HOST_ROOT_PATH}/packagelist/${CONFIG_DS_PACKAGELIST}"
 
