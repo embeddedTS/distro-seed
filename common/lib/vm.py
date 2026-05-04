@@ -297,7 +297,7 @@ def start_vm():
         "-device",
         "virtio-9p-pci,fsdev=work,mount_tag=work",
         "-fsdev",
-        f"local,id=src,path={_env_path('DS_HOST_ROOT_PATH')},security_model=mapped-xattr,readonly=on",
+        f"local,id=src,path={_env_path('DS_HOST_ROOT_PATH')},security_model=none,readonly=on",
         "-device",
         "virtio-9p-pci,fsdev=src,mount_tag=src",
     ]
