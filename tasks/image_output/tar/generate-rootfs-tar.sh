@@ -25,12 +25,12 @@ tar --xattrs --acls --numeric-owner -cf "${OUTPUT}/${FILENAME}" .
 cd "${OUTPUT}"
 
 # Compress tarball
-if [[ "$CONFIG_DS_IMAGE_ROOTFS_TAR_NONE" == 'y' ]]; then
+if [[ "$CONFIG_DS_OUTPUT_ROOTFS_TAR_NONE" == 'y' ]]; then
 	true;
-elif [[ "$CONFIG_DS_IMAGE_ROOTFS_TAR_XZ" == 'y' ]]; then
+elif [[ "$CONFIG_DS_OUTPUT_ROOTFS_TAR_XZ" == 'y' ]]; then
 	xz -2 -T0 "${FILENAME}"
 	EXT=".xz"
-elif [[ "$CONFIG_DS_IMAGE_ROOTFS_TAR_BZIP2" == 'y' ]]; then
+elif [[ "$CONFIG_DS_OUTPUT_ROOTFS_TAR_BZIP2" == 'y' ]]; then
 	bzip2 "${FILENAME}"
 	EXT=".bz2"
 else 

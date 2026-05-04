@@ -1,9 +1,9 @@
-config: DS_CORE_CHROOT_PREP
+config: DS_TARGET_CHROOT_PREP
 tasks:
 - cmd: chroot_prep.sh
   cmd_type: vm
   dependencies:
-    - DS_ROOTFS_COMBINED
-  provides: DS_CHROOT_EARLY
+    - DS_TARGET_ROOTFS_COMBINED
+  provides: DS_TARGET_CHROOT_EARLY
   auto_create_rdepends: true
-  description: Preparing chroot environment
+  description: Preparing target rootfs chroot environment

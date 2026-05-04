@@ -12,5 +12,5 @@ tasks:
     cmd_type: vm
     description: Running genimage to generate a disk image
     dependencies:
-      - DS_CORE_IMAGES_READY
+      - DS_TARGET_IMAGES_READY
     auto_create_rdepends: true

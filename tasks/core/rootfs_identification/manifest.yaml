@@ -1,9 +1,9 @@
-config: DS_ROOTFS_IDENTIFIABLE
+config: DS_TARGET_ROOTFS_IDENTIFIABLE
 tasks:
   - cmd: add_version_sums.sh
     cmd_type: vm
     dependencies:
-      - DS_ROOTFS_CLEANUP
-    provides: DS_ROOTFS_IDENTIFICATION
+      - DS_TARGET_ROOTFS_CLEANED
+    provides: DS_TARGET_ROOTFS_IDENTIFICATION
     auto_create_rdepends: true
-    description: Generate root.version and md5sums files
+    description: Generate target rootfs root.version and md5sums files

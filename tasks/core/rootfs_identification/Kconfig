@@ -1,4 +1,4 @@
-config DS_ROOTFS_IDENTIFICATION
+config DS_TARGET_ROOTFS_IDENTIFIABLE
 	bool "make rootfs identifiable"
 	help
 	  Create root.version and md5sums for checking this image

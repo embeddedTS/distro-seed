@@ -1,9 +1,9 @@
-config: DS_CORE_CHROOT_CLEAN
+config: DS_TARGET_CHROOT_CLEAN
 tasks:
 - cmd: chroot_clean.sh
   cmd_type: vm
   dependencies:
-    - DS_CHROOT_LATE
-  provides: DS_ROOTFS_CLEANUP
+    - DS_TARGET_CHROOT_LATE
+  provides: DS_TARGET_ROOTFS_CLEANED
   auto_create_rdepends: true
-  description: Cleaning chroot environment
+  description: Cleaning target rootfs chroot environment
