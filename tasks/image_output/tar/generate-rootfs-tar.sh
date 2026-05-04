@@ -41,7 +41,6 @@ fi
 # Create md5sum of the tarball
 md5sum "${FILENAME}${EXT}" > "${FILENAME}${EXT}.md5"
 
-# Create simple symlink named rootfs
-ln -sf "${FILENAME}${EXT}" "rootfs.tar${EXT}"
-ln -sf "${FILENAME}${EXT}.md5" "rootfs.tar${EXT}.md5"
+printf '%s\n' "${FILENAME}${EXT}" > ".rootfs-tar-link-target"
+printf '%s\n' "${FILENAME}${EXT}.md5" > ".rootfs-tar-md5-link-target"
 )

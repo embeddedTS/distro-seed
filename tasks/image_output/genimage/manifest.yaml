@@ -13,4 +13,11 @@ tasks:
     description: Running genimage to generate a disk image
     dependencies:
       - DS_TARGET_IMAGES_READY
+    provides: DS_GENIMAGE_OUTPUT_GENERATED
     auto_create_rdepends: true
+
+  - cmd: link-rootfs-dd.sh
+    cmd_type: host
+    description: Link target disk image output names
+    dependencies:
+      - DS_GENIMAGE_OUTPUT_GENERATED
