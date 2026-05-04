@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+/src/common/vm/ensure-rootfs-bind.sh
+
 mountpoint -q /work/rootfs/proc || mount -t proc proc /work/rootfs/proc
 mountpoint -q /work/rootfs/sys || mount -t sysfs sysfs /work/rootfs/sys
 mountpoint -q /work/rootfs/dev || mount --bind /dev /work/rootfs/dev
