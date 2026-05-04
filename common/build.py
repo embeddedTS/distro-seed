@@ -6,6 +6,7 @@ import sys
 import argparse
 import atexit
 import colorama
+import time
 from pprint import pprint
 from colorama import Fore, Style
 
@@ -94,14 +95,45 @@ if args.plot_deps:
     sys.exit(0)
 
 # Execute all tasks
-for i, task in enumerate(tasks, start=1):
-    # Print out the description of the command
-    print(f"Task: {task.config} ({task.cmd_type}) {i}/{len(tasks)}: {Fore.GREEN}{task.description}{Style.RESET_ALL}")
-    if args.dry_run:
-        pprint(f'{task.path}/{task.cmd}')
-    else:
+timing_records = []
+build_start = time.monotonic()
+build_status = "pass"
+
+try:
+    for i, task in enumerate(tasks, start=1):
+        # Print out the description of the command
+        print(f"Task: {task.config} ({task.cmd_type}) {i}/{len(tasks)}: {Fore.GREEN}{task.description}{Style.RESET_ALL}")
+        start = time.monotonic()
+        record = {
+            "task": task,
+            "start_ms": round((start - build_start) * 1000),
+            "end_ms": round((start - build_start) * 1000),
+            "status": "running",
+        }
+        timing_records.append(record)
+
         try:
-            task.run()
+            if args.dry_run:
+                pprint(f'{task.path}/{task.cmd}')
+            else:
+                task.run()
+            end = time.monotonic()
+            record["end_ms"] = round((end - build_start) * 1000)
+            record["status"] = "passed"
         except Exception as e:
+            end = time.monotonic()
+            record["end_ms"] = round((end - build_start) * 1000)
+            record["status"] = "failed"
+            build_status = "fail"
             print(f"Task failed: {str(e)}")
             sys.exit(1)
+finally:
+    if timing_records:
+        final_time_ms = round((time.monotonic() - build_start) * 1000)
+        for record in timing_records:
+            if record["status"] == "running":
+                record["end_ms"] = final_time_ms
+                record["status"] = "failed"
+        if any(record["status"] == "failed" for record in timing_records):
+            build_status = "fail"
+        task_manager.write_task_timing_gantt(timing_records, build_status)
