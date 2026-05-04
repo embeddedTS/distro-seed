@@ -41,20 +41,11 @@ def is_filesystem_case_sensitive():
     
     return not contents_match
 
-def run_hello_world_docker():
+def check_kvm():
     """
-    Runs the "hello world" Docker container and returns True if it succeeds.
+    Checks whether KVM is usable by the current user.
     """
-    try:
-        # Run the "hello world" Docker container and capture both stdout and stderr
-        result = subprocess.run(["docker", "run", "hello-world"], check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        # If the command returns a non-zero exit code, the container failed to run
-        print(e.stdout + e.stderr)
-        return False
-    else:
-        # If the command returns a zero exit code, the container ran successfully
-        return True
+    return os.path.exists('/dev/kvm') and os.access('/dev/kvm', os.R_OK | os.W_OK)
 
 def check_free_space():
     """
@@ -91,43 +82,39 @@ else:
     print("happen when using a fat32/ntfs or other case insensitive filesystem.")
     ret = 1
 
-if run_hello_world_docker():
-    print("Pass: Ran the hello-world docker.")
+if check_bin_in_path('qemu-system-x86_64'):
+    print("Pass: qemu-system-x86_64 available")
 else:
-    print("Fail: Failed to start docker.")
-    print("Install docker using your distribution's docker package, or follow the")
-    print("instructions here: https://docs.docker.com/engine/install/")
+    print("Fail: qemu-system-x86_64 missing")
+    print("Install your distribution's qemu system package")
     ret = 1
 
-if check_free_space():
-    print("Pass: Sufficient free space")
+if check_bin_in_path('qemu-img'):
+    print("Pass: qemu-img available")
 else:
-    print("Fail: Insufficient free space")
-    print("Recommend having at minimum 40GB free")
+    print("Fail: qemu-img missing")
+    print("Install your distribution's qemu utils package")
     ret = 1
 
-if check_bin_in_path('qemu-arm-static'):
-    print("Pass: QEMU for armhf")
+if check_kvm():
+    print("Pass: KVM available")
 else:
-    print("Fail: QEMU for armhf")
-    print("qemu-arm-static is required on the host for armhf targets")
-    print("Install your distribution's qemu static support, eg \'qemu-user-static\'")
+    print("Fail: KVM unavailable")
+    print("distro-seed requires /dev/kvm access; TCG fallback is not supported")
     ret = 1
 
-if check_bin_in_path('qemu-armeb-static'):
-    print("Pass: QEMU for armel")
+if check_bin_in_path('xorriso'):
+    print("Pass: xorriso available")
 else:
-    print("Fail: QEMU for armel")
-    print("qemu-armeb-static is required on the host for armel targets")
-    print("Install your distribution's qemu static support, eg \'qemu-user-static\'")
+    print("Fail: xorriso missing")
+    print("xorriso is required to add the unattended preseed to the Debian installer initrd")
     ret = 1
 
-if check_bin_in_path('qemu-aarch64-static'):
-    print("Pass: QEMU for aarch64")
+if check_bin_in_path('cpio'):
+    print("Pass: cpio available")
 else:
-    print("Fail: QEMU for aarch64")
-    print("qemu-aarch64-static is required on the host for aarch64 targets")
-    print("Install your distribution's qemu static support, eg \'qemu-user-static\'")
+    print("Fail: cpio missing")
+    print("cpio is required to repack the Debian installer initrd")
     ret = 1
 
 if check_bin_in_path('sha256sum'):
@@ -135,6 +122,13 @@ if check_bin_in_path('sha256sum'):
 else:
     print("Fail: sha256sum missing")
     print("Install sha256sum for your host system")
+    ret = 1
+
+if check_free_space():
+    print("Pass: Sufficient free space")
+else:
+    print("Fail: Insufficient free space")
+    print("Recommend having at minimum 40GB free")
     ret = 1
 
 if is_module_available('colorama'):
@@ -163,14 +157,6 @@ if is_module_available('networkx'):
 else:
     print("Fail: python 'networkx' module is not available")
     print("Try \"pip install -r requirements.txt\"")
-    ret = 1
-
-if check_bin_in_path('qemu-aarch64-static'):
-    print("Pass: QEMU for arm64")
-else:
-    print("Fail: QEMU for aarch64")
-    print("qemu-armeb-static is required on the host for aarch64 targets")
-    print("Install your distribution's qemu static support, eg \'qemu-user-static\'")
     ret = 1
 
 if not ret:

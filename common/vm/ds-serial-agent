@@ -1,0 +1,157 @@
+#!/bin/bash
+
+set -eu
+
+export PATH=/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+
+mount_virtfs() {
+	tag="$1"
+	target="$2"
+	opts="trans=virtio,version=9p2000.L,msize=104857600"
+
+	mkdir -p "$target"
+	if mountpoint -q "$target"; then
+		return 0
+	fi
+
+	for _ in $(seq 1 60); do
+		mount -t 9p -o "$opts" "$tag" "$target" 2>/dev/null && return 0
+		sleep 1
+	done
+
+	echo "ERR failed to mount $target" >&2
+	return 1
+}
+
+setup_network() {
+	iface=""
+	for _ in $(seq 1 60); do
+		iface="$(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf '%f\n' 2>/dev/null | head -n1)"
+		[ -n "$iface" ] && break
+		sleep 1
+	done
+
+	[ -n "$iface" ] || return 0
+	ip link set "$iface" up 2>/dev/null || true
+	if ! ip address show dev "$iface" | grep -q 'inet '; then
+		dhclient "$iface" 2>/dev/null || true
+	fi
+	printf 'nameserver 10.0.2.3\n' > /etc/resolv.conf
+}
+
+start_apt_cacher() {
+	command -v apt-cacher-ng >/dev/null 2>&1 || return 0
+
+	mkdir -p /dl/debs /work/qemu-host/apt-cacher-ng
+	if getent passwd apt-cacher-ng >/dev/null 2>&1; then
+		chown -R apt-cacher-ng:apt-cacher-ng /dl/debs /work/qemu-host/apt-cacher-ng 2>/dev/null || true
+	fi
+	chmod 755 /dl /dl/debs /work/qemu-host /work/qemu-host/apt-cacher-ng 2>/dev/null || true
+
+	service apt-cacher-ng stop >/dev/null 2>&1 || true
+	pkill apt-cacher-ng >/dev/null 2>&1 || true
+	if ! /usr/sbin/apt-cacher-ng -c /etc/apt-cacher-ng >/dev/null 2>&1; then
+		echo "ERR apt-cacher-ng failed to start" >&2
+		tail -n 100 /work/qemu-host/apt-cacher-ng/apt-cacher.err >&2 2>/dev/null || true
+		tail -n 100 /var/log/apt-cacher-ng/apt-cacher.err >&2 2>/dev/null || true
+		return 1
+	fi
+
+	for _ in $(seq 1 30); do
+		if wget -q -O /dev/null http://127.0.0.1:3142/acng-report.html 2>/dev/null; then
+			return 0
+		fi
+		sleep 1
+	done
+
+	echo "ERR apt-cacher-ng did not become ready" >&2
+	service apt-cacher-ng status >&2 || true
+	tail -n 100 /work/qemu-host/apt-cacher-ng/apt-cacher.err >&2 2>/dev/null || true
+	tail -n 100 /var/log/apt-cacher-ng/apt-cacher.err >&2 2>/dev/null || true
+	return 1
+}
+
+ensure_swap() {
+	swap_file=/swapfile
+
+	if grep -q "^${swap_file} " /proc/swaps 2>/dev/null; then
+		return 0
+	fi
+
+	if [ ! -e "$swap_file" ]; then
+		fallocate -l 4G "$swap_file" 2>/dev/null || dd if=/dev/zero of="$swap_file" bs=1M count=4096
+		chmod 600 "$swap_file"
+		mkswap "$swap_file" >/dev/null
+	fi
+
+	swapon "$swap_file" 2>/dev/null || true
+}
+
+prepare_task_environment() {
+	mount_virtfs cache /cache
+	mount_virtfs dl /dl
+	mount_virtfs work /work
+	mount_virtfs src /src
+	setup_network
+	ensure_swap
+	start_apt_cacher
+}
+
+run_command() {
+	token="$1"
+	payload="$2"
+	echo "__DS_BEGIN__ ${token}"
+	set +e
+	prepare_task_environment && bash "$payload"
+	status=$?
+	set -e
+	if [ "$status" -ne 0 ]; then
+		echo "ERR task ${token} failed with status ${status}" >&2
+	fi
+	echo "__DS_END__ ${token} ${status}"
+}
+
+run_b64_command() {
+	token="$1"
+	payload_file="/tmp/ds-run.${token}.b64"
+	tmp="$(mktemp /tmp/ds-run.XXXXXX.sh)"
+	base64 -d "$payload_file" > "$tmp"
+	rm -f "$payload_file"
+	chmod 755 "$tmp"
+	run_command "$token" "$tmp"
+	rm -f "$tmp"
+}
+
+echo READY
+
+cr="$(printf '\r')"
+while IFS= read -r line; do
+	line="${line%"$cr"}"
+	case "$line" in
+		RUNB64_BEGIN\ *)
+			token="${line#RUNB64_BEGIN }"
+			rm -f "/tmp/ds-run.${token}.b64"
+			;;
+		RUNB64_DATA\ *)
+			rest="${line#RUNB64_DATA }"
+			token="${rest%% *}"
+			payload="${rest#${token} }"
+			printf '%s' "$payload" >> "/tmp/ds-run.${token}.b64"
+			;;
+		RUNB64_END\ *)
+			token="${line#RUNB64_END }"
+			run_b64_command "$token"
+			;;
+		PING)
+			echo READY
+			;;
+		POWEROFF)
+			echo BYE
+			sync
+			poweroff -f || true
+			;;
+		*)
+			echo "ERR unknown command"
+			;;
+	esac
+done

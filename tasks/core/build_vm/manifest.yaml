@@ -1,0 +1,9 @@
+config: DS_CORE_BUILD_VM
+tasks:
+- cmd: build_vm.sh
+  cmd_type: host
+  dependencies:
+    - DS_WORK_READY
+  provides: DS_VM_IMAGE_READY
+  auto_create_rdepends: true
+  description: Generating Debian 13 VM image

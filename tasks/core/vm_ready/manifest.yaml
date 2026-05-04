@@ -1,0 +1,9 @@
+config: DS_CORE_VM_READY
+tasks:
+- cmd: start_vm.py
+  cmd_type: host
+  dependencies:
+    - DS_VM_IMAGE_READY
+  provides: DS_VM_READY
+  auto_create_rdepends: true
+  description: Starting Debian 13 VM

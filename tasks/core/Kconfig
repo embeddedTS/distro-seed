@@ -5,10 +5,16 @@ config DS_CORE_CLEAN_WORK
 config DS_CORE_CREATE_WORK
     bool
     default "y"
-config DS_CORE_BUILD_HOST_DOCKER
+config DS_CORE_BUILD_VM
     bool
     default "y"
-config DS_CORE_GEN_DOCKER_ENV
+config DS_CORE_VM_READY
+    bool
+    default "y"
+config DS_CORE_PACKAGELIST_CROSS_PREP
+    bool
+    default "y"
+config DS_CROSS_READY
     bool
     default "y"
 config DS_CORE_COMBINE_OVERLAYS

@@ -13,11 +13,14 @@ menuconfig:
 savedefconfig:
 	@common/lib/kconfiglib/savedefconfig.py
 
-docker-shell:
-	@common/utils/docker-shell.py
+vm-shell:
+	@common/utils/vm-shell.py
 
-chroot-shell:
-	@common/utils/chroot-shell.py
+cross-shell:
+	@common/utils/cross-shell.py
+
+target-shell:
+	@common/utils/target-shell.py
 
 checkdeps:
 	@common/utils/check.py
