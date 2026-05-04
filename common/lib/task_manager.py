@@ -233,6 +233,42 @@ def write_tasks_mmd(tasks):
     with open("work/tasks.mmd", "w", encoding="utf-8") as f:
         f.write(mermaid)
 
+def _format_offset_ms(ms: int) -> str:
+    hours, rem = divmod(ms, 60 * 60 * 1000)
+    minutes, rem = divmod(rem, 60 * 1000)
+    seconds, millis = divmod(rem, 1000)
+    return f"{hours:02}:{minutes:02}:{seconds:02}.{millis:03}"
+
+def write_task_timing_gantt(records, status):
+    """
+    Builds a Mermaid Gantt chart of task timings.
+
+    records is a list of dictionaries with task, start_ms, end_ms, and status.
+    """
+    lines = []
+    lines.append("gantt")
+    lines.append(f"    title distro-seed task timings ({status})")
+    lines.append("    dateFormat HH:mm:ss.SSS")
+    lines.append("    axisFormat %H:%M:%S.%L")
+    lines.append("    section Tasks")
+
+    for i, record in enumerate(records, start=1):
+        task = record["task"]
+        start_ms = int(record["start_ms"])
+        end_ms = max(int(record["end_ms"]), start_ms + 1)
+        label = _escape_mermaid(
+            f"{task.id} {task.config} ({task.cmd_type}) {task.description}"
+        )
+        state = "crit" if record.get("status") == "failed" else "done"
+        lines.append(
+            f'    {label} :{state}, t{i}, '
+            f"{_format_offset_ms(start_ms)}, {_format_offset_ms(end_ms)}"
+        )
+
+    os.makedirs("work", exist_ok=True)
+    with open("work/tasks-timing.mmd", "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
 def sort(tasks):
     """
     Sorts a list of tasks based on their dependencies.
