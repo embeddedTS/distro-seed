@@ -4,5 +4,5 @@ tasks:
     cmd_type: target
     # Run before other applications so resolv.conf is sane
     dependencies:
-      - DS_APT_CONFIGURED
+      - DS_TARGET_APT_CONFIGURED
     description: Setting temporary resolv.conf

@@ -1,9 +1,9 @@
-config: DS_APT_CONFIGURED
+config: DS_TARGET_APT_CONFIGURED
 tasks:
 - cmd: apt_finish_install.sh
   cmd_type: target
   dependencies:
-    - DS_CHROOT_EARLY
-  provides: DS_CHROOT_APT
+    - DS_TARGET_CHROOT_EARLY
+  provides: DS_TARGET_CHROOT_APT
   auto_create_rdepends: true
-  description: Finishing apt install
+  description: Finishing target rootfs apt install

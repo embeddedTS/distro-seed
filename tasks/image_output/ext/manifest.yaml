@@ -3,5 +3,5 @@ tasks:
   - cmd: package-ext.sh
     cmd_type: vm
     dependencies:
-      - DS_ROOTFS_READY
+      - DS_TARGET_ROOTFS_READY
     description: Packaging up output ext filesystem

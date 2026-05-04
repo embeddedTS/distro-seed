@@ -1,7 +1,7 @@
-config: DS_CHROOT_READY
+config: DS_TARGET_CHROOT_READY
 tasks:
 - cmd_type: dummy
   dependencies:
-    - DS_CHROOT_APT
+    - DS_TARGET_CHROOT_APT
   auto_create_rdepends: true
-  description: Chroot ready
+  description: Target rootfs chroot is ready

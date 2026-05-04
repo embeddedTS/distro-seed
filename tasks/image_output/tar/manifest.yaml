@@ -1,7 +1,13 @@
-config: DS_IMAGE_ROOTFS_TAR
+config: DS_OUTPUT_ROOTFS_TAR
 tasks:
   - cmd: generate-rootfs-tar.sh
     cmd_type: vm
     dependencies:
-      - DS_ROOTFS_READY
-    description: Generate rootfs tar file
+      - DS_TARGET_ROOTFS_READY
+    provides: DS_OUTPUT_ROOTFS_TAR_GENERATED
+    description: Generate target rootfs tar file
+  - cmd: link-rootfs-tar.sh
+    cmd_type: host
+    dependencies:
+      - DS_OUTPUT_ROOTFS_TAR_GENERATED
+    description: Link target rootfs tar output names
