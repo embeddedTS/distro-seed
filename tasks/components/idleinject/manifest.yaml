@@ -4,7 +4,7 @@ tasks:
   cmd_type: host
   description: Downloading idleinject
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building idleinject
 - cmd: install.sh
   cmd_type: target

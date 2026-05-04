@@ -5,5 +5,5 @@ tasks:
   description: Downloading ts7400v2-utils
 
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building ts7400v2-utils

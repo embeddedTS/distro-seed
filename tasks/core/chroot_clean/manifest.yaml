@@ -1,7 +1,7 @@
 config: DS_CORE_CHROOT_CLEAN
 tasks:
 - cmd: chroot_clean.sh
-  cmd_type: docker
+  cmd_type: vm
   dependencies:
     - DS_CHROOT_LATE
   provides: DS_ROOTFS_CLEANUP

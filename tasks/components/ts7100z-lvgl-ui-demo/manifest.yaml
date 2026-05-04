@@ -1,7 +1,7 @@
 config: DS_COMPONENT_TS7100Z_LVGL_UI_DEMO
 tasks:
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   dependencies:
     - DS_COMPONENT_LIBLVGL
     - DS_COMPONENT_LV_DRIVERS

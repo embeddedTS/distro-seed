@@ -4,7 +4,7 @@ tasks:
   cmd_type: host
   description: Fetching wilc3000-module
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   dependencies:
     - DS_KERNEL
   description: Building wilc3000-module

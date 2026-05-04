@@ -1,7 +1,7 @@
 config: DS_COMPONENT_TSMICROCTL
 tasks:
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building tsmicroctl
 - cmd: fetch.sh
   cmd_type: host

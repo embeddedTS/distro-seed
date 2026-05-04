@@ -6,9 +6,9 @@ tasks:
   description: Downloading ts4100-utils
 
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   dependencies:
-    - DS_DOCKER_READY
+    - DS_CROSS_READY
     - DS_ZPU_COMPILER
     - DS_ZPU_SRC
   description: Building ts4100-utils

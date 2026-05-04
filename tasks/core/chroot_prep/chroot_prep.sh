@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# This command runs from the docker environment to prep the chroot environment
+# This command runs from the VM environment to prep the chroot environment
 # to run further commands.
 
 QEMU_STATIC_PATH=$(which ${DS_QEMU_STATIC})

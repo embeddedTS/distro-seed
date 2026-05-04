@@ -1,6 +1,6 @@
 config: DS_COMPONENT_LEGACY_BOOTSCRIPT
 tasks:
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Generating legacy U-Boot scripts
 

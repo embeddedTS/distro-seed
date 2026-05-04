@@ -5,5 +5,5 @@ tasks:
   description: Downloading ts4900-utils
 
 - cmd: build.sh
-  cmd_type: docker
+  cmd_type: cross
   description: Building ts4900-utils

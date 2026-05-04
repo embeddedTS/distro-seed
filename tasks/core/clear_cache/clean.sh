@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-rm -rf /work/cache/
+rm -rf "$DS_CACHE"

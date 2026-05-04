@@ -26,7 +26,7 @@ if ! common/host/fetch_cache_obj.sh "$BUILD_OBJECT_KEY" "$KBUILD_OUTPUT"; then
     export KBUILD_OUTPUT INSTALL
     (
         cd "$SOURCE"
-        # CROSS_COMPILE and ARCH are set from the dockerfile
+        # CROSS_COMPILE and ARCH are set from the cross chroot
 
         if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
             TARGETS="$TARGETS Image"
