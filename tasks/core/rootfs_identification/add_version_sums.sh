@@ -3,7 +3,7 @@
 # add_version_sums.sh - Final post-processing on rootfs before tar-ing it up
 #
 
-ROOTFS="${DS_WORK}/rootfs/"
+ROOTFS="${DS_TARGET_ROOTFS:-${DS_WORK}/rootfs}"
 
 cd "${ROOTFS}"
 date +"%Y-%m-%d" > root.version

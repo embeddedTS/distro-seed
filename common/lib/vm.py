@@ -363,6 +363,7 @@ def vm_env(extra=None):
         "DS_CACHE": "/cache",
         "DS_DL": "/dl",
         "DS_WORK": "/work",
+        "DS_TARGET_ROOTFS": "/vm-work/rootfs",
     }
     for key, value in os.environ.items():
         if key.startswith("CONFIG_") or key.startswith("DS_"):
@@ -373,6 +374,7 @@ def vm_env(extra=None):
             "DS_CACHE": "/cache",
             "DS_DL": "/dl",
             "DS_WORK": "/work",
+            "DS_TARGET_ROOTFS": "/vm-work/rootfs",
         }
     )
     if extra:
@@ -487,7 +489,7 @@ def interactive_shell(kind):
         )
     elif kind == "target":
         script = "/src/common/vm/mount-target.sh\n" + _vm_pty_command(
-            "/usr/sbin/chroot /work/rootfs /bin/bash -il"
+            "/usr/sbin/chroot ${DS_TARGET_ROOTFS:-/vm-work/rootfs} /bin/bash -il"
         )
     else:
         raise VMError(f"Unknown shell kind {kind}")

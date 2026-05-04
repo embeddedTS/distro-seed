@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-INSTALL="$DS_WORK/rootfs/"
+INSTALL="${DS_TARGET_ROOTFS:-$DS_WORK/rootfs}"
 /src/common/vm/ensure-rootfs-bind.sh
 install -d "$INSTALL"
 find "$INSTALL" -mindepth 1 -xdev -exec rm -rf {} +

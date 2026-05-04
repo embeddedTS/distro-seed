@@ -228,10 +228,11 @@ rm -rf "$CROSS_ROOT/$control_tmp"
             script = f"""
 set -e
 /src/common/vm/mount-target.sh
-cp "{target_cmd}" /work/rootfs/run_in_chroot
-export -p > /work/rootfs/tmp/ds-env
-chroot /work/rootfs /bin/bash -lc 'source /tmp/ds-env; /run_in_chroot'
-rm -f /work/rootfs/run_in_chroot /work/rootfs/tmp/ds-env
+rootfs="${{DS_TARGET_ROOTFS:-/vm-work/rootfs}}"
+cp "{target_cmd}" "$rootfs/run_in_chroot"
+export -p > "$rootfs/tmp/ds-env"
+chroot "$rootfs" /bin/bash -lc 'source /tmp/ds-env; /run_in_chroot'
+rm -f "$rootfs/run_in_chroot" "$rootfs/tmp/ds-env"
 """
             vm.run_script(self.config, script)
         else:

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-ROOTFS="${DS_WORK}/rootfs/"
+ROOTFS="${DS_TARGET_ROOTFS:-${DS_WORK}/rootfs}"
 OUTPUT="${DS_WORK}/output"
 
 PLATFORM=$(basename "${CONFIG_DS_DEFCONFIG}")
@@ -18,7 +18,7 @@ FILENAME="${PLATFORM}-${DS_DISTRO}-${DS_RELEASE_NUM}-${DS_RELEASE}-${PKGVARIANT}
 # Create base tarball
 (
 cd "${ROOTFS}"
-tar --xattrs --acls --numeric-owner -cf "${OUTPUT}/${FILENAME}" .
+tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse -cpf "${OUTPUT}/${FILENAME}" .
 )
 
 (

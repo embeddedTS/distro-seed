@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 PACKAGES="${DS_WORK}/packages"
-ROOTFS="${DS_WORK}/rootfs"
+ROOTFS="${DS_TARGET_ROOTFS:-${DS_WORK}/rootfs}"
 TARGET_PACKAGE_DIR="${ROOTFS}/tmp/distro-seed-packages"
 
 package_sort_key() {
