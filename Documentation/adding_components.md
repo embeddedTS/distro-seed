@@ -37,7 +37,7 @@ The 'tasks:' section is a json list of tasks that will be run to complete this t
 
 The entry "cmd:" is the name of the script that should be run.  This path is relative to the manifest.yaml file.
 
-The cmd_type specifies where that command should be run. This can be set to host, docker, target, dummy, or packagelist. These are described more in the yaml documentation, but this script will be run on "target" which is executed in the target image as if it were run on a board.
+The cmd_type specifies where that command should be run. This can be set to host, vm, cross, target, dummy, packagelist, or packagelist-cross. These are described more in the yaml documentation, but this script will be run on "target" which is executed in the target image as if it were run on a board.
 
 The description is printed out when a task is being run to show the user the current build step.
 
