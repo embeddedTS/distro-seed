@@ -6,7 +6,7 @@ tasks:
 - cmd_type: host
   cmd: fetch.sh
   description: Downloading tssupervisorupdate
-- cmd_type: docker
+- cmd_type: cross
   cmd: build.sh
   description: Building tssupervisorupdate
 ```
@@ -24,21 +24,25 @@ This would enable the config option without showing up in the menu, but satisy t
 The tasks are a json list of the fields described before.  A single manifest can include any number of tasks, but most are 1-3 at most.
 
 ## cmd_type
-The cmdtype can be one of these 4 options:
+The cmdtype can be one of these options:
 
 * host
   * Executes the task on the host OS. Most fetch (like git clone, wget) should be run from the host to use any of the system's credentials or network configuration. The host task should not be used to build projects.
-* docker
+* vm
   * These are most commonly shell or python
-  * Executes the "cmd" script in a docker matching the target distribution.  Most build tasks should run under docker.
-  * For example, if the target is a Debian 12 armhf, the docker environment will match the host CPU but include the matching toolchain and libraries to cross compile for Debian 12. For example this would include libgpiod:armhf which can be used to cross compile applications using libgpiod with the matching library version that will be in the deployed image.
+  * Executes the "cmd" script in the shared Debian 13 QEMU VM. This is used for rootfs assembly, image generation, and other tasks that need Linux filesystem behavior without running directly on the host.
+* cross
+  * Executes the "cmd" script in a target-matching build chroot inside the QEMU VM. The chroot uses the selected distro/release and includes cross compilers and target-architecture development packages.
+  * Most source builds should use `cross`.
 * target
-  * These tasks are executed in the target rootfs. The task script specified in cmd is copied to work/rootfs/run_in_chroot, then [qemu's system emulation](https://www.qemu.org/docs/master/system/index.html) is used to chroot into this environment and execute this script.
+  * These tasks are executed in the target rootfs from inside the QEMU VM. The task script specified in cmd is copied to work/rootfs/run_in_chroot, then chrooted and executed.
   * Whenever possible target's "cmd" should point at a bash script for best compatibility between target distributions.
 * dummy
   * These tasks perform nothing, and are only used for dependency synchronization.
 * packagelist
   * The packagelist cmd executes on the host, but any stdout is used to select packages to end up in the target debian image.  For example, a packagelist cmd script that runs ```echo figlet``` would add the figlet package to the image.
+* packagelist-cross
+  * The packagelist-cross cmd executes on the host, but stdout is used to select packages installed into the cross chroot. Use this when a build task needs extra tools or target development packages.
 
 ## cmd
 The cmd field is the name of the script to run. In general, this should point to a shell script, or python if it is a task run on the host.

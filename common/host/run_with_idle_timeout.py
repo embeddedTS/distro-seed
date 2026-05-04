@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+#
+# Run a long-lived command while treating silence as failure.
+#
+# distro-seed uses this around noisy QEMU operations such as unattended Debian
+# installation. Those commands can legitimately run for a long time, so a fixed
+# wall-clock timeout is brittle; what matters is whether the command is still
+# making progress. This wrapper appends combined stdout/stderr to a log, resets
+# its idle timer whenever output arrives, and terminates the command if output
+# stops for too long.
+#
+# When given a QMP socket, a QEMU SHUTDOWN event is treated as successful
+# completion. That lets the VM installer power itself off cleanly without
+# relying on qemu-system to print one final line or exit at exactly the same
+# moment.
 
 import argparse
 import json
