@@ -72,4 +72,4 @@ Enable the option under Components->Hello world, and optionally change the text 
 make
 ```
 
-After the build completes, the work/rootfs/ directory that shows the shipping filesystem will include a helloworld file.
+After the build completes, the generated rootfs tar in `work/output/` will include a helloworld file.

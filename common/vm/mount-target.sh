@@ -2,8 +2,10 @@
 
 /src/common/vm/ensure-rootfs-bind.sh
 
-mountpoint -q /work/rootfs/proc || mount -t proc proc /work/rootfs/proc
-mountpoint -q /work/rootfs/sys || mount -t sysfs sysfs /work/rootfs/sys
-mountpoint -q /work/rootfs/dev || mount --bind /dev /work/rootfs/dev
-mkdir -p /work/rootfs/dev/pts
-mountpoint -q /work/rootfs/dev/pts || mount --bind /dev/pts /work/rootfs/dev/pts
+ROOTFS="${DS_TARGET_ROOTFS:-/vm-work/rootfs}"
+
+mountpoint -q "$ROOTFS/proc" || mount -t proc proc "$ROOTFS/proc"
+mountpoint -q "$ROOTFS/sys" || mount -t sysfs sysfs "$ROOTFS/sys"
+mountpoint -q "$ROOTFS/dev" || mount --bind /dev "$ROOTFS/dev"
+mkdir -p "$ROOTFS/dev/pts"
+mountpoint -q "$ROOTFS/dev/pts" || mount --bind /dev/pts "$ROOTFS/dev/pts"

@@ -35,7 +35,7 @@ The cmdtype can be one of these options:
   * Executes the "cmd" script in a target-matching build chroot inside the QEMU VM. The chroot uses the selected distro/release and includes cross compilers and target-architecture development packages.
   * Most source builds should use `cross`.
 * target
-  * These tasks are executed in the target rootfs from inside the QEMU VM. The task script specified in cmd is copied to work/rootfs/run_in_chroot, then chrooted and executed.
+  * These tasks are executed in the target rootfs from inside the QEMU VM. The task script specified in cmd is copied into the VM-local rootfs, then chrooted and executed.
   * Whenever possible target's "cmd" should point at a bash script for best compatibility between target distributions.
 * dummy
   * These tasks perform nothing, and are only used for dependency synchronization.
