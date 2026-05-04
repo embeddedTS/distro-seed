@@ -8,6 +8,10 @@ common/host/fetch_git.sh "$GITURL" "$CONFIG_DS_COMPONENT_MURATA_NXP_LINUX_CALIBR
 
 install -d "$DS_OVERLAY/lib/firmware/nxp/murata/"
 install -d "$DS_OVERLAY/lib/firmware/nxp/murata/files"
+if [[ -n "$CONFIG_DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_GIT_VERSION" ]]; then
+    install -d "$DS_OVERLAY_CONTROL"
+    printf '%s\n' "$CONFIG_DS_COMPONENT_MURATA_NXP_LINUX_CALIBRATION_GIT_VERSION" > "$DS_OVERLAY_CONTROL/version"
+fi
 
 install -m 644 "${SOURCE}/LICENSE" "$DS_OVERLAY/lib/firmware/nxp/murata/LICENSE"
 install -m 644 "${SOURCE}/murata/switch_regions.sh" "$DS_OVERLAY/lib/firmware/nxp/murata/"

@@ -9,6 +9,8 @@ install -d "$SOURCE"
 common/host/fetch_git.sh "$GITURL" "$GITVERSION" "$SOURCE"
 
 install -d "$DS_OVERLAY/lib/firmware/"
+install -d "$DS_OVERLAY_CONTROL"
+printf '%s\n' "$GITVERSION" > "$DS_OVERLAY_CONTROL/version"
 
 if [ "$CONFIG_DS_COMPONENT_LINUX_FIRMWARE_QCA9377" = "y" ]; then
         # Bluetooth

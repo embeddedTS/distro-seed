@@ -79,3 +79,6 @@ if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
     )
     common/host/store_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"
 fi
+
+install -d "$DS_OVERLAY_CONTROL"
+make -s -C "$SOURCE" kernelrelease > "$DS_OVERLAY_CONTROL/version"

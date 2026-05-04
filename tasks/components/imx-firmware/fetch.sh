@@ -8,6 +8,10 @@ install -d "$SOURCE"
 common/host/fetch_git.sh "$GITURL" "$CONFIG_DS_COMPONENT_IMX_FIRMWARE_GIT_VERSION" "$SOURCE"
 
 install -d "$DS_OVERLAY/lib/firmware/nxp/"
+if [[ -n "$CONFIG_DS_COMPONENT_IMX_FIRMWARE_GIT_VERSION" ]]; then
+    install -d "$DS_OVERLAY_CONTROL"
+    printf '%s\n' "$CONFIG_DS_COMPONENT_IMX_FIRMWARE_GIT_VERSION" > "$DS_OVERLAY_CONTROL/version"
+fi
 
 if [ "${CONFIG_DS_COMPONENT_IMX_FIRMWARE_IW612_SD}" == "y" ]; then
     install -m 644 "${SOURCE}/nxp/FwImage_IW612_SD/sd_w61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"

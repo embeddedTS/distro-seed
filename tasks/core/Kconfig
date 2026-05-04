@@ -17,31 +17,31 @@ config DS_CORE_PACKAGELIST_CROSS_PREP
 config DS_CROSS_READY
     bool
     default "y"
-config DS_CORE_COMBINE_OVERLAYS
+config DS_TARGET_LOCAL_PACKAGES
     bool
     default "y"
-config DS_CORE_CHROOT_PREP
+config DS_TARGET_CHROOT_PREP
     bool
     default "y"
-config DS_APT_CONFIGURED
+config DS_TARGET_APT_CONFIGURED
     bool
     default "y"
-config DS_CORE_CHROOT_CLEAN
+config DS_TARGET_CHROOT_CLEAN
     bool
     default "y"
-config DS_CHROOT_LATE
+config DS_TARGET_CHROOT_LATE
     bool
     default "y"
-config DS_ROOTFS_IDENTIFIABLE
+config DS_TARGET_ROOTFS_IDENTIFIABLE
     bool
     default "y"
 config DS_SET_TEMPORARY_RESOLV
     bool
     default "y"
-config DS_CHROOT_READY
+config DS_TARGET_CHROOT_READY
     bool
     default "y"
-config DS_ROOTFS_READY
+config DS_TARGET_ROOTFS_READY
     bool
     default "y"
 config DS_CORE_MULTISTRAP_CONF
@@ -50,7 +50,7 @@ config DS_CORE_MULTISTRAP_CONF
 config DS_CORE_PACKAGELIST
     bool
     default "y"
-config DS_CORE_IMAGES_READY
+config DS_TARGET_IMAGES_READY
     bool
     default "y"
 config DS_CORE_PACKAGELIST_PREP
@@ -59,7 +59,7 @@ config DS_CORE_PACKAGELIST_PREP
 config DS_DISTRO_PACKAGELIST_EXTRA
     bool
     default "y"
-config DS_INSTALL_LATE_PACKAGES_INSTALL
+config DS_TARGET_LATE_PACKAGES_INSTALL
     bool
     default "y"
 

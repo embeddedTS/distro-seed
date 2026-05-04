@@ -1,9 +1,12 @@
 #!/bin/bash -e
 
 URL="https://github.com/linux4wilc/firmware/archive/refs/tags/wilc_linux_16_3.tar.gz"
+VERSION="16.3"
 PRJ_WORK="$DS_WORK/wilc-firmware/"
 
 install -d "$DS_OVERLAY/lib/firmware/mchp/"
+install -d "$DS_OVERLAY_CONTROL"
+printf '%s\n' "$VERSION" > "$DS_OVERLAY_CONTROL/version"
 install -d "$PRJ_WORK"
 
 common/host/fetch_tar.sh "$URL" "$PRJ_WORK"
