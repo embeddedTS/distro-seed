@@ -188,7 +188,7 @@ set -e
 umask 022
 /src/common/vm/ensure-cross.sh
 CROSS_ROOT=/tmp/distro-seed-cross
-for dir in cache dl work src; do
+for dir in cache dl work src vm-work; do
     mkdir -p "$CROSS_ROOT/$dir"
     mountpoint -q "$CROSS_ROOT/$dir" || mount --bind "/$dir" "$CROSS_ROOT/$dir"
 done

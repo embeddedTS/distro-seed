@@ -4,11 +4,12 @@
 # any of its commands return an error:
 set -e
 
-INSTALL_DTBS_PATH="$DS_WORK/kernel/linux-dtbs"
-SOURCE="$DS_WORK/kernel/linux/"
-KBUILD_OUTPUT="$DS_WORK/kernel/linux-kbuild/"
+source /src/common/vm/ensure-kernel-tree.sh
+
+INSTALL_DTBS_PATH="$DS_KERNEL_DTBS"
+SOURCE="$DS_KERNEL_SOURCE"
 KERNEL_CACHE_KEY="$(cat $DS_WORK/kernel/linux-cache-key)"
-INSTALL="$DS_WORK/overlays/kernel/"
+INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 
 BUILD_OBJECT_KEY="linux-kernel-build-${KERNEL_CACHE_KEY}"
 INSTALL_OBJECT_KEY="linux-kernel-install-${KERNEL_CACHE_KEY}"
