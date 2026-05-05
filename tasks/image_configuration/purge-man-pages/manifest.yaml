@@ -1,6 +1,5 @@
 config: DS_PURGE_MAN_PAGES
 tasks:
-  - cmd: rm -rf /usr/share/man/*
+  - cmd: purge-man-pages.sh
     cmd_type: target
     description: Purging man pages
-
