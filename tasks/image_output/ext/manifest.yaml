@@ -4,4 +4,5 @@ tasks:
     cmd_type: vm
     dependencies:
       - DS_TARGET_ROOTFS_READY
+    provides: DS_IMAGE_ROOTFS_EXT_GENERATED
     description: Packaging up output ext filesystem

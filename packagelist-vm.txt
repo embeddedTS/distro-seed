@@ -1,4 +1,6 @@
 apt-cacher-ng
+autoconf
+automake
 bash
 ca-certificates
 cpio
@@ -18,6 +20,8 @@ locales
 lz4
 make
 mmdebstrap
+libtool
+libconfuse-dev
 openssh-client
 pkg-config
 qemu-user-static
