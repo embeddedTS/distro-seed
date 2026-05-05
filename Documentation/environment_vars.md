@@ -11,20 +11,15 @@ Every script run by distro-seed has access to these core set of environment vari
 | DS_RELEASE        | X | X | X | X | Release name, eg "bullseye", or "jammy" |
 | DS_RELEASE_NUM    | X | X | X | X | Release number, eg "12", or "23.04" |
 | DS_TARGET_ARCH    | X | X | X | X | Architecture name, eg "armhf" or "armel" |
+| DS_MANIFEST_VERSION | X | X | X | X | Version string from the selected manifest. Defaults to `0.0.1`. |
+| DS_PKG_VERSION | X | X | X | X | Package version derived from the selected manifest. Blank when no manifest version is set. |
 | DS_OVERLAY        | X | X | X |   | Temporary package payload root for this task. If it contains files, distro-seed turns it into a generated local Debian package before installing it into the target rootfs. |
-| DS_OVERLAY_CONTROL | X | X | X |   | Temporary package control directory for this task. Supports optional `preinst`, `postinst`, `prerm`, `postrm`, and `version` files for the generated local Debian package. |
+| DS_OVERLAY_PKG_DEBIAN | X | X | X |   | Temporary metadata directory for this task, specifically the debian/ directory inside of the deb archive. This can override one or more of the `preinst`, `postinst`, `prerm`, `postrm`, or `control` files. |
 | DS_TASK_PATH      | X | X | X |   | Path to the manifest being executed |
 
-`host`, `vm`, and `cross` tasks can install target filesystem content into
-`DS_OVERLAY`. Distro-seed stores that content as metadata-preserving tar
-artifacts under `work/package-inputs/`, builds a local `.deb` in the VM, and
-installs it into the target rootfs in task order. These tasks run with umask
-`022`, and package payloads are built with root ownership by default. If a task
-needs intentional non-root ownership or other target-side setup, add an
-executable maintainer script through `DS_OVERLAY_CONTROL`, usually `postinst`.
+`host`, `vm`, and `cross` tasks can install target filesystem content into `DS_OVERLAY`. Distro-seed stores that content as metadata-preserving tar artifacts under `work/package-inputs/`, builds a local `.deb` in the VM, and installs it into the target rootfs in task order. These tasks run with umask `022`, and package payloads are built with root ownership by default. If a task needs intentional non-root ownership or other target-side setup, add an executable maintainer script through `DS_OVERLAY_PKG_DEBIAN`, usually `postinst`.
 
-If `DS_OVERLAY_CONTROL/version` exists, its first line is used as the generated
-package version. If it does not exist, distro-seed uses `0.0.1`.
+Generated package versions come from the selected manifest's `pkg_version`, or `${DS_MANIFEST_VERSION}~distroseed1` when `version` is set.
 
 The VM also has a native ext4 scratch disk mounted at `/vm-work`. It is not a host-shared directory, and is used for build trees that need normal Linux filesystem behavior. For example, kernel fetch tasks create source tar archives under `work/`, and the VM unpacks them into `/vm-work` before compiling.
 

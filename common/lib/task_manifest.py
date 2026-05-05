@@ -21,3 +21,5 @@ class TaskManifest:
     provides: str
     description: str
     auto_create_rdepends: bool
+    manifest_version: str
+    pkg_version: str

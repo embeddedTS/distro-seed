@@ -81,5 +81,15 @@ if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
     common/host/store_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"
 fi
 
-install -d "$DS_OVERLAY_CONTROL"
-make -s -C "$SOURCE" kernelrelease > "$DS_OVERLAY_CONTROL/version"
+install -d "$DS_OVERLAY_PKG_DEBIAN"
+kernel_release="$(make -s -C "$SOURCE" kernelrelease)"
+cat > "$DS_OVERLAY_PKG_DEBIAN/control" <<EOF
+Package: linux-image-distroseed
+Version: $kernel_release
+Architecture: $DS_TARGET_ARCH
+Maintainer: distro-seed <distro-seed@example.invalid>
+Section: kernel
+Priority: optional
+Description: distro-seed generated Linux kernel image
+ Generated from distro-seed task DS_KERNEL_PROVIDER_GIT.
+EOF

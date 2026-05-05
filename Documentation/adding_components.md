@@ -25,9 +25,10 @@ source tasks/components/hello-world/Kconfig
 Create a tasks/components/hello-world/manifest.yaml
 ```
 config: DS_COMPONENT_HELLO_WORLD
+version: "0.0.1"
 tasks:
-  - cmd: hello.sh
-    cmd_type: target
+- cmd: hello.sh
+  cmd_type: target
     description: Running hello world process
 ```
 
@@ -39,11 +40,7 @@ The entry "cmd:" is the name of the script that should be run.  This path is rel
 
 The cmd_type specifies where that command should be run. This can be set to host, vm, cross, target, dummy, packagelist, or packagelist-cross. These are described more in the yaml documentation, but this script will be run on "target" which is executed in the target image as if it were run on a board.
 
-For host, vm, and cross tasks, install target filesystem content into
-`DS_OVERLAY`. Distro-seed stores that content as a tar artifact, converts it
-into a generated local Debian package, and installs it into the target rootfs. A
-task can also write `preinst`, `postinst`, `prerm`, `postrm`, or `version` under
-`DS_OVERLAY_CONTROL` to customize the generated package.
+For host, vm, and cross tasks, install target filesystem content into `DS_OVERLAY`. Distro-seed stores that content as a tar artifact, converts it into a generated local Debian package, and installs it into the target rootfs. A task can also write `preinst`, `postinst`, `prerm`, `postrm`, or `control` under `DS_OVERLAY_PKG_DEBIAN` to customize the generated package metadata.
 
 The description is printed out when a task is being run to show the user the current build step.
 

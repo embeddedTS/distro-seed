@@ -2,6 +2,7 @@ The manifest.yaml specifies any tasks necessary to build an object. For example,
 
 ```
 config: DS_COMPONENT_TSSUPERVISORUPDATE
+version: "1.1.5"
 tasks:
 - cmd_type: host
   cmd: fetch.sh
@@ -19,6 +20,24 @@ config DS_COMPONENT_TSSUPERVISORUPDATE
         default "y"
 ```
 This would enable the config option without showing up in the menu, but satisy the kconfig symbol.
+
+# version
+The optional `version` field is exported to tasks as `DS_MANIFEST_VERSION`.
+Generated local Debian packages use `${DS_MANIFEST_VERSION}~distroseed1` when `version` is set. For non-semver upstream versions, set `pkg_version`, for example:
+```
+version: "20170113"
+pkg_version: "1.${DS_MANIFEST_VERSION}~distroseed1"
+```
+
+Packages may write their own control file to override the generated package version. This is used primarily when package version is driven by CONFIG_ settings, such as the kernel version, firmware versions, and some external kernel module versions.
+
+# overlays
+Manifests can be replaced for a specific distro/release by adding a sibling directory named with the selected distro and release number, for example:
+```
+tasks/components/ts4900-utils:debian:12/manifest.yaml
+```
+If that directory exists, distro-seed uses its manifest and runs commands relative to that overlay directory. Otherwise it uses the base task directory.
+See `Documentation/task_overlays.md` for more details.
 
 # tasks
 The tasks are a json list of the fields described before.  A single manifest can include any number of tasks, but most are 1-3 at most.
@@ -44,18 +63,9 @@ The cmdtype can be one of these options:
 * packagelist-cross
   * The packagelist-cross cmd executes on the host, but stdout is used to select packages installed into the cross chroot. Use this when a build task needs extra tools or target development packages.
 
-For `host`, `vm`, and `cross` tasks, target filesystem content should be written
-to `DS_OVERLAY`. If that directory is non-empty when the task exits, distro-seed
-stores it as a tar artifact, builds it into a generated local Debian package,
-and installs that package into the target rootfs later in task order. Optional
-Debian maintainer scripts and a package version can be written under
-`DS_OVERLAY_CONTROL`.
+For `host`, `vm`, and `cross` tasks, target filesystem content should be written to `DS_OVERLAY`. If that directory is non-empty when the task exits, distro-seed stores it as a tar artifact, builds it into a generated local Debian package, and installs that package into the target rootfs later in task order. Package metadata can be written under `DS_OVERLAY_PKG_DEBIAN`.
 
-Supported `DS_OVERLAY_CONTROL` files are `preinst`, `postinst`, `prerm`,
-`postrm`, and `version`. Maintainer scripts are installed into the generated
-package as executable files. Host, VM, and cross tasks run with umask `022`.
-Package payload ownership defaults to `root:root`; use maintainer scripts for
-intentional non-root ownership.
+`DS_OVERLAY_PKG_DEBIAN` is specifically the debian/ directory inside of the deb archive. It can override one or more of the `preinst`, `postinst`, `prerm`, `postrm`, or `control` files. Maintainer scripts are installed into the generated package as executable files. If `control` exists, it replaces distro-seed's generated Debian control file. Host, VM, and cross tasks run with umask `022`. Package payload ownership defaults to `root:root`; use maintainer scripts for intentional non-root ownership.
 
 ## cmd
 The cmd field is the name of the script to run. In general, this should point to a shell script, or python if it is a task run on the host.
