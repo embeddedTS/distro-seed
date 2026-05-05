@@ -4,6 +4,7 @@ ca-certificates
 cpio
 curl
 debian-archive-keyring
+ubuntu-keyring
 dhcpcd-base
 file
 gcc

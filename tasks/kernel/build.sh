@@ -4,7 +4,7 @@
 # any of its commands return an error:
 set -e
 
-source /src/common/vm/ensure-kernel-tree.sh
+source /src/common/vm/get_kernel_work_tree.sh
 
 INSTALL_DTBS_PATH="$DS_KERNEL_DTBS"
 SOURCE="$DS_KERNEL_SOURCE"

@@ -484,7 +484,7 @@ def interactive_shell(kind):
     if kind == "vm":
         script = _vm_pty_command("/bin/bash -il")
     elif kind == "cross":
-        script = "/src/common/vm/ensure-cross.sh\n" + _vm_pty_command(
+        script = "/src/tasks/core/cross_ready/setup-cross.sh\n" + _vm_pty_command(
             "/usr/sbin/chroot /tmp/distro-seed-cross /bin/bash -il"
         )
     elif kind == "target":
