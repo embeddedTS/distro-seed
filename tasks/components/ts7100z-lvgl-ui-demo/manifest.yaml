@@ -1,4 +1,5 @@
 config: DS_COMPONENT_TS7100Z_LVGL_UI_DEMO
+version: "1.0.0"
 tasks:
 - cmd: build.sh
   cmd_type: cross

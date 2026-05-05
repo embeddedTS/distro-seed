@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/ts7100z-lvgl-ui-demo"
 GITURL="https://github.com/embeddedts/ts7100z-lvgl-ui-demo"
-GITVERSION="v1.0.0"
+GITVERSION="v${DS_MANIFEST_VERSION}"
 
 install -d "$SOURCE"
 

@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/lv_drivers"
 GITURL="https://github.com/lvgl/lv_drivers.git"
-GITVERSION="v8.3.0"
+GITVERSION="v${DS_MANIFEST_VERSION}"
 
 install -d "$SOURCE"
 

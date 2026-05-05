@@ -1,4 +1,5 @@
 config: DS_COMPONENT_LIBLVGL
+version: "8.3.9"
 tasks:
 - cmd: build.sh
   cmd_type: cross

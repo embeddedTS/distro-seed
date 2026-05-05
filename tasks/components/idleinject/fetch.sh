@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/idleinject/"
 GITURL="https://github.com/embeddedTS/idleinject.git"
-GITVERSION="v1.1.0"
+GITVERSION="v${DS_MANIFEST_VERSION}"
 
 install -d "$SOURCE"
 

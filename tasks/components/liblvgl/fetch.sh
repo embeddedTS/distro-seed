@@ -2,7 +2,7 @@
 
 SOURCE="$DS_WORK/components/lvgl"
 GITURL="https://github.com/lvgl/lvgl.git"
-GITVERSION="v8.3.9"
+GITVERSION="v${DS_MANIFEST_VERSION}"
 
 install -d "$SOURCE"
 

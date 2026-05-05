@@ -1,4 +1,5 @@
 config: DS_COMPONENT_TS7400V2_UTILS
+version: "1.0.1"
 tasks:
 - cmd: fetch.sh
   cmd_type: host

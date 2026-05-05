@@ -1,10 +1,10 @@
 config: DS_COMPONENT_TS7553V2_UTILS
-version: "3.0.0"
+version: "2.0.0"
 tasks:
-- cmd: fetch.sh
+- cmd: ../ts7553v2-utils/fetch.sh
   cmd_type: host
   description: Downloading ts7553v2-utils
 
-- cmd: build.sh
+- cmd: ../ts7553v2-utils/build.sh
   cmd_type: cross
   description: Building ts7553v2-utils
