@@ -1,6 +1,6 @@
 config: DS_CROSS_READY
 tasks:
-- cmd: ensure_cross.sh
+- cmd: setup-cross.sh
   cmd_type: vm
   dependencies:
     - DS_VM_READY

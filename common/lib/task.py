@@ -168,102 +168,23 @@ class Task:
             with open(packagelist_file, 'w', encoding='utf-8') as packagelist:
                 subprocess.run(full_cmd, check=True, env=taskenv, stdout=packagelist)
         elif self.cmd_type == "vm":
-            vm_cmd = f"/src/{full_cmd}"
-            package_input_name = self._package_input_name()
-            script = f"""
-set -e
-umask 022
-overlay_tmp="$(mktemp -d /tmp/ds-overlay.XXXXXX)"
-debian_tmp="$(mktemp -d /tmp/ds-overlay-debian.XXXXXX)"
-package_input="/work/package-inputs/{package_input_name}"
-rm -rf "$package_input"
-export DS_OVERLAY="$overlay_tmp"
-export DS_OVERLAY_DEBIAN="$debian_tmp"
-export DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}
-export DS_DEBIAN_VERSION={shlex.quote(self.debian_version)}
-export DS_TASK_PATH="/src/{self.path}"
-"{vm_cmd}"
-if [[ -n "$(find "$overlay_tmp" "$debian_tmp" -mindepth 1 -print -quit)" ]]; then
-    install -d "$package_input"
-    cat > "$package_input/metadata.env" <<'DS_METADATA'
-DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}
-DS_DEBIAN_VERSION={shlex.quote(self.debian_version)}
-DS_METADATA
-    if [[ -n "$(find "$overlay_tmp" -mindepth 1 -print -quit)" ]]; then
-        tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
-            -C "$overlay_tmp" -cpf "$package_input/data.tar" .
-    fi
-    if [[ -n "$(find "$debian_tmp" -mindepth 1 -print -quit)" ]]; then
-        tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
-            -C "$debian_tmp" -cpf "$package_input/debian.tar" .
-    fi
-fi
-rm -rf "$overlay_tmp"
-rm -rf "$debian_tmp"
-"""
-            vm.run_script(self.config, script)
+            taskenv = self._task_env({
+                "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
+                "DS_TASK_CMD": f"/src/{full_cmd}",
+                "DS_TASK_PATH": f"/src/{self.path}",
+            })
+            vm.run_script(self.config, "/src/common/vm/run-vm-task.sh", env=taskenv)
         elif self.cmd_type == "cross":
-            cross_cmd = f"/src/{full_cmd}"
-            package_input_name = self._package_input_name()
-            script = f"""
-set -e
-umask 022
-/src/common/vm/ensure-cross.sh
-CROSS_ROOT=/tmp/distro-seed-cross
-for dir in cache dl work src vm-work; do
-    mkdir -p "$CROSS_ROOT/$dir"
-    mountpoint -q "$CROSS_ROOT/$dir" || mount --bind "/$dir" "$CROSS_ROOT/$dir"
-done
-overlay_tmp="/tmp/ds-overlay-{package_input_name}"
-debian_tmp="/tmp/ds-overlay-debian-{package_input_name}"
-package_input="/work/package-inputs/{package_input_name}"
-rm -rf "$package_input"
-rm -rf "$CROSS_ROOT/$overlay_tmp"
-rm -rf "$CROSS_ROOT/$debian_tmp"
-mkdir -p "$CROSS_ROOT/$overlay_tmp"
-mkdir -p "$CROSS_ROOT/$debian_tmp"
-export DS_OVERLAY="$overlay_tmp"
-export DS_OVERLAY_DEBIAN="$debian_tmp"
-export DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}
-export DS_DEBIAN_VERSION={shlex.quote(self.debian_version)}
-export DS_TASK_PATH="/src/{self.path}"
-export -p > "$CROSS_ROOT/tmp/ds-env"
-cat >> "$CROSS_ROOT/tmp/ds-env" <<'EOS'
-source /distro-seed-cross-env
-EOS
-chroot "$CROSS_ROOT" /bin/bash -lc 'source /tmp/ds-env; cd /src; "{cross_cmd}"'
-if [[ -n "$(find "$CROSS_ROOT/$overlay_tmp" "$CROSS_ROOT/$debian_tmp" -mindepth 1 -print -quit)" ]]; then
-    install -d "$package_input"
-    cat > "$package_input/metadata.env" <<'DS_METADATA'
-DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}
-DS_DEBIAN_VERSION={shlex.quote(self.debian_version)}
-DS_METADATA
-    if [[ -n "$(find "$CROSS_ROOT/$overlay_tmp" -mindepth 1 -print -quit)" ]]; then
-        tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
-            -C "$CROSS_ROOT/$overlay_tmp" -cpf "$package_input/data.tar" .
-    fi
-    if [[ -n "$(find "$CROSS_ROOT/$debian_tmp" -mindepth 1 -print -quit)" ]]; then
-        tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
-            -C "$CROSS_ROOT/$debian_tmp" -cpf "$package_input/debian.tar" .
-    fi
-fi
-rm -rf "$CROSS_ROOT/$overlay_tmp"
-rm -rf "$CROSS_ROOT/$debian_tmp"
-"""
-            vm.run_script(self.config, script)
+            taskenv = self._task_env({
+                "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
+                "DS_TASK_CMD": f"/src/{full_cmd}",
+                "DS_TASK_PATH": f"/src/{self.path}",
+            })
+            vm.run_script(self.config, "/src/common/vm/run-cross-task.sh", env=taskenv)
         elif self.cmd_type == 'target':
-            target_cmd = f"/src/{full_cmd}"
-            script = f"""
-set -e
-/src/common/vm/mount-target.sh
-rootfs="${{DS_TARGET_ROOTFS:-/vm-work/rootfs}}"
-cp "{target_cmd}" "$rootfs/run_in_chroot"
-export DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}
-export DS_DEBIAN_VERSION={shlex.quote(self.debian_version)}
-export -p > "$rootfs/tmp/ds-env"
-chroot "$rootfs" /bin/bash -lc 'source /tmp/ds-env; /run_in_chroot'
-rm -f "$rootfs/run_in_chroot" "$rootfs/tmp/ds-env"
-"""
-            vm.run_script(self.config, script)
+            taskenv = self._task_env({
+                "DS_TASK_CMD": f"/src/{full_cmd}",
+            })
+            vm.run_script(self.config, "/src/common/vm/run-target-task.sh", env=taskenv)
         else:
             raise ValueError(f"Invalid cmd_type {self.cmd_type} from {self.config}")
