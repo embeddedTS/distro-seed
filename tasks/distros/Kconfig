@@ -75,7 +75,7 @@ config DS_PACKAGELIST
 	  Set a package list to use to generate the image. See the files under
 	  packagelist/
 
-	default "debian-11-minimal.txt" if DS_DISTRO_DEBIAN_11 
+	default "debian-11-minimal.txt" if DS_DISTRO_DEBIAN_11
 	default "debian-12-minimal.txt" if DS_DISTRO_DEBIAN_12
 	default "debian-13-minimal.txt" if DS_DISTRO_DEBIAN_13
 	default "ubuntu_22_04-minimal.txt" if DS_DISTRO_UBUNTU_22_04

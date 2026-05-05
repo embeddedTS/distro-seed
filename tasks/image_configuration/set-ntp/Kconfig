@@ -1,12 +1,12 @@
-config DS_USE_NTPSERVER
+config DS_SET_NTPSERVER
 	default y
 	bool "Enable NTP"
 	help
 	  Enable NTP by default using timesyncd
 
-config DS_USE_NTPSERVER_PROVIDER
+config DS_SET_NTPSERVER_PROVIDER
 	string "NTP Server"
-	depends on DS_USE_NTPSERVER
+	depends on DS_SET_NTPSERVER
 	default "time.cloudflare.com"
 	help
 	  NTP server to use with timesyncd

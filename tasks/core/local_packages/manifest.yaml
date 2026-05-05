@@ -4,7 +4,7 @@ tasks:
   cmd_type: vm
   dependencies:
     - DS_VM_READY
-    - DS_DISTRO
+    - DS_DISTRO_ROOTFS
   provides: DS_TARGET_LOCAL_PACKAGES_BUILT
   auto_create_rdepends: true
   description: Generating local target Debian packages
