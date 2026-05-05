@@ -1,12 +1,12 @@
 config: DS_COMPONENT_TSMICROCTL
-version: "2.0.0"
+version: "1.0.3"
 tasks:
-- cmd: build.sh
+- cmd: ../tsmicroctl/build.sh
   cmd_type: cross
   description: Building tsmicroctl
-- cmd: fetch.sh
+- cmd: ../tsmicroctl/fetch.sh
   cmd_type: host
   description: Downloading tsmicroctl
-- cmd: install.sh
+- cmd: ../tsmicroctl/install.sh
   cmd_type: target
   description: Installing and Enabling tsmicroctl.service

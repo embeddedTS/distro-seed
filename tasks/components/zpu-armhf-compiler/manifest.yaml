@@ -1,4 +1,5 @@
 config: DS_COMPONENT_ZPU_ARMHF
+version: "3.4.2"
 tasks:
 - cmd: fetch.sh
   cmd_type: host

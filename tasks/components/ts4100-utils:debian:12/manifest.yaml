@@ -1,12 +1,12 @@
 config: DS_COMPONENT_TS4100_UTILS
-version: "3.0.0"
+version: "2.0.0"
 tasks:
-- cmd: fetch.sh
+- cmd: ../ts4100-utils/fetch.sh
   cmd_type: host
   provides: DS_ZPU_SRC
   description: Downloading ts4100-utils
 
-- cmd: build.sh
+- cmd: ../ts4100-utils/build.sh
   cmd_type: cross
   dependencies:
     - DS_CROSS_READY

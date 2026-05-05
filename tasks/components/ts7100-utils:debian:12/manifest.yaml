@@ -1,9 +1,9 @@
 config: DS_COMPONENT_TS7100_UTILS
-version: "2.0.0"
+version: "1.0.4"
 tasks:
-- cmd: build.sh
+- cmd: ../ts7100-utils/build.sh
   cmd_type: cross
   description: Building ts7100-utils
-- cmd: fetch.sh
+- cmd: ../ts7100-utils/fetch.sh
   cmd_type: host
   description: Downloading ts7100-utils
