@@ -1,10 +1,10 @@
 config: DS_COMPONENT_TS4900_UTILS
-version: "3.0.0"
+version: "2.0.2"
 tasks:
-- cmd: fetch.sh
+- cmd: ../ts4900-utils/fetch.sh
   cmd_type: host
   description: Downloading ts4900-utils
 
-- cmd: build.sh
+- cmd: ../ts4900-utils/build.sh
   cmd_type: cross
   description: Building ts4900-utils

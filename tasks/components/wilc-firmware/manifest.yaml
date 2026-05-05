@@ -1,4 +1,5 @@
 config: DS_COMPONENT_WILC3000_FIRMWARE
+version: "16.3"
 tasks:
 - cmd: fetch.sh
   cmd_type: host

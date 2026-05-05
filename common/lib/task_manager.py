@@ -8,10 +8,34 @@ import networkx as nx
 from lib.task_manifest import TaskManifest
 from lib.task import Task
 
+def _expand_version_template(template, manifest_version):
+    return template.replace("${DS_MANIFEST_VERSION}", manifest_version)
+
+def effective_manifest_file(manifest_file, distro=None, release_num=None):
+    """
+    Return the manifest that should be used for this base manifest. Distro/release
+    overlays live next to the base task directory as '<task>:<distro>:<release>'.
+    """
+    manifest_path = os.path.dirname(manifest_file)
+    if ":" in manifest_path:
+        return None
+
+    distro = distro or os.environ.get("DS_DISTRO")
+    release_num = release_num or os.environ.get("DS_RELEASE_NUM")
+    if distro and release_num:
+        overlay = f"{manifest_path}:{distro}:{release_num}/manifest.yaml"
+        if os.path.exists(overlay):
+            return overlay
+    return manifest_file
+
 def load_tasks_from_manifest(manifest_file):
     """
     Returns a list tasks from a single manifest filew
     """
+    manifest_file = effective_manifest_file(manifest_file)
+    if manifest_file is None:
+        return []
+
     manifest_path = os.path.dirname(manifest_file)
 
     tasks = []
@@ -19,6 +43,19 @@ def load_tasks_from_manifest(manifest_file):
     with open(manifest_file, 'r', encoding='utf-8') as f:
         manifest_data = yaml.safe_load(f)
         config = manifest_data['config']
+        manifest_version = str(manifest_data.get('version', ''))
+        if 'pkg_version' in manifest_data:
+            pkg_version = _expand_version_template(
+                str(manifest_data['pkg_version']),
+                manifest_version,
+            )
+        elif manifest_version:
+            pkg_version = _expand_version_template(
+                '${DS_MANIFEST_VERSION}~distroseed1',
+                manifest_version,
+            )
+        else:
+            pkg_version = ''
 
         for task_data in manifest_data['tasks']:
             task_config = TaskManifest(
@@ -27,7 +64,9 @@ def load_tasks_from_manifest(manifest_file):
                 dependencies = task_data.get('dependencies', []),
                 provides = task_data.get('provides', ""),
                 description = task_data['description'],
-                auto_create_rdepends = task_data.get('auto_create_rdepends', False)
+                auto_create_rdepends = task_data.get('auto_create_rdepends', False),
+                manifest_version = manifest_version,
+                pkg_version = pkg_version
             )
             if task_config.cmd_type not in ['host', 'vm', 'cross', 'target', 'dummy', 'packagelist', 'packagelist-cross']:
                 raise ValueError(f"Invalid task type '{task_config.cmd_type}' "

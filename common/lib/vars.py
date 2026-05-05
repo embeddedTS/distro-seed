@@ -60,7 +60,7 @@ def kconfig_export_vars(kconf):
     os.environ["DS_RELEASE_NUM"] = DS_RELEASE_NUM
     os.environ["DS_TARGET_ARCH"] = DS_TARGET_ARCH
     os.environ["DS_QEMU_STATIC"] = DS_QEMU_STATIC
-    # DS_OVERLAY and DS_OVERLAY_CONTROL are set per task at runtime.
+    # DS_OVERLAY and DS_OVERLAY_PKG_DEBIAN are set per task at runtime.
 
     # Set all config values
     for key, value in kconf.syms.items():

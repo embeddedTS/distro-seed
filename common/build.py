@@ -46,7 +46,11 @@ DS_QEMU_STATIC = os.environ['DS_QEMU_STATIC']
 tasks = []
 
 # Read in all manifests and create tasks for all of them
-manifests = glob.glob(os.path.join('tasks', '**', 'manifest.yaml'), recursive=True)
+manifests = [
+    manifest
+    for manifest in glob.glob(os.path.join('tasks', '**', 'manifest.yaml'), recursive=True)
+    if ':' not in os.path.dirname(manifest)
+]
 for manifest_file in manifests:
     try:
         tasks += task_manager.load_tasks_from_manifest(manifest_file)

@@ -3,6 +3,7 @@
 INPUTS="${DS_WORK}/package-inputs"
 PACKAGES="${DS_WORK}/packages"
 BUILD_ROOT="$(mktemp -d /tmp/ds-packages.XXXXXX)"
+PLACEHOLDER_VERSION="0.0.1~distroseed1"
 
 cleanup() {
     rm -rf "$BUILD_ROOT"
@@ -35,47 +36,53 @@ package_version() {
     if [[ "$raw" =~ ^[vV][0-9] ]]; then
         raw="${raw:1}"
     fi
-    raw="$(printf '%s' "$raw" | sed -E 's/[^A-Za-z0-9.+~]+/+/g; s/[+][+]+/+/g; s/^[+]//; s/[+]$//')"
-    if [[ ! "$raw" =~ ^[0-9] ]]; then
-        raw="0.0.1${raw:++$raw}"
-    fi
-    printf '%s\n' "${raw:-0.0.1}"
+    printf '%s\n' "$raw"
 }
 
 build_package() {
     input="$1"
     input_name="$(basename "$input")"
-    if [[ ! -f "$input/data.tar" && ! -f "$input/control.tar" ]]; then
+    if [[ ! -f "$input/data.tar" && ! -f "$input/debian.tar" ]]; then
         return
     fi
 
     name="$(package_name "$input")"
-    version="0.0.1"
+    version=""
+    if [[ -f "$input/metadata.env" ]]; then
+        source "$input/metadata.env"
+        version="${DS_PKG_VERSION:-}"
+    fi
 
     pkgroot="$BUILD_ROOT/$input_name"
-    controlroot="$BUILD_ROOT/$input_name-control"
+    debianroot="$BUILD_ROOT/$input_name-debian"
     rm -rf "$pkgroot"
-    rm -rf "$controlroot"
+    rm -rf "$debianroot"
     install -d "$pkgroot/DEBIAN"
-    install -d "$controlroot"
+    install -d "$debianroot"
 
     if [[ -f "$input/data.tar" ]]; then
         tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
             -C "$pkgroot" -xf "$input/data.tar"
     fi
-    if [[ -f "$input/control.tar" ]]; then
+    if [[ -f "$input/debian.tar" ]]; then
         tar --xattrs --xattrs-include='*' --acls --selinux --numeric-owner --sparse \
-            -C "$controlroot" -xf "$input/control.tar"
+            -C "$debianroot" -xf "$input/debian.tar"
     fi
 
-    if [[ -f "$controlroot/version" ]]; then
-        version="$(package_version "$(cat "$controlroot/version")")"
-    fi
-    if ! dpkg --validate-version "$version" >/dev/null 2>&1; then
-        version="0.0.1"
-    fi
+    if [[ -f "$debianroot/control" ]]; then
+        install -m 644 "$debianroot/control" "$pkgroot/DEBIAN/control"
+    else
+        if [[ -z "$version" ]]; then
+            echo "Warning: $name has no generated package version; using placeholder ${PLACEHOLDER_VERSION}" >&2
+            version="$PLACEHOLDER_VERSION"
+        fi
+        version="$(package_version "$version")"
+        if ! dpkg --validate-version "$version" >/dev/null 2>&1; then
+            echo "Error: $name has invalid generated package version: $version" >&2
+            return 1
+        fi
 
-    cat > "$pkgroot/DEBIAN/control" <<EOF
+        cat > "$pkgroot/DEBIAN/control" <<EOF
 Package: $name
 Version: $version
 Architecture: $DS_TARGET_ARCH
@@ -85,10 +92,11 @@ Priority: optional
 Description: distro-seed generated package for $input_name
  Generated from distro-seed task $input_name.
 EOF
+    fi
 
     for script in preinst postinst prerm postrm; do
-        if [[ -f "$controlroot/$script" ]]; then
-            install -m 755 "$controlroot/$script" "$pkgroot/DEBIAN/$script"
+        if [[ -f "$debianroot/$script" ]]; then
+            install -m 755 "$debianroot/$script" "$pkgroot/DEBIAN/$script"
         fi
     done
 

@@ -1,4 +1,6 @@
 config: DS_COMPONENT_TS4900_FPGA
+version: "20170510"
+pkg_version: "1.${DS_MANIFEST_VERSION}~distroseed1"
 tasks:
 - cmd_type: host
   cmd: fetch.sh

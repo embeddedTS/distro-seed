@@ -1,4 +1,6 @@
 config: DS_COMPONENT_WL12XX_FIRMWARE
+version: "20170113"
+pkg_version: "1.${DS_MANIFEST_VERSION}~distroseed1"
 tasks:
 - cmd: fetch.sh
   cmd_type: host
