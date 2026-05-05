@@ -25,6 +25,17 @@ target-shell:
 checkdeps:
 	@common/utils/check.py
 
+lint-tasks:
+	@common/utils/lint-tasks.py
+
+check-configs:
+	@set -e; \
+	for config in configs/*_defconfig; do \
+		echo "== $${config##*/} =="; \
+		$(MAKE) --no-print-directory "$${config##*/}" >/dev/null; \
+		$(MAKE) --no-print-directory dry-run >/dev/null; \
+	done
+
 plotdeps:
 	@common/build.py --plot-deps
 

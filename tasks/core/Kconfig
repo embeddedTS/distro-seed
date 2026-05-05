@@ -56,7 +56,7 @@ config DS_TARGET_IMAGES_READY
 config DS_CORE_PACKAGELIST_PREP
     bool
     default "y"
-config DS_DISTRO_PACKAGELIST_EXTRA
+config DS_TARGET_PACKAGELIST_EXTRA
     bool
     default "y"
 config DS_TARGET_LATE_PACKAGES_INSTALL
