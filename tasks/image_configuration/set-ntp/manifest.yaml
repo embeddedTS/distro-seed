@@ -1,4 +1,4 @@
-config: DS_USE_NTPSERVER
+config: DS_SET_NTPSERVER
 tasks:
   - cmd: set-ntp.sh
     cmd_type: target

@@ -4,8 +4,8 @@ tasks:
   cmd_type: vm
   dependencies:
     - DS_CORE_PACKAGELIST
-  provides: DS_DISTRO
-  description: Fetching Debian 12 distribution
+  provides: DS_DISTRO_ROOTFS
+  description: Creating Debian 12 target rootfs
 - cmd: sourceslist.sh
   cmd_type: host
-  description: Adding sources.list
+  description: Adding target apt sources

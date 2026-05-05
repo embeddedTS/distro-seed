@@ -1,4 +1,4 @@
-config: DS_WATCHDOG
+config: DS_COMPONENT_WATCHDOG
 tasks:
 - cmd: install.sh
   cmd_type: target
