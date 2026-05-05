@@ -9,3 +9,10 @@ config DS_COMPONENT_LINUX_FIRMWARE_QCA9377
 	depends on DS_COMPONENT_LINUX_FIRMWARE
 	help
 	  Installs support for QCA9377 based devices
+
+config DS_COMPONENT_LINUX_FIRMWARE_GIT_VERSION
+	string "linux-firmware GIT srcrev"
+	depends on DS_COMPONENT_LINUX_FIRMWARE
+	default "20230804"
+	help
+	  Specify tag or branch to checkout before installing firmware files.
