@@ -8,78 +8,63 @@ source /src/common/vm/get_kernel_work_tree.sh
 
 INSTALL_DTBS_PATH="$DS_KERNEL_DTBS"
 SOURCE="$DS_KERNEL_SOURCE"
-KERNEL_CACHE_KEY="$(cat $DS_WORK/kernel/linux-cache-key)"
-INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
-
-BUILD_OBJECT_KEY="linux-kernel-build-${KERNEL_CACHE_KEY}"
-INSTALL_OBJECT_KEY="linux-kernel-install-${KERNEL_CACHE_KEY}"
+KERNEL_INSTALL="$DS_KERNEL_INSTALL"
+PACKAGE_INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "armhf" ] && ARCH_DIR=arm
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "armel" ] && ARCH_DIR=arm
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "arm64" ] && ARCH_DIR=arm64
 [ -z "${ARCH_DIR}" ] && echo "Unsupported arch for kernel build: ${DS_TARGET_ARCH}" && exit 1
 
-# The kernel caching is a little unusual since we have two differenet objects to cache.
-# The installed kernel+modules make up one cached object, and the build objects make up
-# the other. We still need the build object in the cache to support building other modules
-# that may use the kernel source as a dependency.
-if ! common/host/fetch_cache_obj.sh "$BUILD_OBJECT_KEY" "$KBUILD_OUTPUT"; then
-    export KBUILD_OUTPUT INSTALL
-    (
-        cd "$SOURCE"
-        # CROSS_COMPILE and ARCH are set from the cross chroot
+rm -rf "$KBUILD_OUTPUT" "$KERNEL_INSTALL"
+export KBUILD_OUTPUT
+(
+    cd "$SOURCE"
+    # CROSS_COMPILE and ARCH are set from the cross chroot
 
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
-            TARGETS="$TARGETS Image"
-        fi
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
+        TARGETS="$TARGETS Image"
+    fi
 
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
-            TARGETS="$TARGETS zImage"
-        fi
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
+        TARGETS="$TARGETS zImage"
+    fi
 
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
-            export LOADADDR="$CONFIG_DS_KERNEL_INSTALL_UIMAGE_LOADADDR"
-            TARGETS="$TARGETS uImage"
-        fi
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
+        export LOADADDR="$CONFIG_DS_KERNEL_INSTALL_UIMAGE_LOADADDR"
+        TARGETS="$TARGETS uImage"
+    fi
 
-        make "$CONFIG_DS_KERNEL_DEFCONFIG"
-        make -j"$(nproc --all)" all $TARGETS
-    )
-    common/host/store_cache_obj.sh "$BUILD_OBJECT_KEY" "$KBUILD_OUTPUT"
-fi
+    make "$CONFIG_DS_KERNEL_DEFCONFIG"
+    make -j"$(nproc --all)" all $TARGETS
 
-if ! common/host/fetch_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"; then
-    export KBUILD_OUTPUT INSTALL
-    (
-        cd "$SOURCE"
+    install -d "${KERNEL_INSTALL}/boot"
+    INSTALL_MOD_PATH="${KERNEL_INSTALL}" make modules_install
 
-        install -d "${INSTALL}/boot"
-        INSTALL_MOD_PATH="${INSTALL}" make modules_install
+    # Copy out any pieces of the kernel build that we want in /boot
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/Image" "${KERNEL_INSTALL}/boot/Image"
+    fi
 
-        # Copy out any pieces of the kernel build that we want in /boot
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
-            cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/Image" "${INSTALL}/boot/Image"
-        fi
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/zImage" "${KERNEL_INSTALL}/boot/zImage"
+    fi
 
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
-            cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/zImage" "${INSTALL}/boot/zImage"
-        fi
+    if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/uImage" "${KERNEL_INSTALL}/boot/uImage"
+    fi
 
-        if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
-            cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/uImage" "${INSTALL}/boot/uImage"
-        fi
+    INSTALL_DTBS_PATH=$INSTALL_DTBS_PATH make dtbs_install
+    for dtb in $CONFIG_DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM; do
+        cp "$INSTALL_DTBS_PATH/${dtb}.dtb" "${KERNEL_INSTALL}/boot/"
+    done
+    for dtbo in $CONFIG_DS_KERNEL_INSTALL_DTBOS_FILESYSTEM; do
+        cp "$INSTALL_DTBS_PATH/${dtbo}.dtbo" "${KERNEL_INSTALL}/boot/"
+    done
+)
 
-        INSTALL_DTBS_PATH=$INSTALL_DTBS_PATH make dtbs_install
-        for dtb in $CONFIG_DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM; do
-            cp "$INSTALL_DTBS_PATH/${dtb}.dtb" "${INSTALL}/boot/"
-        done
-        for dtbo in $CONFIG_DS_KERNEL_INSTALL_DTBOS_FILESYSTEM; do
-            cp "$INSTALL_DTBS_PATH/${dtbo}.dtbo" "${INSTALL}/boot/"
-        done
-
-    )
-    common/host/store_cache_obj.sh "$INSTALL_OBJECT_KEY" "$INSTALL"
-fi
+install -d "$PACKAGE_INSTALL"
+cp -a "$KERNEL_INSTALL/." "$PACKAGE_INSTALL/"
 
 install -d "$DS_OVERLAY_PKG_DEBIAN"
 kernel_release="$(make -s -C "$SOURCE" kernelrelease)"

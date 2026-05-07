@@ -11,7 +11,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-common/host/fetch_cache_obj.sh "linux-kernel-install-${DS_KERNEL_CACHE_KEY}" "$INSTALL"
+cp -a "$DS_KERNEL_INSTALL/." "$INSTALL/"
 
 cd "$KERNEL_SOURCE"
 make M="$SOURCE" modules -j"$(nproc)"
