@@ -9,10 +9,10 @@ PKGVARIANT="${PKGVARIANT##*_}"
 PLATFORM="${PLATFORM%%_*}"
 DATE=$(date +"%Y%m%d")
 
-if [[ "$CONFIG_DS_GENIMAGE_PATH" = /* ]]; then
-	export GENIMAGE_CONFIG="$CONFIG_DS_GENIMAGE_PATH"
+if [[ "$CONFIG_DS_OUTPUT_GENIMAGE_PATH" = /* ]]; then
+	export GENIMAGE_CONFIG="$CONFIG_DS_OUTPUT_GENIMAGE_PATH"
 else
-	export GENIMAGE_CONFIG="/src/$CONFIG_DS_GENIMAGE_PATH"
+	export GENIMAGE_CONFIG="/src/$CONFIG_DS_OUTPUT_GENIMAGE_PATH"
 fi
 export GENIMAGE_INPUTPATH="$OUTPUT"
 export GENIMAGE_OUTPUTPATH="$OUTPUT"
@@ -38,12 +38,12 @@ cd "${OUTPUT}"
 mv disk.img "${FILENAME}"
 
 # Compress tarball
-if [[ "$CONFIG_DS_GENIMAGE_NONE" == 'y' ]]; then
+if [[ "$CONFIG_DS_OUTPUT_GENIMAGE_NONE" == 'y' ]]; then
 	true;
-elif [[ "$CONFIG_DS_GENIMAGE_XZ" == 'y' ]]; then
+elif [[ "$CONFIG_DS_OUTPUT_GENIMAGE_XZ" == 'y' ]]; then
 	xz -2 -T0 "${FILENAME}"
 	EXT=".xz"
-elif [[ "$CONFIG_DS_GENIMAGE_BZIP2" == 'y' ]]; then
+elif [[ "$CONFIG_DS_OUTPUT_GENIMAGE_BZIP2" == 'y' ]]; then
 	bzip2 "${FILENAME}"
 	EXT=".bz2"
 else

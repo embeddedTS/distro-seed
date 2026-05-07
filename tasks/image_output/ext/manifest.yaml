@@ -1,8 +1,8 @@
-config: DS_IMAGE_ROOTFS_EXT
+config: DS_OUTPUT_ROOTFS_EXT
 tasks:
   - cmd: package-ext.sh
     cmd_type: vm
     dependencies:
       - DS_TARGET_ROOTFS_READY
-    provides: DS_IMAGE_ROOTFS_EXT_GENERATED
+    provides: DS_OUTPUT_ROOTFS_EXT_GENERATED
     description: Packaging up output ext filesystem

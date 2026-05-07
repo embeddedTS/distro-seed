@@ -1,8 +1,29 @@
-# Adding a custom component
+# Adding a Task
 
-Create a new folder in tasks/components/hello-world/. Any subfolder under tasks/ will work as well.
+Tasks are the units distro-seed schedules to fetch sources, build software, assemble the target rootfs, configure the final image, and write output artifacts. This example adds a small component task, but the same manifest/Kconfig structure applies to other task domains under `tasks/`.
 
-In that folder, make a Kconfig.  For example:
+# Kconfig symbol names
+Use this format for new Kconfig symbols:
+
+```
+DS_<DOMAIN>_<SUBJECT>_<ATTRIBUTE/VARIANT>
+```
+
+The domains are:
+
+* `DS_DISTRO_*` for selecting the target distro/release and distro package-list inputs.
+* `DS_ARCH_*` for selecting the target architecture.
+* `DS_COMPONENT_*` for installable software, firmware, services, and other target content. If a task installs a feature and also writes its default config, keep it in `DS_COMPONENT_*`; for example, `DS_COMPONENT_WATCHDOG`, `DS_COMPONENT_WATCHDOG_DEVICE`, and `DS_COMPONENT_WATCHDOG_TIMEOUT`.
+* `DS_MODULE_*` for external kernel modules.
+* `DS_KERNEL_*` for kernel source/build/install options.
+* `DS_OUTPUT_*` for generated artifacts, such as `DS_OUTPUT_ROOTFS_TAR`, `DS_OUTPUT_ROOTFS_EXT`, and `DS_OUTPUT_GENIMAGE`.
+* `DS_SET_*` for image-configuration tasks that only set final target state, such as users, locales, hostname, timezone, or NTP server.
+* `DS_CORE_*` for hidden framework orchestration.
+
+# Example component
+Create a new folder in `tasks/components/hello-world/`. Any subfolder under `tasks/` will work as well.
+
+In that folder, make a Kconfig. For example:
 ```
 config DS_COMPONENT_HELLO_WORLD
 	bool "Hello world"
@@ -29,7 +50,7 @@ version: "0.0.1"
 tasks:
 - cmd: hello.sh
   cmd_type: target
-    description: Running hello world process
+  description: Running hello world process
 ```
 
 The config line specifies which config causes this task to run. This must be enabled in the .config file through ```make menuconfig```. If this is not =y, none of the below steps are run.
