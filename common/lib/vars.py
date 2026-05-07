@@ -47,12 +47,10 @@ def kconfig_export_vars(kconf):
     DS_DL = os.path.dirname(DS_HOST_ROOT_PATH + "/dl/")
     DS_WORK = os.path.dirname(DS_HOST_ROOT_PATH + "/work/")
     DS_CACHE = os.path.dirname(DS_HOST_ROOT_PATH + "/cache/")
-    DS_TAG = f"distro-seed/{DS_TARGET_ARCH}-{DS_DISTRO}-{DS_RELEASE}"
 
     # Set common env variables
     os.environ["DS_WORK"] = DS_WORK
     os.environ["DS_DL"] = DS_DL
-    os.environ["DS_TAG"] = DS_TAG
     os.environ["DS_CACHE"] = DS_CACHE
     os.environ["DS_HOST_ROOT_PATH"] = DS_HOST_ROOT_PATH
     os.environ["DS_DISTRO"] = DS_DISTRO
