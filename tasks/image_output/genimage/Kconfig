@@ -1,26 +1,26 @@
-config DS_GENIMAGE
+config DS_OUTPUT_GENIMAGE
     bool "Create image with genimage"
     help
       Generates a disk image from a config file and the other generated files
 
-config DS_GENIMAGE_PATH
+config DS_OUTPUT_GENIMAGE_PATH
     string "Path to genimage config file"
-    depends on DS_GENIMAGE
+    depends on DS_OUTPUT_GENIMAGE
     help
       Path relative to distro-seed to the genimage config file
 
-if  DS_GENIMAGE
+if  DS_OUTPUT_GENIMAGE
 choice
         prompt "Disk image compression format"
-        default DS_GENIMAGE_XZ
+        default DS_OUTPUT_GENIMAGE_XZ
 
-config DS_GENIMAGE_NONE
+config DS_OUTPUT_GENIMAGE_NONE
         bool "No compression"
 
-config DS_GENIMAGE_XZ
+config DS_OUTPUT_GENIMAGE_XZ
         bool "xz compression"
 
-config DS_GENIMAGE_BZIP2
+config DS_OUTPUT_GENIMAGE_BZIP2
         bool "bz2 compression"
 
 endchoice
