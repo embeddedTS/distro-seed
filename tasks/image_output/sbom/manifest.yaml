@@ -1,0 +1,13 @@
+config: DS_OUTPUT_SBOM
+tasks:
+  - cmd: generate-spdx-sbom.sh
+    cmd_type: vm
+    dependencies:
+      - DS_TARGET_LATE_PACKAGES_INSTALL
+    provides: DS_OUTPUT_SBOM_GENERATED
+    description: Generate SPDX SBOM for output image
+  - cmd: copy-kernel-sbom.sh
+    cmd_type: host
+    dependencies:
+      - DS_OUTPUT_SBOM_GENERATED
+    description: Copy kernel SPDX SBOM output
