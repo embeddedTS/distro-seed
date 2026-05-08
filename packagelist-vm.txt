@@ -26,6 +26,7 @@ libconfuse-dev
 openssh-client
 pkg-config
 qemu-user-static
+python3-venv
 rsync
 sudo
 systemd-sysv
