@@ -68,13 +68,23 @@ cp -a "$KERNEL_INSTALL/." "$PACKAGE_INSTALL/"
 
 install -d "$DS_OVERLAY_PKG_DEBIAN"
 kernel_release="$(make -s -C "$SOURCE" kernelrelease)"
+kernel_source_name="${CONFIG_DS_KERNEL_PROVIDER_GIT_URL:-linux-distroseed}"
+kernel_source_name="${kernel_source_name%/}"
+kernel_source_name="${kernel_source_name##*/}"
+kernel_source_name="${kernel_source_name%.git}"
+kernel_source_name="$(printf '%s' "$kernel_source_name" \
+    | tr '[:upper:]_' '[:lower:]-' \
+    | sed -E 's/[^a-z0-9.+-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')"
+kernel_source_name="${kernel_source_name:-linux-distroseed}"
 cat > "$DS_OVERLAY_PKG_DEBIAN/control" <<EOF
 Package: linux-image-distroseed
+Source: $kernel_source_name
 Version: $kernel_release
 Architecture: $DS_TARGET_ARCH
 Maintainer: distro-seed <distro-seed@example.invalid>
 Section: kernel
 Priority: optional
+Homepage: ${CONFIG_DS_KERNEL_PROVIDER_GIT_URL}
 Description: distro-seed generated Linux kernel image
  Generated from distro-seed task DS_KERNEL_PROVIDER_GIT.
 EOF
