@@ -1,0 +1,15 @@
+[Unit]
+Description=distro-seed serial agent
+Requires=ds-vm-runtime-setup.service
+After=systemd-modules-load.service ds-vm-runtime-setup.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+StandardOutput=journal+console
+StandardError=journal+console
+ExecStart=/usr/local/sbin/ds-start-serial-agent /dev/virtio-ports/ds-control
+
+[Install]
+WantedBy=multi-user.target

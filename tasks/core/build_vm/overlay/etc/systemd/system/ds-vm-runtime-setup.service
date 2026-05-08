@@ -1,0 +1,12 @@
+[Unit]
+Description=distro-seed VM runtime setup
+Wants=network-online.target
+After=systemd-modules-load.service local-fs.target network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ds-vm-runtime-setup
+
+[Install]
+WantedBy=multi-user.target

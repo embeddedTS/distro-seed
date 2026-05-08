@@ -1,0 +1,2 @@
+auto enp0s4
+iface enp0s4 inet dhcp
