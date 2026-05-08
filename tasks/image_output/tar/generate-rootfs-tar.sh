@@ -3,17 +3,11 @@
 ROOTFS="${DS_TARGET_ROOTFS:-${DS_WORK}/rootfs}"
 OUTPUT="${DS_WORK}/output"
 
-PLATFORM=$(basename "${CONFIG_DS_DEFCONFIG}")
-PKGVARIANT="${PLATFORM%%_defconfig}"
-PKGVARIANT="${PKGVARIANT##*_}"
-PLATFORM="${PLATFORM%%_*}"
-DATE=$(date +"%Y%m%d")
-
 install -d "${OUTPUT}"
 
 
 # Build final filename
-FILENAME="${PLATFORM}-${DS_DISTRO}-${DS_RELEASE_NUM}-${DS_RELEASE}-${PKGVARIANT}-${DATE}.tar"
+FILENAME="${DS_OUTPUT_BASENAME}.tar"
 
 # Create base tarball
 (

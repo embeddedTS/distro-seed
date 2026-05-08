@@ -2,6 +2,7 @@
 
 import os
 import sys
+from datetime import datetime, timezone
 from lib.kconfiglib import kconfiglib
 
 def kconfig_export_vars(kconf):
@@ -47,6 +48,12 @@ def kconfig_export_vars(kconf):
     DS_DL = os.path.dirname(DS_HOST_ROOT_PATH + "/dl/")
     DS_WORK = os.path.dirname(DS_HOST_ROOT_PATH + "/work/")
     DS_CACHE = os.path.dirname(DS_HOST_ROOT_PATH + "/cache/")
+    DS_BUILD_DATE = datetime.now(timezone.utc).strftime("%Y%m%d")
+    defconfig = os.path.basename(kconf.syms["DS_DEFCONFIG"].str_value)
+    platform = defconfig.split("_", 1)[0] if defconfig else "rootfs"
+    pkgvariant = defconfig[:-10] if defconfig.endswith("_defconfig") else defconfig
+    pkgvariant = pkgvariant.rsplit("_", 1)[-1] if pkgvariant else "image"
+    DS_OUTPUT_BASENAME = f"{platform}-{DS_DISTRO}-{DS_RELEASE_NUM}-{DS_RELEASE}-{pkgvariant}-{DS_BUILD_DATE}"
 
     # Set common env variables
     os.environ["DS_WORK"] = DS_WORK
@@ -58,6 +65,8 @@ def kconfig_export_vars(kconf):
     os.environ["DS_RELEASE_NUM"] = DS_RELEASE_NUM
     os.environ["DS_TARGET_ARCH"] = DS_TARGET_ARCH
     os.environ["DS_QEMU_STATIC"] = DS_QEMU_STATIC
+    os.environ["DS_BUILD_DATE"] = DS_BUILD_DATE
+    os.environ["DS_OUTPUT_BASENAME"] = DS_OUTPUT_BASENAME
     # DS_OVERLAY and DS_OVERLAY_PKG_DEBIAN are set per task at runtime.
 
     # Set all config values

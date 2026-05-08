@@ -13,6 +13,8 @@ Every script run by distro-seed has access to these core set of environment vari
 | DS_TARGET_ARCH    | X | X | X | X | Architecture name, eg "armhf" or "armel" |
 | DS_MANIFEST_VERSION | X | X | X | X | Version string from the selected manifest. Defaults to `0.0.1`. |
 | DS_PKG_VERSION | X | X | X | X | Package version derived from the selected manifest. Blank when no manifest version is set. |
+| DS_BUILD_DATE | X | X | X | X | UTC build date in `YYYYMMDD` format, set once by the host build process for stable output artifact names. |
+| DS_OUTPUT_BASENAME | X | X | X | X | Shared output artifact basename, without file type or compression extensions. |
 | DS_OVERLAY        | X | X | X |   | Temporary package payload root for this task. If it contains files, distro-seed turns it into a generated local Debian package before installing it into the target rootfs. |
 | DS_OVERLAY_PKG_DEBIAN | X | X | X |   | Temporary metadata directory for this task, specifically the debian/ directory inside of the deb archive. This can override one or more of the `preinst`, `postinst`, `prerm`, `postrm`, or `control` files. |
 | DS_TASK_PATH      | X | X | X |   | Path to the manifest being executed |
