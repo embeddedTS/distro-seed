@@ -1,0 +1,5 @@
+config DS_OUTPUT_SBOM
+	bool "SPDX SBOM"
+	default y
+	help
+	  Generate SPDX JSON SBOM files for final output artifacts using debsbom.
