@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-GENIMAGE="$DS_WORK/components/host-genimage/genimage"
+GENIMAGE="genimage"
 OUTPUT="$DS_WORK/output"
 
 PLATFORM=$(basename "${CONFIG_DS_DEFCONFIG}")
