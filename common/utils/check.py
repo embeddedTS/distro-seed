@@ -124,6 +124,13 @@ else:
     print("Install sha256sum for your host system")
     ret = 1
 
+if check_bin_in_path('md5sum'):
+    print("Pass: md5sum available")
+else:
+    print("Fail: md5sum missing")
+    print("Install md5sum for your host system")
+    ret = 1
+
 if check_free_space():
     print("Pass: Sufficient free space")
 else:
