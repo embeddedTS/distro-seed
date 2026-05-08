@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+
+control_dev="$1"
+
+echo "Starting distro-seed serial agent"
+modprobe virtio_console 2>/dev/null || true
+
+for _ in $(seq 1 120); do
+	if [ -e "$control_dev" ]; then
+		echo "Using distro-seed control port ${control_dev}"
+		exec /usr/local/sbin/ds-serial-agent <>"$control_dev" >&0 2>&1
+	fi
+	echo "Waiting for distro-seed control port"
+	sleep 1
+done
+
+echo "${control_dev} did not appear" >&2
+exit 1

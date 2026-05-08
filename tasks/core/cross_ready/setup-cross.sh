@@ -93,7 +93,7 @@ setup_cross_tools
 [[ -n "${CROSS_MIRROR:-}" ]] || fail "distro cross setup did not set CROSS_MIRROR"
 [[ -n "${CROSS_COMPONENTS:-}" ]] || fail "distro cross setup did not set CROSS_COMPONENTS"
 [[ -n "${CROSS_KEYRING:-}" ]] || fail "distro cross setup did not set CROSS_KEYRING"
-[[ -r "$CROSS_KEYRING" ]] || fail "required keyring ${CROSS_KEYRING} is missing; rebuild the VM cache after updating packagelist-vm.txt"
+[[ -r "$CROSS_KEYRING" ]] || fail "required keyring ${CROSS_KEYRING} is missing; rebuild the VM cache after updating tasks/core/build_vm/packagelist-vm.txt"
 
 declare -F write_cross_sources >/dev/null || fail "distro cross setup did not define write_cross_sources"
 

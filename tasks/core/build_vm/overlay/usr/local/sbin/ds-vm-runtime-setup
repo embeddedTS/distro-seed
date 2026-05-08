@@ -1,0 +1,21 @@
+#!/bin/bash
+set -eu
+
+export PATH=/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+
+for _ in $(seq 1 50); do
+	[ -b /dev/disk/by-id/virtio-ds-vm-work ] && break
+	sleep 0.1
+done
+
+if [ ! -b /dev/disk/by-id/virtio-ds-vm-work ]; then
+	echo "VM work disk did not appear" >&2
+	exit 1
+fi
+
+if ! blkid /dev/disk/by-id/virtio-ds-vm-work >/dev/null 2>&1; then
+	mkfs.ext4 -F -L ds-vm-work /dev/disk/by-id/virtio-ds-vm-work
+fi
+
+mountpoint -q /vm-work || mount /vm-work
+install -d -o apt-cacher-ng -g apt-cacher-ng /dl/debs /work/qemu-host/apt-cacher-ng

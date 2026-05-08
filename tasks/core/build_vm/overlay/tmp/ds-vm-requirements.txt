@@ -1,0 +1,1 @@
+debsbom[spdx]==0.7.2
