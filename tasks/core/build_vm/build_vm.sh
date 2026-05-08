@@ -124,7 +124,7 @@ d-i grub-installer/only_debian boolean true
 d-i grub-installer/bootdev string /dev/vda
 d-i finish-install/reboot_in_progress note
 d-i debian-installer/exit/poweroff boolean true
-d-i preseed/late_command string mkdir -p /target/usr/local/sbin /target/tmp; cp /ds-serial-agent /target/usr/local/sbin/ds-serial-agent; chmod 755 /target/usr/local/sbin/ds-serial-agent; cp /ds-late-command.sh /target/tmp/ds-late-command.sh; chmod 755 /target/tmp/ds-late-command.sh; in-target /tmp/ds-late-command.sh
+d-i preseed/late_command string mkdir -p /target/usr/local/sbin /target/tmp; cp /ds-serial-agent /target/usr/local/sbin/ds-serial-agent; chmod 755 /target/usr/local/sbin/ds-serial-agent; cp /ds-late-command.sh /target/tmp/ds-late-command.sh; cp /vm-requirements.txt /target/tmp/ds-vm-requirements.txt; chmod 755 /target/tmp/ds-late-command.sh; in-target /tmp/ds-late-command.sh
 EOF
 
 cat > "$BUILD_DIR/ds-late-command.sh" <<'EOF'
@@ -147,6 +147,29 @@ set_acng_option LogDir /work/qemu-host/apt-cacher-ng
 set_acng_option Port 3142
 set_acng_option BindAddress 127.0.0.1
 set_acng_option DlMaxRetries 10
+
+install_python_tools() {
+	venv=/opt/distro-seed/venv
+	requirements=/tmp/ds-vm-requirements.txt
+
+	if [ -x "${venv}/bin/debsbom" ]; then
+		return 0
+	fi
+
+	install -d "$(dirname "${venv}")"
+	python3 -m venv "${venv}"
+	"${venv}/bin/python" -m pip install --no-cache-dir -r "${requirements}"
+}
+
+install_python_tools
+
+cat > /etc/profile.d/distro-seed-venv.sh <<'VENVPROFILE'
+export DS_PYTHON_VENV="${DS_PYTHON_VENV:-/opt/distro-seed/venv}"
+if [ -r "${DS_PYTHON_VENV}/bin/activate" ]; then
+	. "${DS_PYTHON_VENV}/bin/activate"
+fi
+VENVPROFILE
+chmod 644 /etc/profile.d/distro-seed-venv.sh
 
 cat > /usr/local/sbin/ds-vm-runtime-setup <<'RUNTIMESETUP'
 #!/bin/bash
@@ -345,6 +368,7 @@ EOF
 	cp ../preseed.cfg preseed.cfg
 	cp "${DS_HOST_ROOT_PATH}/common/vm/ds-serial-agent" ds-serial-agent
 	cp ../ds-late-command.sh ds-late-command.sh
+	cp "${DS_HOST_ROOT_PATH}/tasks/core/build_vm/vm-requirements.txt" vm-requirements.txt
 	find . | cpio -o -H newc --quiet | gzip -9 > ../initrd-overlay.gz
 )
 

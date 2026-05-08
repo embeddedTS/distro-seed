@@ -14,6 +14,9 @@ import tty
 import uuid
 
 
+VM_PYTHON_VENV = "/opt/distro-seed/venv"
+
+
 class VMError(RuntimeError):
     pass
 
@@ -362,6 +365,7 @@ def vm_env(extra=None):
         "DS_HOST_ROOT_PATH": "/src",
         "DS_CACHE": "/cache",
         "DS_DL": "/dl",
+        "DS_PYTHON_VENV": VM_PYTHON_VENV,
         "DS_WORK": "/work",
         "DS_TARGET_ROOTFS": "/vm-work/rootfs",
     }
@@ -373,6 +377,7 @@ def vm_env(extra=None):
             "DS_HOST_ROOT_PATH": "/src",
             "DS_CACHE": "/cache",
             "DS_DL": "/dl",
+            "DS_PYTHON_VENV": VM_PYTHON_VENV,
             "DS_WORK": "/work",
             "DS_TARGET_ROOTFS": "/vm-work/rootfs",
         }
