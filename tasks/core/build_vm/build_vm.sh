@@ -26,7 +26,12 @@ for tool in qemu-system-x86_64 qemu-img xorriso cpio gzip sha256sum python3; do
 	fi
 done
 
-install -d "$QEMU_DIR"
+valid_qcow2() {
+	image="$1"
+	[[ -r "$image" ]] && qemu-img info -f qcow2 "$image" >/dev/null 2>&1
+}
+
+install -d "$QEMU_DIR" "$DS_CACHE"
 common/host/fetch_blob.sh "$ISO_URL" "$ISO" "$ISO_SHA256"
 
 CACHE_KEY="$(
@@ -35,23 +40,55 @@ CACHE_KEY="$(
 		sed -e 's/#.*$//' -e '/^$/d' "$PACKAGE_FILE"
 	} | sha256sum | cut -f 1 -d ' '
 )"
+CACHED_BASE_IMAGE="${DS_CACHE}/vm-base-${CACHE_KEY}.qcow2"
 
-if [[ -r "$KEY_FILE" && -r "$BASE_IMAGE" && "$(cat "$KEY_FILE")" == "$CACHE_KEY" ]]; then
+use_cached_base() {
+	echo "Using cached VM base image: $CACHED_BASE_IMAGE"
+	rm -f "$BASE_IMAGE"
+	ln -s "$CACHED_BASE_IMAGE" "$BASE_IMAGE"
+	printf '%s\n' "$CACHE_KEY" > "$KEY_FILE"
+}
+
+OLD_CACHE_KEY=""
+if [[ -r "$KEY_FILE" ]]; then
+	OLD_CACHE_KEY="$(cat "$KEY_FILE")"
+fi
+
+if [[ -n "$OLD_CACHE_KEY" && "$OLD_CACHE_KEY" != "$CACHE_KEY" ]]; then
+	echo "VM image cache key changed; removing old VM image"
+	rm -f "$BASE_IMAGE" "${QEMU_DIR}/runtime.qcow2"
+elif [[ -e "$BASE_IMAGE" ]] && ! valid_qcow2 "$BASE_IMAGE"; then
+	echo "VM image is invalid; removing old VM image"
+	rm -f "$BASE_IMAGE" "${QEMU_DIR}/runtime.qcow2"
+fi
+
+if [[ "$OLD_CACHE_KEY" == "$CACHE_KEY" ]] && valid_qcow2 "$BASE_IMAGE"; then
+	if ! valid_qcow2 "$CACHED_BASE_IMAGE"; then
+		rm -f "$CACHED_BASE_IMAGE"
+		if [[ -L "$BASE_IMAGE" ]]; then
+			cp --reflink=auto "$(readlink -f "$BASE_IMAGE")" "$CACHED_BASE_IMAGE"
+		else
+			mv "$BASE_IMAGE" "$CACHED_BASE_IMAGE"
+		fi
+	fi
+	use_cached_base
 	exit 0
 fi
 
 rm -f "${QEMU_DIR}/runtime.qcow2"
-if common/host/fetch_cache_obj.sh "$CACHE_KEY" "$QEMU_DIR"; then
-	if [[ -r "$KEY_FILE" && -r "$BASE_IMAGE" && "$(cat "$KEY_FILE")" == "$CACHE_KEY" ]]; then
-		exit 0
-	fi
+if valid_qcow2 "$CACHED_BASE_IMAGE"; then
+	use_cached_base
+	exit 0
 fi
 
-rm -rf "$BUILD_DIR" "$BASE_IMAGE"
+echo "Building VM base image: $CACHED_BASE_IMAGE"
+rm -rf "$BUILD_DIR"
+rm -f "$BASE_IMAGE" "$CACHED_BASE_IMAGE"
 install -d "$BUILD_DIR/initrd-overlay"
 QMP_SOCKET="${BUILD_DIR}/install-qmp.sock"
+BUILD_BASE_IMAGE="${BUILD_DIR}/base.qcow2"
 
-qemu-img create -f qcow2 "$BASE_IMAGE" 32G
+qemu-img create -f qcow2 "$BUILD_BASE_IMAGE" 32G
 xorriso -osirrox on -indev "$ISO" -extract /install.amd/vmlinuz "$BUILD_DIR/vmlinuz" -extract /install.amd/initrd.gz "$BUILD_DIR/initrd.gz" >/dev/null 2>&1
 
 PACKAGES="$(sed -e 's/#.*$//' -e '/^$/d' "$PACKAGE_FILE" | tr -s '[:space:]' ' ' | sed 's/^ //;s/ $//')"
@@ -334,7 +371,7 @@ python3 common/host/run_with_idle_timeout.py \
 	-kernel "$BUILD_DIR/vmlinuz" \
 	-initrd "$BUILD_DIR/initrd-preseed.gz" \
 	-append "auto=true priority=critical preseed/file=/preseed.cfg console=ttyS0,115200n8" \
-	-drive "if=virtio,file=${BASE_IMAGE},format=qcow2" \
+	-drive "if=virtio,file=${BUILD_BASE_IMAGE},format=qcow2" \
 	-cdrom "$ISO" \
 	-netdev user,id=net0 \
 	-device virtio-net-pci,netdev=net0 \
@@ -343,6 +380,7 @@ python3 common/host/run_with_idle_timeout.py \
 	-monitor none \
 	-serial stdio
 
+mv "$BUILD_BASE_IMAGE" "$CACHED_BASE_IMAGE"
+ln -s "$CACHED_BASE_IMAGE" "$BASE_IMAGE"
 printf '%s\n' "$CACHE_KEY" > "$KEY_FILE"
 rm -rf "$BUILD_DIR" "${QEMU_DIR}/runtime.qcow2"
-common/host/store_cache_obj.sh "$CACHE_KEY" "$QEMU_DIR"
