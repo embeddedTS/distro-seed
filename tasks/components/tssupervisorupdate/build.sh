@@ -1,8 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/tssupervisorupdate/"
-
-cd "$SOURCE"
+cd "${DS_TASK_WORK}"
 
 meson setup --cross-file "$MESON_CROSS" builddir
 cd builddir

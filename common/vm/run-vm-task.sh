@@ -13,6 +13,9 @@ elif [ -r "${DS_PYTHON_VENV}/bin/activate" ]; then
 	source "${DS_PYTHON_VENV}/bin/activate"
 fi
 
+/src/common/vm/sync-staging.sh
+mkdir -p "${DS_TASK_WORK}"
+
 overlay_tmp="$(mktemp -d /tmp/ds-overlay.XXXXXX)"
 debian_tmp="$(mktemp -d /tmp/ds-overlay-debian.XXXXXX)"
 package_input="/work/package-inputs/$DS_PACKAGE_INPUT_NAME"

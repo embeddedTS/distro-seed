@@ -17,9 +17,13 @@ Every script run by distro-seed has access to these core set of environment vari
 | DS_OUTPUT_BASENAME | X | X | X | X | Shared output artifact basename, without file type or compression extensions. |
 | DS_OVERLAY        | X | X | X |   | Temporary package payload root for this task. If it contains files, distro-seed turns it into a generated local Debian package before installing it into the target rootfs. |
 | DS_OVERLAY_PKG_DEBIAN | X | X | X |   | Temporary metadata directory for this task, specifically the debian/ directory inside of the deb archive. This can override one or more of the `preinst`, `postinst`, `prerm`, `postrm`, or `control` files. |
+| DS_TASK_WORK      | X | X | X |   | Persistent task work directory for source trees, build outputs, and other task-local data. Distro-seed creates this directory before the task runs. |
+| DS_TASK_WORK_* | X | X | X |   | Persistent task work directory for another enabled task, addressed by its config symbol or `provides` name. For example, a task that depends on the kernel can read `DS_TASK_WORK_DS_KERNEL`. |
 | DS_TASK_PATH      | X | X | X |   | Path to the manifest being executed |
 
 `host`, `vm`, and `cross` tasks can install target filesystem content into `DS_OVERLAY`. Distro-seed stores that content as metadata-preserving tar artifacts under `work/package-inputs/`, builds a local `.deb` in the VM, and installs it into the target rootfs in task order. These tasks run with umask `022`, and package payloads are built with root ownership by default. If a task needs intentional non-root ownership or other target-side setup, add an executable maintainer script through `DS_OVERLAY_PKG_DEBIAN`, usually `postinst`.
+
+`host`, `vm`, and `cross` tasks can also store reusable source and build data in `DS_TASK_WORK`. Distro-seed preserves this directory between task environments and exposes each enabled task's work directory as `DS_TASK_WORK_<CONFIG>`. If a manifest task declares `provides`, the same directory is also exposed as `DS_TASK_WORK_<PROVIDES>`.
 
 Generated package versions come from the selected manifest's `pkg_version`, or `${DS_MANIFEST_VERSION}~distroseed1` when `version` is set.
 

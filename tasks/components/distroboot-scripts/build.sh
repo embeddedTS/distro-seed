@@ -2,8 +2,6 @@
 
 set -e
 
-SOURCE="${DS_WORK}/components/distroboot-scripts/"
-install -d "${SOURCE}"
 install -d "${DS_OVERLAY}/boot/"
 
 if [ "${DS_TARGET_ARCH}" = "arm64" ]  ; then
@@ -13,7 +11,7 @@ else
     KERNEL_FILE=zImage
     BOOT_CMD=bootz
 fi
-TMP_BOOT_SOURCE="${SOURCE}/boot.source"
+TMP_BOOT_SOURCE="${DS_TASK_WORK}/boot.source"
 
 if [[ "${CONFIG_DS_COMPONENT_DISTROBOOT_EXTENSION}" == 'y' ]]; then
 cat > "${TMP_BOOT_SOURCE}" <<EOF

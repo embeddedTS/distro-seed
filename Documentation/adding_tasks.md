@@ -63,6 +63,8 @@ The cmd_type specifies where that command should be run. This can be set to host
 
 For host, vm, and cross tasks, install target filesystem content into `DS_OVERLAY`. Distro-seed stores that content as a tar artifact, converts it into a generated local Debian package, and installs it into the target rootfs. A task can also write `preinst`, `postinst`, `prerm`, `postrm`, or `control` under `DS_OVERLAY_PKG_DEBIAN` to customize the generated package metadata.
 
+For host, vm, and cross tasks, use `DS_TASK_WORK` for source trees, build directories, and other data that needs to survive outside the task process. Distro-seed creates this directory before the task runs. Other tasks can read it through `DS_TASK_WORK_<CONFIG>`, or through `DS_TASK_WORK_<PROVIDES>` when the producing manifest task declares a `provides` name.
+
 The description is printed out when a task is being run to show the user the current build step.
 
 Next up, create the hello script tasks/components/hello-world/hello.sh:
