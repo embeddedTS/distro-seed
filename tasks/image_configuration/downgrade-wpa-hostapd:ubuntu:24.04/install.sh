@@ -5,18 +5,10 @@ LIBSSL_DEB="libssl1.1_1.1.1f-1ubuntu2_${DS_TARGET_ARCH}.deb"
 WPA_DEB="wpasupplicant_2.9-1ubuntu4.6_${DS_TARGET_ARCH}.deb"
 HOSTAPD_DEB="hostapd_2.9-1ubuntu4.6_${DS_TARGET_ARCH}.deb"
 
-set +e
-dpkg -l | grep wpasupplicant >/dev/null 2>&1
-RES="${?}"
-set -e
-if [ "${RES}" -eq 0 ]; then
+if dpkg-query -W -f='${db:Status-Abbrev}' wpasupplicant 2>/dev/null | grep -q '^ii '; then
 	apt-get remove -y wpasupplicant
 
-	set +e
-	dpkg -l | grep hostapd >/dev/null 2>&1
-	RES="${?}"
-	set -e
-	if [ "${RES}" -eq 0 ]; then
+	if dpkg-query -W -f='${db:Status-Abbrev}' hostapd 2>/dev/null | grep -q '^ii '; then
 		apt-get remove -y hostapd
 	fi
 
