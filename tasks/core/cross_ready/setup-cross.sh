@@ -43,26 +43,26 @@ load_distro_cross_setup() {
 
 collect_packages() {
 	PKGS="apt ca-certificates gnupg locales build-essential autogen automake bash bc bison bzip2 cmake curl fakeroot file flex git gzip kmod libconfuse-dev libncursesw5-dev libssl-dev libtool lz4 lzop make meson mmdebstrap ncurses-dev pkg-config rsync runit strace u-boot-tools vim wget xz-utils zstd"
+	CROSS_PKGS=""
 	if [[ -d /work/packagelist-cross ]]; then
-		EXTRA="$(sed -e 's/#.*$//' -e '/^$/d' /work/packagelist-cross/* 2>/dev/null | tr -s '[:space:]' '\n' | sort -u | paste -sd' ' -)"
-		PKGS="${PKGS} ${EXTRA}"
+		CROSS_PKGS+=" $(sed -e 's/#.*$//' -e '/^$/d' /work/packagelist-cross/* 2>/dev/null | tr -s '[:space:]' '\n' | sort -u | paste -sd' ' -)"
 	fi
 }
 
 setup_cross_tools() {
 	case "$DS_TARGET_ARCH" in
 		armhf)
-			CROSS_PKGS="gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev:armhf libgpiod-dev:armhf"
+			CROSS_PKGS+=" gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev:armhf"
 			triplet=arm-linux-gnueabihf
 			arch=arm
 			;;
 		armel)
-			CROSS_PKGS="gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc6-dev:armel libgpiod-dev:armel"
+			CROSS_PKGS+=" gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc6-dev:armel"
 			triplet=arm-linux-gnueabi
 			arch=arm
 			;;
 		arm64)
-			CROSS_PKGS="gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev:arm64 libgpiod-dev:arm64"
+			CROSS_PKGS+=" gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev:arm64"
 			triplet=aarch64-linux-gnu
 			arch=arm64
 			;;
