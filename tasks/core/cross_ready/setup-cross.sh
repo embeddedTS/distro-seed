@@ -126,11 +126,13 @@ write_cross_sources "$CROSS_ROOT"
 
 chroot "$CROSS_ROOT" apt-get "${APT_CHROOT_OPTS[@]}" update
 DEBIAN_FRONTEND=noninteractive chroot "$CROSS_ROOT" apt-get "${APT_CHROOT_OPTS[@]}" install -y --no-install-recommends $CROSS_PKGS
+ln -sf pkg-config "$CROSS_ROOT/usr/bin/${triplet}-pkg-config"
 
 cat > "$CROSS_ROOT/distro-seed-cross-env" <<EOF_ENV
 export CROSS_COMPILE=${triplet}-
 export ARCH=${arch}
 export AUTOTOOLS_HOST=${triplet}
+export PKG_CONFIG=${triplet}-pkg-config
 export PKG_CONFIG_PATH=/usr/lib/${triplet}/pkgconfig:/usr/share/pkgconfig
 export PKG_CONFIG_LIBDIR=/usr/lib/${triplet}/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR=/
