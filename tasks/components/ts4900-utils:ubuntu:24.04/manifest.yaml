@@ -5,6 +5,10 @@ tasks:
   cmd_type: host
   description: Downloading ts4900-utils
 
+- cmd: ../ts4900-utils/cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts4900-utils cross dependencies
+
 - cmd: ../ts4900-utils/build.sh
   cmd_type: cross
   description: Building ts4900-utils

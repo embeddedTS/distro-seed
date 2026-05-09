@@ -10,6 +10,9 @@ tasks:
 - cmd: fetch.sh
   cmd_type: host
   description: Downloading ts7100z-lvgl-ui-demo
+- cmd: cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts7100z-lvgl-ui-demo cross dependencies
 - cmd: packages.sh
   cmd_type: packagelist
   description: Adding libinput0 package

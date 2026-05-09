@@ -5,6 +5,10 @@ tasks:
   cmd_type: host
   description: Downloading ts7680-utils
 
+- cmd: cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts7680-utils cross dependencies
+
 - cmd: build.sh
   cmd_type: cross
   description: Building ts7680-utils

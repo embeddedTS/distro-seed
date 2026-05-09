@@ -7,3 +7,6 @@ tasks:
 - cmd: ../ts7100-utils/fetch.sh
   cmd_type: host
   description: Downloading ts7100-utils
+- cmd: ../ts7100-utils/cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts7100-utils cross dependencies

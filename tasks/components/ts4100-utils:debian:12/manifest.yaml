@@ -6,6 +6,10 @@ tasks:
   provides: DS_ZPU_SRC
   description: Downloading ts4100-utils
 
+- cmd: ../ts4100-utils/cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts4100-utils cross dependencies
+
 - cmd: ../ts4100-utils/build.sh
   cmd_type: cross
   dependencies:
