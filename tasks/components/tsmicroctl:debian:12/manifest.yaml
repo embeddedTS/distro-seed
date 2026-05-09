@@ -7,6 +7,9 @@ tasks:
 - cmd: ../tsmicroctl/fetch.sh
   cmd_type: host
   description: Downloading tsmicroctl
+- cmd: ../tsmicroctl/cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding tsmicroctl cross dependencies
 - cmd: ../tsmicroctl/install.sh
   cmd_type: target
   description: Installing and Enabling tsmicroctl.service

@@ -5,6 +5,10 @@ tasks:
   cmd_type: host
   description: Downloading ts7553v2-utils
 
+- cmd: ../ts7553v2-utils/cross-packages.sh
+  cmd_type: packagelist-cross
+  description: Adding ts7553v2-utils cross dependencies
+
 - cmd: ../ts7553v2-utils/build.sh
   cmd_type: cross
   description: Building ts7553v2-utils
