@@ -4,11 +4,6 @@
 # any of its commands return an error:
 set -e
 
-source /src/common/vm/get_kernel_work_tree.sh
-
-INSTALL_DTBS_PATH="$DS_KERNEL_DTBS"
-SOURCE="$DS_KERNEL_SOURCE"
-KERNEL_INSTALL="$DS_KERNEL_INSTALL"
 PACKAGE_INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "armhf" ] && ARCH_DIR=arm
@@ -16,10 +11,11 @@ PACKAGE_INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "arm64" ] && ARCH_DIR=arm64
 [ -z "${ARCH_DIR}" ] && echo "Unsupported arch for kernel build: ${DS_TARGET_ARCH}" && exit 1
 
-rm -rf "$KBUILD_OUTPUT" "$KERNEL_INSTALL"
-export KBUILD_OUTPUT
+rm -rf "${DS_TASK_WORK}/build" "${DS_TASK_WORK}/dtbs" "${DS_TASK_WORK}/install"
+install -d "${DS_TASK_WORK}/build" "${DS_TASK_WORK}/dtbs" "${DS_TASK_WORK}/install"
+export KBUILD_OUTPUT="${DS_TASK_WORK}/build"
 (
-    cd "$SOURCE"
+    cd "${DS_TASK_WORK}/source"
     # CROSS_COMPILE and ARCH are set from the cross chroot
 
     if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
@@ -38,36 +34,36 @@ export KBUILD_OUTPUT
     make "$CONFIG_DS_KERNEL_DEFCONFIG"
     make -j"$(nproc --all)" all $TARGETS
 
-    install -d "${KERNEL_INSTALL}/boot"
-    INSTALL_MOD_PATH="${KERNEL_INSTALL}" make modules_install
+    install -d "${DS_TASK_WORK}/install/boot"
+    INSTALL_MOD_PATH="${DS_TASK_WORK}/install" make modules_install
 
     # Copy out any pieces of the kernel build that we want in /boot
     if [[ "$CONFIG_DS_KERNEL_INSTALL_IMAGE_FILESYSTEM" == 'y' ]]; then
-        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/Image" "${KERNEL_INSTALL}/boot/Image"
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/Image" "${DS_TASK_WORK}/install/boot/Image"
     fi
 
     if [[ "$CONFIG_DS_KERNEL_INSTALL_ZIMAGE_FILESYSTEM" == 'y' ]]; then
-        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/zImage" "${KERNEL_INSTALL}/boot/zImage"
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/zImage" "${DS_TASK_WORK}/install/boot/zImage"
     fi
 
     if [[ "$CONFIG_DS_KERNEL_INSTALL_UIMAGE_FILESYSTEM" == 'y' ]]; then
-        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/uImage" "${KERNEL_INSTALL}/boot/uImage"
+        cp "$KBUILD_OUTPUT/arch/${ARCH_DIR}/boot/uImage" "${DS_TASK_WORK}/install/boot/uImage"
     fi
 
-    INSTALL_DTBS_PATH=$INSTALL_DTBS_PATH make dtbs_install
+    INSTALL_DTBS_PATH="${DS_TASK_WORK}/dtbs" make dtbs_install
     for dtb in $CONFIG_DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM; do
-        cp "$INSTALL_DTBS_PATH/${dtb}.dtb" "${KERNEL_INSTALL}/boot/"
+        cp "${DS_TASK_WORK}/dtbs/${dtb}.dtb" "${DS_TASK_WORK}/install/boot/"
     done
     for dtbo in $CONFIG_DS_KERNEL_INSTALL_DTBOS_FILESYSTEM; do
-        cp "$INSTALL_DTBS_PATH/${dtbo}.dtbo" "${KERNEL_INSTALL}/boot/"
+        cp "${DS_TASK_WORK}/dtbs/${dtbo}.dtbo" "${DS_TASK_WORK}/install/boot/"
     done
 )
 
 install -d "$PACKAGE_INSTALL"
-cp -a "$KERNEL_INSTALL/." "$PACKAGE_INSTALL/"
+cp -a "${DS_TASK_WORK}/install/." "$PACKAGE_INSTALL/"
 
 install -d "$DS_OVERLAY_PKG_DEBIAN"
-kernel_release="$(make -s -C "$SOURCE" kernelrelease)"
+kernel_release="$(make -s -C "${DS_TASK_WORK}/source" kernelrelease)"
 kernel_source_name="${CONFIG_DS_KERNEL_PROVIDER_GIT_URL:-linux-distroseed}"
 kernel_source_name="${kernel_source_name%/}"
 kernel_source_name="${kernel_source_name##*/}"

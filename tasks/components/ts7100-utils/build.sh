@@ -1,8 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/ts7100-utils/"
-
-cd "$SOURCE"
+cd "${DS_TASK_WORK}"
 
 ./autogen.sh
 ./configure --host="$AUTOTOOLS_HOST" --prefix="${DS_OVERLAY}/usr/local/"

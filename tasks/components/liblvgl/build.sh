@@ -1,8 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/lvgl"
-
-cd "$SOURCE"
+cd "${DS_TASK_WORK}"
 
 mkdir build
 cd build

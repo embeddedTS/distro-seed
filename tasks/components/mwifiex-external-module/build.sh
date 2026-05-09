@@ -1,23 +1,20 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/mwifiex-external-module/"
-source /src/common/vm/get_kernel_work_tree.sh
-
 PACKAGE_INSTALL="$DS_OVERLAY"
 INSTALL="$(mktemp -d /tmp/ds-mwifiex-install.XXXXXX)"
-KERNEL_SOURCE="$DS_KERNEL_SOURCE"
+export KBUILD_OUTPUT="${DS_TASK_WORK_DS_KERNEL}/build"
 cleanup() {
     rm -rf "$INSTALL"
 }
 trap cleanup EXIT
 
-cp -a "$DS_KERNEL_INSTALL/." "$INSTALL/"
+cp -a "${DS_TASK_WORK_DS_KERNEL}/install/." "$INSTALL/"
 
-cd "$KERNEL_SOURCE"
-make M="$SOURCE" modules -j"$(nproc)"
-make M="$SOURCE" INSTALL_MOD_PATH="$INSTALL" modules_install
+cd "${DS_TASK_WORK_DS_KERNEL}/source"
+make M="${DS_TASK_WORK}" modules -j"$(nproc)"
+make M="${DS_TASK_WORK}" INSTALL_MOD_PATH="$INSTALL" modules_install
 
-kernel_release="$(make -s -C "$KERNEL_SOURCE" kernelrelease)"
+kernel_release="$(make -s -C "${DS_TASK_WORK_DS_KERNEL}/source" kernelrelease)"
 module_dir="$INSTALL/lib/modules/$kernel_release"
 package_module_dir="$PACKAGE_INSTALL/lib/modules/$kernel_release"
 
