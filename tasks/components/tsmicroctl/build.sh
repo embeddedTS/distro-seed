@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/tsmicroctl/"
+SOURCE="$DS_STAGING"
 
 cd "$SOURCE"
 

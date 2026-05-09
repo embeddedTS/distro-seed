@@ -2,7 +2,7 @@
 
 KEY_URL="https://apt.embeddedts.com/embeddedts.asc"
 KEY_SHA256="ce85aaf704e7798f98f9098b9f1846bc4aba138ed0d1e0bf98c0f8d9c6b7a973"
-SOURCE="$DS_WORK/components/embeddedts-apt-repo"
+SOURCE="$DS_STAGING"
 
 install -d "$SOURCE"
 common/host/fetch_blob.sh "$KEY_URL" "${SOURCE}/embeddedts.asc" "$KEY_SHA256"

@@ -2,7 +2,7 @@
 
 set -e
 
-SOURCE="${DS_WORK}/components/distroboot-scripts/"
+SOURCE="$DS_STAGING"
 install -d "${SOURCE}"
 install -d "${DS_OVERLAY}/boot/"
 

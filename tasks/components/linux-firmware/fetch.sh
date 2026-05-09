@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/linux-firmware/"
+SOURCE="$DS_STAGING"
 GITURL="https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git"
 
 install -d "$SOURCE"

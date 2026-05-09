@@ -92,6 +92,8 @@ except Exception as e:
     print(f"Sort failed: {str(e)}")
     sys.exit(1)
 
+Task.configure_staging(tasks)
+
 task_manager.write_tasks_mmd(tasks)
 
 if args.plot_deps:

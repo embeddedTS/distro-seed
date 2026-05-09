@@ -5,7 +5,7 @@ HOST_URL="https://files.embeddedts.com/ts-socket-macrocontrollers/ts-4100-linux/
 
 install -d "${DS_OVERLAY}/opt/"
 
-echo "${DS_WORK}"
+echo "${DS_STAGING}"
 common/host/fetch_tar.sh "${TARGET_URL}" "${DS_OVERLAY}/opt/"
-common/host/fetch_tar.sh "${HOST_URL}" "${DS_WORK}"
-echo "${DS_WORK}"
+common/host/fetch_tar.sh "${HOST_URL}" "${DS_STAGING}"
+echo "${DS_STAGING}"

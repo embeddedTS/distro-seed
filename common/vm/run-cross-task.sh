@@ -7,6 +7,7 @@ set -e
 umask 022
 
 /src/tasks/core/cross_ready/setup-cross.sh
+/src/common/vm/sync-staging.sh
 
 CROSS_ROOT=/tmp/distro-seed-cross
 for dir in cache dl work src vm-work; do

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/mwifiex-external-module/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/nxp-imx/mwifiex.git"
 
 install -d "$SOURCE"

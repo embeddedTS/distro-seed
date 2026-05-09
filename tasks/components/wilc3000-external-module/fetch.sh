@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/wilc3000-external/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedTS/wilc3000-external-module.git"
 
 install -d "$SOURCE"

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/ts7670-utils/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedTS/ts7670-utils-linux4.x.git"
 GITVERSION="v${DS_MANIFEST_VERSION}"
 

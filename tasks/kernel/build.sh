@@ -4,11 +4,10 @@
 # any of its commands return an error:
 set -e
 
-source /src/common/vm/get_kernel_work_tree.sh
-
-INSTALL_DTBS_PATH="$DS_KERNEL_DTBS"
-SOURCE="$DS_KERNEL_SOURCE"
-KERNEL_INSTALL="$DS_KERNEL_INSTALL"
+SOURCE="$DS_STAGING_DS_KERNEL/source"
+KBUILD_OUTPUT="$DS_STAGING_DS_KERNEL/build"
+INSTALL_DTBS_PATH="$DS_STAGING_DS_KERNEL/dtbs"
+KERNEL_INSTALL="$DS_STAGING_DS_KERNEL/install"
 PACKAGE_INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "armhf" ] && ARCH_DIR=arm
@@ -16,7 +15,8 @@ PACKAGE_INSTALL="${DS_OVERLAY:-$DS_WORK/overlays/kernel/}"
 [ -z "${ARCH_DIR}" ] && [ "$DS_TARGET_ARCH" = "arm64" ] && ARCH_DIR=arm64
 [ -z "${ARCH_DIR}" ] && echo "Unsupported arch for kernel build: ${DS_TARGET_ARCH}" && exit 1
 
-rm -rf "$KBUILD_OUTPUT" "$KERNEL_INSTALL"
+rm -rf "$KBUILD_OUTPUT" "$INSTALL_DTBS_PATH" "$KERNEL_INSTALL"
+install -d "$KBUILD_OUTPUT" "$INSTALL_DTBS_PATH" "$KERNEL_INSTALL"
 export KBUILD_OUTPUT
 (
     cd "$SOURCE"

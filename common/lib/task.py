@@ -26,6 +26,9 @@ from lib import vm
 class Task:
     """Setup task to execute in different environments """
 
+    _staging_configs = []
+    _staging_provides = {}
+
     def __init__(self, config, path, task_manifest):
         self.config = config
         self.dependencies = task_manifest.dependencies
@@ -39,11 +42,23 @@ class Task:
         self.pkg_version = task_manifest.pkg_version
         self.id = 0
 
+    @classmethod
+    def configure_staging(cls, tasks):
+        cls._staging_configs = sorted({task.config for task in tasks})
+        cls._staging_provides = {
+            task.provides: task.config
+            for task in tasks
+            if task.provides
+        }
+
     def _package_input_name(self):
         return f"{self.id}-{self.config}"
 
     def _package_input_dir(self, work):
         return os.path.abspath(os.path.join(work, "package-inputs", self._package_input_name()))
+
+    def _staging_archive_path(self, work):
+        return os.path.abspath(os.path.join(work, "staging-archives", f"{self.config}.tar"))
 
     def _has_entries(self, path):
         if not os.path.isdir(path):
@@ -56,10 +71,21 @@ class Task:
             metadata.write(f"DS_MANIFEST_VERSION={shlex.quote(self.manifest_version)}\n")
             metadata.write(f"DS_PKG_VERSION={shlex.quote(self.pkg_version)}\n")
 
-    def _task_env(self, base_env):
+    def _staging_env(self, root):
+        env = {}
+        for config in self._staging_configs:
+            env[f"DS_STAGING_{config}"] = os.path.join(root, config)
+        for provides, config in self._staging_provides.items():
+            env[f"DS_STAGING_{provides}"] = os.path.join(root, config)
+        env["DS_STAGING"] = os.path.join(root, self.config)
+        return env
+
+    def _task_env(self, base_env, staging_root=None):
         taskenv = base_env.copy()
         taskenv["DS_MANIFEST_VERSION"] = self.manifest_version
         taskenv["DS_PKG_VERSION"] = self.pkg_version
+        if staging_root is not None:
+            taskenv.update(self._staging_env(staging_root))
         return taskenv
 
     def _stage_host_package_input(self, work, overlay, debian):
@@ -108,6 +134,29 @@ class Task:
                 check=True,
             )
 
+    def _stage_host_staging(self, work, staging):
+        if not self._has_entries(staging):
+            return
+
+        archive = self._staging_archive_path(work)
+        os.makedirs(os.path.dirname(archive), exist_ok=True)
+        subprocess.run(
+            [
+                "tar",
+                "--xattrs",
+                "--xattrs-include=*",
+                "--acls",
+                "--selinux",
+                "--numeric-owner",
+                "--sparse",
+                "-cpf",
+                archive,
+                ".",
+            ],
+            cwd=staging,
+            check=True,
+        )
+
     def run(self):
         """ Execute task in target environment """
 
@@ -128,9 +177,10 @@ class Task:
             # Execute in our current environment. This is mostly used for
             # fetches and early setup commands.
             taskenv = os.environ.copy()
-            taskenv = self._task_env(taskenv)
+            taskenv = self._task_env(taskenv, os.path.abspath(os.path.join(work, "staging")))
             tmp_parent = os.path.abspath(os.path.join(work, "tmp"))
             os.makedirs(tmp_parent, exist_ok=True)
+            os.makedirs(taskenv["DS_STAGING"], exist_ok=True)
             overlay_tmp = tempfile.mkdtemp(prefix="ds-overlay.", dir=tmp_parent)
             debian_tmp = tempfile.mkdtemp(prefix="ds-overlay-debian.", dir=tmp_parent)
             package_input = self._package_input_dir(work)
@@ -146,6 +196,7 @@ class Task:
                     preexec_fn=lambda: os.umask(0o022)
                 )
                 self._stage_host_package_input(work, overlay_tmp, debian_tmp)
+                self._stage_host_staging(work, taskenv["DS_STAGING"])
             finally:
                 shutil.rmtree(overlay_tmp, ignore_errors=True)
                 shutil.rmtree(debian_tmp, ignore_errors=True)
@@ -154,32 +205,36 @@ class Task:
             packagelist_dir = os.path.dirname(packagelist_file)
 
             os.makedirs(packagelist_dir, exist_ok=True)
-            taskenv = self._task_env(os.environ)
+            taskenv = self._task_env(os.environ, os.path.abspath(os.path.join(work, "staging")))
+            os.makedirs(taskenv["DS_STAGING"], exist_ok=True)
 
             with open(packagelist_file, 'w', encoding='utf-8') as packagelist:
                 subprocess.run(full_cmd, check=True, env=taskenv, stdout=packagelist)
+            self._stage_host_staging(work, taskenv["DS_STAGING"])
         elif self.cmd_type == "packagelist-cross":
             packagelist_file = os.path.abspath(work + f'/packagelist-cross/{self.id}-{self.config}')
             packagelist_dir = os.path.dirname(packagelist_file)
 
             os.makedirs(packagelist_dir, exist_ok=True)
-            taskenv = self._task_env(os.environ)
+            taskenv = self._task_env(os.environ, os.path.abspath(os.path.join(work, "staging")))
+            os.makedirs(taskenv["DS_STAGING"], exist_ok=True)
 
             with open(packagelist_file, 'w', encoding='utf-8') as packagelist:
                 subprocess.run(full_cmd, check=True, env=taskenv, stdout=packagelist)
+            self._stage_host_staging(work, taskenv["DS_STAGING"])
         elif self.cmd_type == "vm":
             taskenv = self._task_env({
                 "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
                 "DS_TASK_CMD": f"/src/{full_cmd}",
                 "DS_TASK_PATH": f"/src/{self.path}",
-            })
+            }, "/vm-work/staging")
             vm.run_script(self.config, "/src/common/vm/run-vm-task.sh", env=taskenv)
         elif self.cmd_type == "cross":
             taskenv = self._task_env({
                 "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
                 "DS_TASK_CMD": f"/src/{full_cmd}",
                 "DS_TASK_PATH": f"/src/{self.path}",
-            })
+            }, "/vm-work/staging")
             vm.run_script(self.config, "/src/common/vm/run-cross-task.sh", env=taskenv)
         elif self.cmd_type == 'target':
             taskenv = self._task_env({

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/ts7100z-lvgl-ui-demo"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedts/ts7100z-lvgl-ui-demo"
 GITVERSION="v${DS_MANIFEST_VERSION}"
 

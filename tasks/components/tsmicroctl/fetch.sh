@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/tsmicroctl/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedTS/tsmicroctl.git"
 GITVERSION="v${DS_MANIFEST_VERSION}"
 

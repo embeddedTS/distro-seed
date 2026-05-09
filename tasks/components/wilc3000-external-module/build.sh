@@ -1,18 +1,19 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/wilc3000-external/"
-source /src/common/vm/get_kernel_work_tree.sh
+SOURCE="$DS_STAGING"
 
 PACKAGE_INSTALL="$DS_OVERLAY"
 INSTALL="$(mktemp -d /tmp/ds-wilc3000-install.XXXXXX)"
-KERNEL_SOURCE="$DS_KERNEL_SOURCE"
+KERNEL_SOURCE="$DS_STAGING_DS_KERNEL/source"
+KERNEL_INSTALL="$DS_STAGING_DS_KERNEL/install"
+export KBUILD_OUTPUT="$DS_STAGING_DS_KERNEL/build"
 export CONFIG_WILC_SPI=m
 cleanup() {
     rm -rf "$INSTALL"
 }
 trap cleanup EXIT
 
-cp -a "$DS_KERNEL_INSTALL/." "$INSTALL/"
+cp -a "$KERNEL_INSTALL/." "$INSTALL/"
 
 cd "$KERNEL_SOURCE"
 make M="$SOURCE" modules -j"$(nproc)"

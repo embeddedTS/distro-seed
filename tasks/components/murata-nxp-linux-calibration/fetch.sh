@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/murata-firmware/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/murata-wireless/nxp-linux-calibration.git"
 
 install -d "$SOURCE"

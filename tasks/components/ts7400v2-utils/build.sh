@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/ts7400v2-utils/"
+SOURCE="$DS_STAGING"
 
 cd "$SOURCE"
 

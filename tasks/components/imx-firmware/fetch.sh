@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/imx-firmware"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/nxp-imx/imx-firmware.git"
 
 install -d "$SOURCE"

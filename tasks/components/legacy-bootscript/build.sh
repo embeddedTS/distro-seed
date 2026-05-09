@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="${DS_WORK}/legacy-bootscripts"
+SOURCE="$DS_STAGING"
 
 install -d "${DS_OVERLAY}/boot/"
 install -d "$SOURCE"

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/tssupervisorupdate/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedTS/tssupervisorupdate.git"
 GITVERSION="v${DS_MANIFEST_VERSION}"
 

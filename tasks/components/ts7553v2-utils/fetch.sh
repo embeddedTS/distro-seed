@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SOURCE="$DS_WORK/components/ts7553v2-utils/"
+SOURCE="$DS_STAGING"
 GITURL="https://github.com/embeddedTS/ts7553v2-utils.git"
 GITVERSION="v${DS_MANIFEST_VERSION}"
 
