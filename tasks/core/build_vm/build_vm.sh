@@ -92,7 +92,7 @@ EOF
 cat "$BUILD_DIR/initrd.gz" "$BUILD_DIR/initrd-overlay.gz" > "$BUILD_DIR/initrd-preseed.gz"
 
 python3 common/host/run_with_idle_timeout.py \
-	--idle-timeout 180 \
+	--idle-timeout 900 \
 	--log "${QEMU_DIR}/install.log" \
 	--qmp-socket "$QMP_SOCKET" \
 	--quiet \

@@ -16,6 +16,14 @@ import uuid
 
 VM_PYTHON_VENV = "/opt/distro-seed/venv"
 
+# Startup waits for a newly-launched VM to boot and report ready. Shutdown
+# waits for graceful guest poweroff before forcing qemu down.
+VM_STARTUP_TIMEOUT_SEC = 15 * 60  # Typically ~11 seconds
+VM_SHUTDOWN_TIMEOUT_SEC = 5 * 60  # Typically ~5 seconds
+
+# Runtime control operations are quick protocol exchanges with the serial agent.
+VM_CONTROL_TIMEOUT_SEC = 60  # Typically < 2s
+
 
 class VMError(RuntimeError):
     pass
@@ -67,6 +75,19 @@ def _read_pid(path):
         return None
 
 
+def _remaining_timeout(deadline):
+    return max(0.0, deadline - time.time())
+
+
+def _print_timeout_exceeded(name, timeout, start):
+    elapsed = time.time() - start
+    print(
+        f"{name}: timeout={timeout:.3f}s exceeded after {elapsed:.3f}s",
+        file=sys.stderr,
+        flush=True,
+    )
+
+
 def cleanup_abandoned_vm():
     qdir = vm_dir()
     ds_pid_file = os.path.join(qdir, "distro-seed.pid")
@@ -83,20 +104,24 @@ def cleanup_abandoned_vm():
     if ds_pid is not None and _pid_alive(ds_pid) and _pid_alive(qemu_pid):
         return
 
-    if _pid_alive(qemu_pid):
-        os.kill(qemu_pid, signal.SIGTERM)
-        for _ in range(50):
-            if not _pid_alive(qemu_pid):
-                break
-            time.sleep(0.1)
-        if _pid_alive(qemu_pid):
-            os.kill(qemu_pid, signal.SIGKILL)
+    _kill_qemu(qemu_pid)
 
     for path in (qemu_pid_file, ds_pid_file, os.path.join(qdir, "control.sock")):
         try:
             os.unlink(path)
         except FileNotFoundError:
             pass
+
+
+def _kill_qemu(qemu_pid):
+    if _pid_alive(qemu_pid):
+        os.kill(qemu_pid, signal.SIGTERM)
+    for _ in range(50):
+        if not _pid_alive(qemu_pid):
+            break
+        time.sleep(0.1)
+    if _pid_alive(qemu_pid):
+        os.kill(qemu_pid, signal.SIGKILL)
 
 
 def _require_kvm():
@@ -154,10 +179,6 @@ def _vm_work_image():
 def is_running():
     qemu_pid = _read_pid(os.path.join(vm_dir(), "qemu.pid"))
     if qemu_pid is None or not _pid_alive(qemu_pid):
-        return False
-    try:
-        wait_ready(timeout=2)
-    except Exception:
         return False
     return True
 
@@ -277,26 +298,45 @@ def start_vm():
 
 def stop_vm():
     qdir = vm_dir()
-    try:
-        qemu_pid = _read_pid(os.path.join(qdir, "qemu.pid"))
-        if qemu_pid is not None and _pid_alive(qemu_pid):
-            s = _connect(timeout=2)
-            try:
-                s.sendall(b"PING\n")
-                _read_until(s, [b"READY\n"], 2, log=False)
-                s.sendall(b"POWEROFF\n")
-            finally:
+    start = time.time()
+    deadline = time.time() + VM_SHUTDOWN_TIMEOUT_SEC
+    qemu_pid = _read_pid(os.path.join(qdir, "qemu.pid"))
+    if qemu_pid is not None and _pid_alive(qemu_pid):
+        s = None
+        try:
+            s = _connect(min(VM_CONTROL_TIMEOUT_SEC, _remaining_timeout(deadline)))
+            s.sendall(b"PING\n")
+            _read_until(
+                s,
+                [b"READY\n"],
+                timeout=min(VM_CONTROL_TIMEOUT_SEC, _remaining_timeout(deadline)),
+                log=False,
+            )
+            s.sendall(b"POWEROFF\n")
+            _read_until(
+                s,
+                [b"BYE\n"],
+                timeout=min(VM_CONTROL_TIMEOUT_SEC, _remaining_timeout(deadline)),
+                log=False,
+            )
+        except (OSError, VMError):
+            pass
+        finally:
+            if s is not None:
                 s.close()
-    except Exception:
-        pass
     qemu_pid = _read_pid(os.path.join(qdir, "qemu.pid"))
     if qemu_pid is not None:
-        for _ in range(100):
+        while time.time() < deadline:
             if not _pid_alive(qemu_pid):
                 break
             time.sleep(0.1)
         if _pid_alive(qemu_pid):
-            os.kill(qemu_pid, signal.SIGTERM)
+            _print_timeout_exceeded(
+                "VM_SHUTDOWN_TIMEOUT_SEC",
+                VM_SHUTDOWN_TIMEOUT_SEC,
+                start,
+            )
+            _kill_qemu(qemu_pid)
     for path in ("qemu.pid", "distro-seed.pid", "control.sock"):
         try:
             os.unlink(os.path.join(qdir, path))
@@ -304,7 +344,8 @@ def stop_vm():
             pass
 
 
-def _connect(timeout=180):
+def _connect(timeout=VM_CONTROL_TIMEOUT_SEC, timeout_name="VM_CONTROL_TIMEOUT_SEC"):
+    start = time.time()
     sock_path = os.path.join(vm_dir(), "control.sock")
     deadline = time.time() + timeout
     last_error = None
@@ -317,39 +358,73 @@ def _connect(timeout=180):
         except OSError as exc:
             last_error = exc
             time.sleep(0.25)
+    if timeout_name:
+        _print_timeout_exceeded(timeout_name, timeout, start)
     raise VMError(f"Timed out connecting to VM control socket: {last_error}")
 
 
-def wait_ready(timeout=180):
-    s = _connect(timeout)
+def wait_ready():
+    start = time.time()
+    deadline = time.time() + VM_STARTUP_TIMEOUT_SEC
+    s = None
     try:
+        s = _connect(_remaining_timeout(deadline), timeout_name=None)
         s.sendall(b"PING\n")
-        output, _ = _read_until(s, [b"READY\n"], timeout, log=False)
+        output, _ = _read_until(
+            s,
+            [b"READY\n"],
+            timeout=_remaining_timeout(deadline),
+            timeout_name=None,
+            log=False,
+        )
         if b"READY" not in output:
             raise VMError("VM serial agent did not become ready")
+    except Exception:
+        if time.time() >= deadline:
+            _print_timeout_exceeded(
+                "VM_STARTUP_TIMEOUT_SEC",
+                VM_STARTUP_TIMEOUT_SEC,
+                start,
+            )
+        raise
     finally:
-        s.close()
+        if s is not None:
+            s.close()
 
 
-def _read_until(sock, markers, idle_timeout, log=True):
+def _read_until(
+    sock,
+    markers,
+    timeout=VM_CONTROL_TIMEOUT_SEC,
+    timeout_name="VM_CONTROL_TIMEOUT_SEC",
+    log=True,
+):
+    start = time.time()
     selector = selectors.DefaultSelector()
     selector.register(sock, selectors.EVENT_READ)
     data = bytearray()
-    deadline = time.time() + idle_timeout
-    while time.time() < deadline:
-        events = selector.select(max(0.1, min(1.0, deadline - time.time())))
+    deadline = None if timeout is None else time.time() + timeout
+    while True:
+        if deadline is None:
+            select_timeout = None
+        else:
+            select_timeout = deadline - time.time()
+            if select_timeout <= 0:
+                break
+        events = selector.select(select_timeout)
         for key, _ in events:
             chunk = key.fileobj.recv(65536)
             if not chunk:
                 raise VMError("VM control socket closed")
             if log:
                 _append_console_log(_strip_protocol_lines(chunk))
-            deadline = time.time() + idle_timeout
             data.extend(chunk)
             for marker in markers:
                 if marker in data:
                     return bytes(data), marker
-    raise VMError(f"Timed out after {idle_timeout}s without VM serial output")
+    if timeout_name:
+        _print_timeout_exceeded(timeout_name, timeout, start)
+    raise VMError(f"Timed out after {timeout}s without VM serial output")
 
 
 def _env_exports(env):
@@ -403,7 +478,8 @@ def _run_agent_script(name, script, env=None, timeout=None):
         output, _ = _read_until(
             s,
             [f"__DS_END__ {token} ".encode("ascii")],
-            timeout or 24 * 60 * 60,
+            timeout=timeout,
+            timeout_name=None,
         )
     finally:
         s.close()
@@ -425,9 +501,9 @@ def _run_script(name, script, env=None, timeout=None):
         raise subprocess.CalledProcessError(status, name)
 
 
-def _send_payload(sock, token, encoded, ready_timeout=30):
+def _send_payload(sock, token, encoded, ready_timeout=VM_CONTROL_TIMEOUT_SEC):
     sock.sendall(b"PING\n")
-    _read_until(sock, [b"READY\n"], ready_timeout, log=False)
+    _read_until(sock, [b"READY\n"], timeout=ready_timeout, log=False)
     sock.sendall(f"RUNB64_BEGIN {token}\n".encode("ascii"))
     for idx in range(0, len(encoded), 60000):
         sock.sendall(f"RUNB64_DATA {token} {encoded[idx:idx + 60000]}\n".encode("ascii"))
