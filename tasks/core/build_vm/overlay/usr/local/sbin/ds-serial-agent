@@ -53,9 +53,8 @@ while IFS= read -r line; do
 			echo READY
 			;;
 		POWEROFF)
+			systemctl poweroff --no-block
 			echo BYE
-			sync
-			poweroff -f || true
 			;;
 		*)
 			echo "ERR unknown command"
