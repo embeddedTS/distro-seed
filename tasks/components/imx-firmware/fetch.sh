@@ -7,10 +7,15 @@ common/host/fetch_git.sh "$GITURL" "$CONFIG_DS_COMPONENT_IMX_FIRMWARE_GIT_VERSIO
 install -d "$DS_OVERLAY/lib/firmware/nxp/"
 
 if [ "${CONFIG_DS_COMPONENT_IMX_FIRMWARE_IW612_SD}" == "y" ]; then
-    install -m 644 "${DS_TASK_WORK}/nxp/FwImage_IW612_SD/sd_w61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
-    install -m 644 "${DS_TASK_WORK}/nxp/FwImage_IW612_SD/sduart_nw61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
-    install -m 644 "${DS_TASK_WORK}/nxp/FwImage_IW612_SD/uartspi_n61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
-    install -m 644 "${DS_TASK_WORK}/nxp/FwImage_IW612_SD/uartuart_n61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
+    firmware_source="${DS_TASK_WORK}"
+    if [[ -d "${DS_TASK_WORK}/nxp" ]]; then
+        firmware_source="${DS_TASK_WORK}/nxp"
+    fi
+
+    install -m 644 "${firmware_source}/FwImage_IW612_SD/sd_w61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
+    install -m 644 "${firmware_source}/FwImage_IW612_SD/sduart_nw61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
+    install -m 644 "${firmware_source}/FwImage_IW612_SD/uartspi_n61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
+    install -m 644 "${firmware_source}/FwImage_IW612_SD/uartuart_n61x_v1.bin.se" "$DS_OVERLAY/lib/firmware/nxp/"
 fi
 
 VERSION="$CONFIG_DS_COMPONENT_IMX_FIRMWARE_GIT_VERSION"
