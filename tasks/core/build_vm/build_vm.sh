@@ -2,9 +2,6 @@
 
 QEMU_DIR="${DS_WORK}/qemu-host"
 BUILD_DIR="${QEMU_DIR}/build"
-ISO_URL="https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
-ISO_SHA256="0b813535dd76f2ea96eff908c65e8521512c92a0631fd41c95756ffd7d4896dc"
-ISO="${QEMU_DIR}/debian-13.4.0-amd64-netinst.iso"
 BASE_IMAGE="${QEMU_DIR}/base.qcow2"
 BUILD_VM_PATH="${DS_HOST_ROOT_PATH}/tasks/core/build_vm"
 PACKAGE_FILE="${BUILD_VM_PATH}/packagelist-vm.txt"
@@ -37,7 +34,25 @@ install -d "$BUILD_DIR/initrd-overlay"
 QMP_SOCKET="${BUILD_DIR}/install-qmp.sock"
 BUILD_BASE_IMAGE="${BUILD_DIR}/base.qcow2"
 
-common/host/fetch_blob.sh "$ISO_URL" "$ISO" "$ISO_SHA256"
+ISO_VERSION="$(wget -qO- "https://cdimage.debian.org/debian-cd/" |
+	sed -nE 's/.*href="(13[.][0-9.]+)\/".*/\1/p' |
+	sort -Vu |
+	tail -n 1)"
+if [[ -z "$ISO_VERSION" ]]; then
+	echo "Unable to find latest Debian 13 release" >&2
+	exit 1
+fi
+ISO_BASE_URL="https://cdimage.debian.org/debian-cd/${ISO_VERSION}/amd64/iso-cd"
+ISO_NAME="debian-${ISO_VERSION}-amd64-netinst.iso"
+ISO="${QEMU_DIR}/${ISO_NAME}"
+ISO_SHA256="$(wget -qO- "${ISO_BASE_URL}/SHA256SUMS" | awk -v iso="$ISO_NAME" '$2 == iso { print $1; exit }')"
+if [[ -z "$ISO_SHA256" ]]; then
+	echo "Unable to find checksum for ${ISO_NAME}" >&2
+	exit 1
+fi
+
+echo "Using Debian VM installer ISO: ${ISO_NAME}"
+common/host/fetch_blob.sh "${ISO_BASE_URL}/${ISO_NAME}" "$ISO" "$ISO_SHA256"
 qemu-img create -f qcow2 "$BUILD_BASE_IMAGE" 32G
 # Extract the installer kernel and initrd for direct QEMU boot and initrd tweaks.
 xorriso -osirrox on -indev "$ISO" -extract /install.amd/vmlinuz "$BUILD_DIR/vmlinuz" -extract /install.amd/initrd.gz "$BUILD_DIR/initrd.gz" >/dev/null 2>&1
