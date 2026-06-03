@@ -45,4 +45,9 @@ install -d "$TARGET_PACKAGE_DIR"
     chroot "$ROOTFS" dpkg -i --force-overwrite "/tmp/distro-seed-packages/$(basename "$package")"
 done
 
+for module_dir in "$ROOTFS"/lib/modules/*; do
+    [[ -d "$module_dir" ]] || continue
+    depmod -b "$ROOTFS" "${module_dir##*/}"
+done
+
 rm -rf "$TARGET_PACKAGE_DIR"

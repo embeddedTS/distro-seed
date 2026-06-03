@@ -17,6 +17,7 @@ gnupg
 gzip
 iproute2
 isc-dhcp-client
+kmod
 locales
 lz4
 make
