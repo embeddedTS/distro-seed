@@ -98,9 +98,6 @@ python3-libgpiod
 python3-libiio
 python3-pip
 
-# DRM packages
-libdrm-etnaviv1
-
 # X11
 kbd # needed for chvt
 matchbox-window-manager
