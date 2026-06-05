@@ -39,7 +39,10 @@ update-alternatives --install /usr/bin/x-session-manager x-session-manager /usr/
 cat << EOF > /etc/systemd/system/startx.service
 [Unit]
 Description=startx
-After=systemd-user-sessions.service
+DefaultDependencies=no
+After=tmp.mount systemd-udevd.service systemd-remount-fs.service
+Before=basic.target shutdown.target
+Conflicts=shutdown.target
 
 [Service]
 #User=
