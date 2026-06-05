@@ -1,0 +1,11 @@
+config DS_WESTON_KIOSK_SERVICE
+	bool "Weston kiosk demo service"
+	help
+	  Run Weston automatically on startup using kiosk shell.
+
+config DS_WESTON_KIOSK_SERVICE_COMMAND
+	string "Wayland kiosk command"
+	depends on DS_WESTON_KIOSK_SERVICE
+	default "/usr/bin/weston-flower"
+	help
+	  Command to launch after Weston starts.

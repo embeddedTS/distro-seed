@@ -66,6 +66,7 @@ source "tasks/components/liblvgl/Kconfig"
 source "tasks/components/lv_drivers/Kconfig"
 endmenu
 source "tasks/components/startx-service/Kconfig"
+source "tasks/components/weston-kiosk-service/Kconfig"
 source "tasks/components/ts7100z-lvgl-ui-demo/Kconfig"
 endmenu
 endmenu

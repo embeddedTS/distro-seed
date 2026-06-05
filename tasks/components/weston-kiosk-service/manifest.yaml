@@ -1,0 +1,8 @@
+config: DS_WESTON_KIOSK_SERVICE
+tasks:
+- cmd: install-files.sh
+  cmd_type: host
+  description: Copying Weston kiosk service files
+- cmd: enable-service.sh
+  cmd_type: target
+  description: Enabling weston-kiosk.service
