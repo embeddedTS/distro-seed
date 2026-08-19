@@ -8,7 +8,7 @@ else
 fi
 
 if [ -n "$CONFIG_DS_USER_ROOT_PASSWORD" ]; then
-    echo root:password | chpasswd
+    printf 'root:%s\n' "$CONFIG_DS_USER_ROOT_PASSWORD" | chpasswd
 fi
 
 if [ "$CONFIG_DS_USER" = "y" ]; then
