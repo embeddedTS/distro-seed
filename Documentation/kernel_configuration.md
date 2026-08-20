@@ -37,3 +37,28 @@ CONFIG_CAN=y
 CONFIG_CAN_MCP251X=m
 # CONFIG_DEBUG_INFO is not set
 ```
+
+## Kernel patches
+
+To patch the fetched kernel source, set `DS_KERNEL_PATCH_DIR` to a directory
+containing `*.patch` files:
+
+```
+CONFIG_DS_KERNEL_PATCH_DIR="patches/linux-lts"
+```
+
+Paths relative to the distro-seed checkout are resolved from its root. Absolute
+paths are also accepted. Patches are applied in lexical filename order, so use
+numeric prefixes when ordering matters:
+
+```
+patches/linux-lts/
+  0001-enable-board-feature.patch
+  0002-fix-board-regulator.patch
+```
+
+The patch task uses `git apply`; it accepts standard unified diffs and the diff
+payload from `git format-patch` output. Patches are applied to distro-seed's
+per-build copy of the kernel source, never the local repository named by
+`DS_KERNEL_PROVIDER_GIT_URL`. That working copy is intentionally modified; no
+commits are created and the source copy is discarded by the normal work cleanup.
