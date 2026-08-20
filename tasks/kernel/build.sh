@@ -31,7 +31,21 @@ export KBUILD_OUTPUT="${DS_TASK_WORK}/build"
         TARGETS="$TARGETS uImage"
     fi
 
-    make "$CONFIG_DS_KERNEL_DEFCONFIG"
+    if [[ -n "$CONFIG_DS_KERNEL_DEFCONFIG_FILE" ]]; then
+        kernel_defconfig_file="$CONFIG_DS_KERNEL_DEFCONFIG_FILE"
+        if [[ "$kernel_defconfig_file" != /* ]]; then
+            kernel_defconfig_file="${DS_HOST_ROOT_PATH}/${kernel_defconfig_file}"
+        fi
+
+        if [[ ! -f "$kernel_defconfig_file" ]]; then
+            echo "Kernel defconfig file not found: $kernel_defconfig_file" >&2
+            exit 1
+        fi
+
+        cp "$kernel_defconfig_file" "$KBUILD_OUTPUT/.config"
+    else
+        make "$CONFIG_DS_KERNEL_DEFCONFIG"
+    fi
 
     if [[ -n "$CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES" ]]; then
         read -r -a kernel_config_fragments <<< "$CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES"
@@ -51,6 +65,9 @@ export KBUILD_OUTPUT="${DS_TASK_WORK}/build"
 
         scripts/kconfig/merge_config.sh -m -O "$KBUILD_OUTPUT" \
             "$KBUILD_OUTPUT/.config" "${kernel_config_fragments[@]}"
+    fi
+
+    if [[ -n "$CONFIG_DS_KERNEL_DEFCONFIG_FILE" || -n "$CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES" ]]; then
         make olddefconfig
     fi
 
