@@ -32,6 +32,17 @@ config DS_KERNEL_DEFCONFIG
 	help
 	  Specify kernel defconfig to use
 
+config DS_KERNEL_CONFIG_FRAGMENT_FILES
+	string "Kernel configuration fragment files"
+	help
+	  Specify a whitespace-separated list of kernel configuration fragment
+	  files to merge after the kernel defconfig. Relative paths are resolved
+	  from the distro-seed checkout; absolute paths are also accepted.
+
+	  Fragments are applied in the listed order, so settings in a later
+	  fragment override settings from an earlier fragment. After merging,
+	  distro-seed runs olddefconfig to resolve any dependencies.
+
 config DS_KERNEL_INSTALL_DEVICETREE_FILESYSTEM
 	string "Stems of device tree file paths to install in /boot"
 	help   

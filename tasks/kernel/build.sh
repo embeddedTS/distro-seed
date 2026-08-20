@@ -32,6 +32,28 @@ export KBUILD_OUTPUT="${DS_TASK_WORK}/build"
     fi
 
     make "$CONFIG_DS_KERNEL_DEFCONFIG"
+
+    if [[ -n "$CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES" ]]; then
+        read -r -a kernel_config_fragments <<< "$CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES"
+        for index in "${!kernel_config_fragments[@]}"; do
+            fragment="${kernel_config_fragments[$index]}"
+            if [[ "$fragment" != /* ]]; then
+                fragment="${DS_HOST_ROOT_PATH}/${fragment}"
+            fi
+
+            if [[ ! -f "$fragment" ]]; then
+                echo "Kernel configuration fragment not found: $fragment" >&2
+                exit 1
+            fi
+
+            kernel_config_fragments[$index]="$fragment"
+        done
+
+        scripts/kconfig/merge_config.sh -m -O "$KBUILD_OUTPUT" \
+            "$KBUILD_OUTPUT/.config" "${kernel_config_fragments[@]}"
+        make olddefconfig
+    fi
+
     make -j"$(nproc --all)" all $TARGETS
 
     install -d "${DS_TASK_WORK}/install/boot"
