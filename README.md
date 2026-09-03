@@ -72,3 +72,6 @@ make
 ```
 
 Besides package downloads this will typically take around 5-30 minutes on a workstation to generate an image. This generates a simple rootfs that is capable of Networking, installs the kernel from git, and runs other setup.
+
+Kernel defconfig fragments are documented in
+[Documentation/kernel_configuration.md](Documentation/kernel_configuration.md).

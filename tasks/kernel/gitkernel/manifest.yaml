@@ -2,8 +2,18 @@ config: DS_KERNEL_PROVIDER_GIT
 tasks:
 - cmd: fetch.sh
   cmd_type: host
+  provides: DS_KERNEL_SOURCE
   description: Fetching Linux Kernel from git
+- cmd: patch.sh
+  cmd_type: host
+  dependencies:
+    - DS_KERNEL_SOURCE
+  provides: DS_KERNEL_PATCHED_SOURCE
+  description: Applying Linux Kernel patches
 - cmd: ../build.sh
   cmd_type: cross
+  dependencies:
+    - DS_KERNEL_PATCHED_SOURCE
+    - DS_CROSS_READY
   provides: DS_KERNEL
   description: Building Linux Kernel

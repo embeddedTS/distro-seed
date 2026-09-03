@@ -13,7 +13,7 @@ cp -a "${DS_TASK_WORK_DS_KERNEL}/install/." "$INSTALL/"
 
 cd "${DS_TASK_WORK_DS_KERNEL}/source"
 make M="${DS_TASK_WORK}" modules -j"$(nproc)"
-make M="${DS_TASK_WORK}" INSTALL_MOD_PATH="$INSTALL" modules_install
+make M="${DS_TASK_WORK}" INSTALL_MOD_DIR="updates" INSTALL_MOD_PATH="$INSTALL" modules_install
 kernel_release="$(make -s -C "${DS_TASK_WORK_DS_KERNEL}/source" kernelrelease)"
 module_dir="$INSTALL/lib/modules/$kernel_release"
 package_module_dir="$PACKAGE_INSTALL/lib/modules/$kernel_release"
