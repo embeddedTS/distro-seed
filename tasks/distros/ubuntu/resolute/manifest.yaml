@@ -1,0 +1,11 @@
+config: DS_DISTRO_UBUNTU_26_04
+tasks:
+- cmd: ../../build.sh
+  cmd_type: vm
+  dependencies:
+    - DS_CORE_PACKAGELIST
+  provides: DS_DISTRO_ROOTFS
+  description: Creating Ubuntu 26.04 target rootfs
+- cmd: sourceslist.sh
+  cmd_type: host
+  description: Adding target apt sources

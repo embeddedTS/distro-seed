@@ -47,6 +47,11 @@ config DS_DISTRO_UBUNTU_24_04
 	help
 	  Use Ubuntu 24.04 as the base distribution
 
+config DS_DISTRO_UBUNTU_26_04
+	bool "Ubuntu 26.04 Resolute Raccoon"
+	help
+	  Use Ubuntu 26.04 as the base distribution
+
 endchoice
 
 config DS_CUSTOM_APT_MIRROR
@@ -80,6 +85,7 @@ config DS_PACKAGELIST
 	default "debian-13-minimal.txt" if DS_DISTRO_DEBIAN_13
 	default "ubuntu_22_04-minimal.txt" if DS_DISTRO_UBUNTU_22_04
 	default "ubuntu_24_04-minimal.txt" if DS_DISTRO_UBUNTU_24_04
+	default "ubuntu_26.04_minimal.txt" if DS_DISTRO_UBUNTU_26_04
 
 config DS_DISTRO_PACKAGELIST_APPEND
 	string "extra packages"
