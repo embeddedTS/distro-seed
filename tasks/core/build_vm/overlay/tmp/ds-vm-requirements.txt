@@ -1,1 +1,1 @@
-debsbom[cdx,spdx]==0.7.2
+debsbom[cdx,download,spdx]==0.10.2

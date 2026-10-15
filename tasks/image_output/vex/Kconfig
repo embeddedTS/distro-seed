@@ -1,0 +1,27 @@
+config DS_OUTPUT_VEX
+	bool "OpenVEX vulnerability report"
+	default n
+	depends on DS_DISTRO_DEBIAN_11 || DS_DISTRO_DEBIAN_12 || DS_DISTRO_DEBIAN_13
+	select DS_OUTPUT_SBOM_CYCLONEDX
+	help
+	  Scan the CycloneDX SBOM with debsbom using the Debian Security Tracker
+	  and write work/output/<image-name>.vex.json. Enables CycloneDX output.
+	  This is a separate scan step and downloads current vulnerability data
+	  unless a local database is configured below. Only Debian is supported.
+
+config DS_OUTPUT_VEX_AUTHOR
+	string "OpenVEX document author"
+	depends on DS_OUTPUT_VEX
+	default "distro-seed"
+	help
+	  Author recorded in the generated OpenVEX document.
+
+config DS_OUTPUT_VEX_DATABASE
+	string "Local Debian Security Tracker JSON database"
+	depends on DS_OUTPUT_VEX
+	default ""
+	help
+	  Optional path visible inside the build VM to an existing Debian
+	  Security Tracker JSON database. It must exist and will not be updated.
+	  Leave empty to download current data into the shared download directory
+	  on every build. Set this to use a fixed database or build offline.

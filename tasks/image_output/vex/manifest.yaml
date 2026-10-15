@@ -1,0 +1,8 @@
+config: DS_OUTPUT_VEX
+tasks:
+  - cmd: generate-vex.sh
+    cmd_type: vm
+    dependencies:
+      - DS_OUTPUT_SBOM_CYCLONEDX_GENERATED
+    provides: DS_OUTPUT_VEX_GENERATED
+    description: Generate OpenVEX vulnerability report
