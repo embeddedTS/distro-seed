@@ -4,5 +4,6 @@ source "tasks/image_output/tar/Kconfig"
 source "tasks/image_output/ext/Kconfig"
 source "tasks/image_output/genimage/Kconfig"
 source "tasks/image_output/sbom/Kconfig"
+source "tasks/image_output/sbom-cyclonedx/Kconfig"
 
 endmenu

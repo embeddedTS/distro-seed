@@ -1,0 +1,6 @@
+config DS_OUTPUT_SBOM_CYCLONEDX
+	bool "CycloneDX SBOM"
+	default y
+	help
+	  Generate a CycloneDX JSON SBOM for the final target rootfs using debsbom.
+	  The file is written to work/output/<image-name>.cdx.json.

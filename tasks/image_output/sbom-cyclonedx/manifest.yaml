@@ -1,0 +1,8 @@
+config: DS_OUTPUT_SBOM_CYCLONEDX
+tasks:
+  - cmd: generate-cyclonedx-sbom.sh
+    cmd_type: vm
+    dependencies:
+      - DS_TARGET_LATE_PACKAGES_INSTALL
+    provides: DS_OUTPUT_SBOM_CYCLONEDX_GENERATED
+    description: Generate CycloneDX SBOM for output image
