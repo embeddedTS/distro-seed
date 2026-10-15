@@ -117,6 +117,20 @@ else:
     print("cpio is required to repack the Debian installer initrd")
     ret = 1
 
+if check_bin_in_path('wget'):
+    print("Pass: wget available")
+else:
+    print("Fail: wget missing")
+    print("wget is required by distro-seed download tasks")
+    ret = 1
+
+if check_bin_in_path('git'):
+    print("Pass: git available")
+else:
+    print("Fail: git missing")
+    print("git is required by distro-seed source and kernel tasks")
+    ret = 1
+
 if check_bin_in_path('sha256sum'):
     print("Pass: sha256sum available")
 else:
