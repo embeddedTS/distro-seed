@@ -1,6 +1,11 @@
 #!/bin/bash -e
 
 INSTALL="${DS_TARGET_ROOTFS:-$DS_WORK/rootfs}"
+if [[ "$CONFIG_DS_KERNEL_PROVIDER_DEBIAN_PACKAGE" == "y" && -z "$CONFIG_DS_KERNEL_DEBIAN_PACKAGE_NAME" ]]; then
+  echo "CONFIG_DS_KERNEL_DEBIAN_PACKAGE_NAME is required when using the Debian kernel package provider" >&2
+  exit 1
+fi
+
 install -d "$INSTALL"
 find "$INSTALL" -mindepth 1 -xdev -exec rm -rf {} +
 
@@ -47,6 +52,10 @@ if [[ -d "$DS_WORK/packagelist" ]]; then
   for f in "$DS_WORK"/packagelist/*; do
     [[ -f "$f" ]] && { cat "$f" >> "$tmp_work"; echo >> "$tmp_work"; }
   done
+fi
+
+if [[ -n "$CONFIG_DS_KERNEL_DEBIAN_PACKAGE_NAME" ]]; then
+  printf '%s\n' "$CONFIG_DS_KERNEL_DEBIAN_PACKAGE_NAME" >> "$tmp_work"
 fi
 
 # Strip comments / blank lines, normalize whitespace

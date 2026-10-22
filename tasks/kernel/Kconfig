@@ -1,13 +1,20 @@
 menu "Kernel"
 
 choice
-	prompt "Kernel version"
+	prompt "Kernel provider"
 	default DS_KERNEL_PROVIDER_GIT
 
 config DS_KERNEL_PROVIDER_GIT
 	bool "Kernel source provider is custom git repository"
 	help
 	  This option allows distro-seed to grab the kernel sources from git
+
+config DS_KERNEL_PROVIDER_DEBIAN_PACKAGE
+	bool "Kernel is provided by a Debian/Ubuntu package"
+	depends on DS_DISTRO_DEBIAN_11 || DS_DISTRO_DEBIAN_12 || DS_DISTRO_DEBIAN_13 || DS_DISTRO_UBUNTU_24_04
+	help
+	  Install a kernel package from the selected distribution instead
+	  of building a separate kernel from source.
 
 endchoice
 
@@ -26,6 +33,17 @@ config DS_KERNEL_PROVIDER_GIT_VERSION
 	  Specify tag or branch to checkout before building.
 	  This is optional if the provider git url points to a local path.
 endif
+
+if DS_KERNEL_PROVIDER_DEBIAN_PACKAGE
+config DS_KERNEL_DEBIAN_PACKAGE_NAME
+	string "Distribution kernel package name"
+	help
+	  Name of the package that provides the target kernel, for example
+	  linux-image-arm64 or linux-image-armmp on Debian, or linux-image-generic
+	  on Ubuntu.
+endif
+
+if DS_KERNEL_PROVIDER_GIT
 
 config DS_KERNEL_DEFCONFIG
 	string "In-tree kernel defconfig"
@@ -99,5 +117,7 @@ config DS_KERNEL_INSTALL_UIMAGE_LOADADDR
 	  Specify the load address for the kernel. This is required for the
 	  uImage kernel format.  This is usually found in the target's U-Boot
 	  from:  "env print loadaddr" or "env print kernel_addr_r"
+
+endif
 
 endmenu
