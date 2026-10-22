@@ -1,0 +1,12 @@
+config DS_INITRAMFS_MODULES
+	string "Modules to include and load in the initramfs"
+	default ""
+	help
+	  Space-separated kernel module names required before mounting the root
+	  filesystem, for example virtio_blk. Uses initramfs-tools and regenerates
+	  existing initramfs images after package installation. The module list
+	  is retained for future kernel updates. Empty disables this task.
+
+config DS_SET_INITRAMFS_MODULES
+	bool
+	default y if DS_INITRAMFS_MODULES != ""

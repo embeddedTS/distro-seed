@@ -69,3 +69,19 @@ payload from `git format-patch` output. Patches are applied to distro-seed's
 per-build copy of the kernel source, never the local repository named by
 `DS_KERNEL_PROVIDER_GIT_URL`. That working copy is intentionally modified; no
 commits are created and the source copy is discarded by the normal work cleanup.
+
+## Initramfs modules
+
+To include and load modules before mounting the root filesystem, set:
+
+```
+CONFIG_DS_INITRAMFS_MODULES="virtio_blk"
+```
+
+This optional task installs `initramfs-tools`, adds the space-separated module
+names to `/etc/initramfs-tools/modules`, and updates all existing initramfs
+images after late package installation. The list remains in the image so future
+kernel updates retain these modules. The selected kernel must supply the modules
+and an existing initramfs (as Debian kernel packages do).
+
+The default is empty: no task, additional packages, or initramfs updates.

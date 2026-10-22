@@ -1,0 +1,10 @@
+config: DS_SET_INITRAMFS_MODULES
+tasks:
+- cmd: packages.sh
+  cmd_type: packagelist
+  description: Adding initramfs tools
+- cmd: configure.sh
+  cmd_type: target
+  dependencies:
+    - DS_TARGET_LATE_PACKAGES_INSTALL
+  description: Configuring initramfs modules
