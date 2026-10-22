@@ -8,6 +8,7 @@ source "tasks/image_configuration/set-timezone/Kconfig"
 source "tasks/image_configuration/set-fstab/Kconfig"
 
 comment "Optional Settings"
+source "tasks/image_configuration/initramfs-modules/Kconfig"
 source "tasks/image_configuration/ssh-regen-keys/Kconfig"
 source "tasks/image_configuration/update-command-not-found/Kconfig"
 source "tasks/image_configuration/set-log-size/Kconfig"
