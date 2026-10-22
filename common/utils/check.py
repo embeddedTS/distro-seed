@@ -89,6 +89,19 @@ else:
     print("Install your distribution's qemu system package")
     ret = 1
 
+# Tools used by the ARM image launchers.
+for binary, package in (
+    ('qemu-system-arm', 'qemu-system-arm'),
+    ('qemu-system-aarch64', 'qemu-system-arm'),
+    ('guestfish', 'libguestfs-tools'),
+):
+    if check_bin_in_path(binary):
+        print(f"Pass: {binary} available")
+    else:
+        print(f"Fail: {binary} missing")
+        print(f"Install {package} (Debian/Ubuntu package name)")
+        ret = 1
+
 if check_bin_in_path('qemu-img'):
     print("Pass: qemu-img available")
 else:
