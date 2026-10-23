@@ -12,8 +12,9 @@ An out-of-tree defconfig takes precedence over `DS_KERNEL_DEFCONFIG`. Paths
 relative to the distro-seed checkout are resolved from its root. Absolute paths
 are also accepted.
 
-For Debian and Ubuntu 24.04 targets, `DS_KERNEL_PROVIDER_DEBIAN_PACKAGE` selects a kernel
-package from the target distribution instead of building a kernel from source.
+For Debian and Ubuntu targets, `DS_KERNEL_PROVIDER_DEBIAN_PACKAGE` selects a
+kernel package from the target distribution instead of building a kernel from
+source.
 Set `DS_KERNEL_DEBIAN_PACKAGE_NAME` to the package name, such as
 `linux-image-arm64` or `linux-image-armmp` on Debian, or `linux-image-generic`
 on Ubuntu. The package is installed with the
