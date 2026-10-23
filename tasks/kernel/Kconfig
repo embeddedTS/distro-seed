@@ -11,7 +11,7 @@ config DS_KERNEL_PROVIDER_GIT
 
 config DS_KERNEL_PROVIDER_DEBIAN_PACKAGE
 	bool "Kernel is provided by a Debian/Ubuntu package"
-	depends on DS_DISTRO_DEBIAN_11 || DS_DISTRO_DEBIAN_12 || DS_DISTRO_DEBIAN_13 || DS_DISTRO_UBUNTU_24_04
+	depends on DS_DISTRO_DEBIAN_12 || DS_DISTRO_DEBIAN_13 || DS_DISTRO_UBUNTU_24_04
 	help
 	  Install a kernel package from the selected distribution instead
 	  of building a separate kernel from source.
