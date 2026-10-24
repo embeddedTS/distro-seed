@@ -36,6 +36,8 @@ The target chroot is the actual root filesystem being produced. Tasks that need 
 * qemu-img
 * xorriso
 * cpio
+* wget
+* git
 * sha256sum
 * python3
 * python3-colorama
@@ -49,12 +51,12 @@ This will run from any x86_64 Linux distribution that supports KVM, QEMU, python
 
 * From Ubuntu/Debian based distros:
 ```
-apt-get update && apt-get install -y qemu-system-x86 qemu-utils xorriso cpio
+apt-get update && apt-get install -y qemu-system-x86 qemu-utils xorriso cpio wget git
 ```
 
 * From Fedora/Redhat based distros:
 ```
-dnf install qemu-system-x86 qemu-img xorriso cpio
+dnf install qemu-system-x86 qemu-img xorriso cpio wget git
 ```
 
 On either distribution, next install distro-seed, the python requirements and check the dependencies:
