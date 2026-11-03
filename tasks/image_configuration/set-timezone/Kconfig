@@ -4,6 +4,7 @@ config DS_SET_TIMEZONE
 
 config DS_TIMEZONE
 	string "Set System Timezone"
+	default "Etc/GMT"
 	help
 	  Set the timezone on the image.  See timezone from /usr/share/zoneinfo
 	  for the list of all timezones.
