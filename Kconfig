@@ -5,3 +5,5 @@ config DS_DEFCONFIG
 endmenu
 
 source "tasks/Kconfig"
+
+osource "$(DS_EXTERNAL)/Kconfig"

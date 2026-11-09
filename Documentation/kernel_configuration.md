@@ -20,6 +20,8 @@ Set `DS_KERNEL_DEBIAN_PACKAGE_NAME` to the package name, such as
 on Ubuntu. The package is installed with the
 base root filesystem packages.
 
+## Kernel config fragment files
+
 To add configuration without maintaining a full replacement defconfig, set
 `DS_KERNEL_CONFIG_FRAGMENT_FILES` to a whitespace-separated, ordered list of
 kernel configuration fragments:
@@ -70,6 +72,20 @@ payload from `git format-patch` output. Patches are applied to distro-seed's
 per-build copy of the kernel source, never the local repository named by
 `DS_KERNEL_PROVIDER_GIT_URL`. That working copy is intentionally modified; no
 commits are created and the source copy is discarded by the normal work cleanup.
+
+## Applying kernel patches and defconfig fragments from a DS\_EXTERNAL project
+
+For an external project, use the `$(DS_EXTERNAL)` variable in the defconfig path:
+
+```
+CONFIG_DS_KERNEL_CONFIG_FRAGMENT_FILES="$(DS_EXTERNAL)/config_fragments/debug.fragment"
+CONFIG_DS_KERNEL_DEFCONFIG_FILE="$(DS_EXTERNAL)/configs/kernel_defconfig"
+CONFIG_DS_KERNEL_PATCH_DIR="$(DS_EXTERNAL)/patches"
+```
+
+Patches run on the host; kernel defconfig selection and fragment merging run
+in the cross chroot. DS\_EXTERNAL therefore expands to the host project root
+for patching, and `/external` for the cross build.
 
 ## Initramfs modules
 

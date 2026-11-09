@@ -12,6 +12,7 @@ import termios
 import time
 import tty
 import uuid
+from lib.vars import expand_config_vars
 
 
 VM_PYTHON_VENV = "/opt/distro-seed/venv"
@@ -292,8 +293,16 @@ def start_vm():
         "-device",
         "virtio-9p-pci,fsdev=src,mount_tag=src",
     ]
+    if os.environ.get("DS_EXTERNAL"):
+        cmd.extend([
+            "-fsdev",
+            f"local,id=external,path={os.path.realpath(os.environ['DS_EXTERNAL'])},security_model=none,readonly=on",
+            "-device", "virtio-9p-pci,fsdev=external,mount_tag=external",
+        ])
     subprocess.run(cmd, check=True)
     wait_ready()
+    if os.environ.get("DS_EXTERNAL"):
+        _run_script("mount-external", "mkdir -p /external\nmount -t 9p -o trans=virtio,version=9p2000.L,ro external /external")
 
 
 def stop_vm():
@@ -459,6 +468,9 @@ def vm_env(extra=None):
     )
     if extra:
         env.update(extra)
+    if os.environ.get("DS_EXTERNAL"):
+        env["DS_EXTERNAL"] = "/external"
+    env.update(expand_config_vars(env))
     return env
 
 

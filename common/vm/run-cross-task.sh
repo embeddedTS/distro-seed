@@ -15,6 +15,10 @@ for dir in cache dl work src vm-work; do
     mkdir -p "$CROSS_ROOT/$dir"
     mountpoint -q "$CROSS_ROOT/$dir" || mount --bind "/$dir" "$CROSS_ROOT/$dir"
 done
+if [[ -n "${DS_EXTERNAL:-}" ]]; then
+    mkdir -p "$CROSS_ROOT/external"
+    mountpoint -q "$CROSS_ROOT/external" || mount --bind /external "$CROSS_ROOT/external"
+fi
 
 overlay_tmp="/tmp/ds-overlay-$DS_PACKAGE_INPUT_NAME"
 debian_tmp="/tmp/ds-overlay-debian-$DS_PACKAGE_INPUT_NAME"

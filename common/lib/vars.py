@@ -2,8 +2,33 @@
 
 import os
 import sys
+import re
 from datetime import datetime, timezone
 from lib.kconfiglib import kconfiglib
+
+# Retain portable values for re-expansion in each execution environment.
+_config_templates = {}
+_reference = re.compile(r"\$\(([A-Za-z_][A-Za-z0-9_]*)\)")
+
+
+def expand_config_vars(environment, templates=None):
+    """Resolve $(NAME) references without shell evaluation or modifying inputs."""
+    templates = _config_templates if templates is None else templates
+    resolved = {}
+
+    def resolve(name, stack=()):
+        if name in resolved:
+            return resolved[name]
+        if name in stack:
+            raise ValueError("Configuration variable cycle: " + " -> ".join(stack + (name,)))
+        if name not in templates and name not in environment:
+            raise ValueError(f"Undefined configuration variable {name} referenced by {stack[-1]}")
+        value = templates[name] if name in templates else environment[name]
+        value = _reference.sub(lambda match: resolve(match[1], stack + (name,)), value)
+        resolved[name] = value
+        return value
+
+    return {name: resolve(name) for name in templates}
 
 def kconfig_export_vars(kconf):
     ''' Exports Kconfig options to the environment '''
@@ -69,9 +94,11 @@ def kconfig_export_vars(kconf):
     os.environ["DS_OUTPUT_BASENAME"] = DS_OUTPUT_BASENAME
     # DS_OVERLAY and DS_OVERLAY_PKG_DEBIAN are set per task at runtime.
 
-    # Set all config values
+    # Save originals before resolving: VM paths differ from host paths.
+    _config_templates.clear()
     for key, value in kconf.syms.items():
         # Skip the preset MODULES symbol which does not apply here
         if key == 'MODULES':
             continue
-        os.environ[f'CONFIG_{key}'] = value.str_value
+        _config_templates[f'CONFIG_{key}'] = value.str_value
+    os.environ.update(expand_config_vars(os.environ))
