@@ -15,6 +15,7 @@ from lib.task import Task
 from lib import task_manager
 from lib.vars import kconfig_export_vars
 from lib import vm
+from lib import external
 
 colorama.init()
 
@@ -30,7 +31,11 @@ except kconfiglib._KconfigIOError as exc:
     sys.stdout.write(str(exc) + "\n")
     print("Did you run make <defconfig>?")
     #sys.exit(2)
-kconfig_export_vars(kconf)
+try:
+    kconfig_export_vars(kconf)
+except ValueError as exc:
+    print(f"Cannot expand configuration: {exc}")
+    sys.exit(1)
 os.environ["DS_SESSION_PID"] = str(os.getpid())
 atexit.register(vm.stop_vm)
 
@@ -43,20 +48,11 @@ DS_RELEASE_NUM = os.environ['DS_RELEASE_NUM']
 DS_TARGET_ARCH = os.environ['DS_TARGET_ARCH']
 DS_QEMU_STATIC = os.environ['DS_QEMU_STATIC']
 
-tasks = []
-
-# Read in all manifests and create tasks for all of them
-manifests = [
-    manifest
-    for manifest in glob.glob(os.path.join('tasks', '**', 'manifest.yaml'), recursive=True)
-    if ':' not in os.path.dirname(manifest)
-]
-for manifest_file in manifests:
-    try:
-        tasks += task_manager.load_tasks_from_manifest(manifest_file)
-    except Exception as e:
-        print(f"An error occurred while processing manifest '{manifest_file}': {str(e)}")
-        sys.exit(1)
+try:
+    tasks = external.load_tasks(kconf, task_manager)
+except Exception as e:
+    print(f"Cannot load tasks: {e}")
+    sys.exit(1)
 
 # Remove configs from the list that are not enabled in the config
 tasks = [task for task in tasks if kconf.eval_string(task.config) != 0]

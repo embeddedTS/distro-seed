@@ -1,3 +1,10 @@
+ifneq ($(strip $(DS_EXTERNAL)),)
+export DS_EXTERNAL := $(abspath $(DS_EXTERNAL))
+ifeq ($(wildcard $(DS_EXTERNAL)/Kconfig),)
+$(error DS_EXTERNAL must contain Kconfig)
+endif
+endif
+
 all:
 	@common/build.py
 
@@ -5,7 +12,7 @@ dry-run:
 	@common/build.py --dry-run
 
 %_defconfig:
-	@common/lib/kconfiglib/defconfig.py --kconfig Kconfig $(shell pwd)/configs/$@
+	@common/lib/kconfiglib/defconfig.py --kconfig Kconfig "$(or $(wildcard $(DS_EXTERNAL)/configs/$@),$(CURDIR)/configs/$@)"
 
 menuconfig:
 	@common/lib/kconfiglib/menuconfig.py

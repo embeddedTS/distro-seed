@@ -22,6 +22,7 @@ import tempfile
 import shlex
 
 from lib import vm
+from lib import external
 
 class Task:
     """Setup task to execute in different environments """
@@ -166,9 +167,10 @@ class Task:
     
         ds_host_root_path = os.environ.get('DS_HOST_ROOT_PATH')
         work = os.environ.get('DS_WORK')
-        full_cmd = os.path.relpath(
-                f"{self.path}/{self.cmd}", ds_host_root_path)
-        os.environ['DS_TASK_PATH'] = os.path.abspath(os.environ['DS_HOST_ROOT_PATH'] + '/' + self.path)
+        full_cmd = os.path.abspath(os.path.join(self.path, self.cmd))
+        guest_cmd = external.guest_path(full_cmd)
+        guest_dir = external.guest_path(os.path.abspath(self.path))
+        os.environ['DS_TASK_PATH'] = os.path.abspath(self.path)
         
         if not os.path.isfile(full_cmd):
             raise ValueError(f'{self.config} has task \"{full_cmd}\" that does not exist')
@@ -225,20 +227,20 @@ class Task:
         elif self.cmd_type == "vm":
             taskenv = self._task_env({
                 "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
-                "DS_TASK_CMD": f"/src/{full_cmd}",
-                "DS_TASK_PATH": f"/src/{self.path}",
+                "DS_TASK_CMD": guest_cmd,
+                "DS_TASK_PATH": guest_dir,
             }, "/vm-work/staging")
             vm.run_script(self.config, "/src/common/vm/run-vm-task.sh", env=taskenv)
         elif self.cmd_type == "cross":
             taskenv = self._task_env({
                 "DS_PACKAGE_INPUT_NAME": self._package_input_name(),
-                "DS_TASK_CMD": f"/src/{full_cmd}",
-                "DS_TASK_PATH": f"/src/{self.path}",
+                "DS_TASK_CMD": guest_cmd,
+                "DS_TASK_PATH": guest_dir,
             }, "/vm-work/staging")
             vm.run_script(self.config, "/src/common/vm/run-cross-task.sh", env=taskenv)
         elif self.cmd_type == 'target':
             taskenv = self._task_env({
-                "DS_TASK_CMD": f"/src/{full_cmd}",
+                "DS_TASK_CMD": guest_cmd,
             })
             vm.run_script(self.config, "/src/common/vm/run-target-task.sh", env=taskenv)
         else:
