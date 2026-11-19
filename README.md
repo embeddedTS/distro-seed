@@ -64,7 +64,8 @@ cd distro-seed
 pip3 install --user -r requirements.txt
 make checkdeps # Verifies all execution requirements are met
 ```
-## Generating a rootfs:
+
+## Generating a rootfs
 ```
 make tsimx6_debian_12_x11_defconfig
 make
@@ -73,5 +74,9 @@ make
 
 Besides package downloads this will typically take around 5-30 minutes on a workstation to generate an image. This generates a simple rootfs that is capable of Networking, installs the kernel from git, and runs other setup.
 
-Kernel defconfig fragments are documented in
-[Documentation/kernel_configuration.md](Documentation/kernel_configuration.md).
+### Output names
+Output artifact names use base naming format:
+
+`<platform>[-<custom-name>]-<distribution>-<release-num>-<release-name>-<variant>-YYYYMMDD`
+
+The `<custom-name>` can be set via `DS_OUTPUT_NAME_CUSTOM`. When supplied, it applies to all artifact outputs using [DS\_OUTPUT\_BASENAME](Documentation/environment_vars.md)

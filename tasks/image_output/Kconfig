@@ -1,5 +1,16 @@
 menu "Output Image"
 
+config DS_OUTPUT_NAME_CUSTOM
+	string "Add custom string to output name"
+	default ""
+	help
+	  Append a custom string in the output artifact filenames. The string
+	  will appear just after the platform type, before the distribution
+	  and release names.
+
+	  See the main README.md for more detail on how the artifact name strings
+	  are built and how this option impacts them.
+
 source "tasks/image_output/tar/Kconfig"
 source "tasks/image_output/ext/Kconfig"
 source "tasks/image_output/genimage/Kconfig"

@@ -76,6 +76,9 @@ def kconfig_export_vars(kconf):
     DS_BUILD_DATE = datetime.now(timezone.utc).strftime("%Y%m%d")
     defconfig = os.path.basename(kconf.syms["DS_DEFCONFIG"].str_value)
     platform = defconfig.split("_", 1)[0] if defconfig else "rootfs"
+    name_suffix = kconf.syms["DS_OUTPUT_NAME_CUSTOM"].str_value
+    if name_suffix:
+        platform = f"{platform}-{name_suffix}"
     pkgvariant = defconfig[:-10] if defconfig.endswith("_defconfig") else defconfig
     pkgvariant = pkgvariant.rsplit("_", 1)[-1] if pkgvariant else "image"
     DS_OUTPUT_BASENAME = f"{platform}-{DS_DISTRO}-{DS_RELEASE_NUM}-{DS_RELEASE}-{pkgvariant}-{DS_BUILD_DATE}"
